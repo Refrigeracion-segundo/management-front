@@ -5,17 +5,24 @@ import {
   ReducerPaths,
   axiosBaseQuery,
 } from "../config";
+import { ILogin, ILoginResponse } from "@/app/common";
+import moment from "moment";
 
 export const loginApi = createApi({
   reducerPath: ReducerPaths.LOGIN,
   baseQuery: axiosBaseQuery(),
   endpoints: (builder) => ({
-    login: builder.mutation<void, any>({
-      query: (data: any) => ({
+    login: builder.mutation<ILoginResponse, ILogin>({
+      query: (data: ILogin) => ({
         url: LOGIN_URL.LOGIN,
         method: METHOD_TYPES.POST,
         data,
       }),
+      transformResponse: (response: ILoginResponse) => {
+        response.expiresIn = moment().add(response.expiresInMinutes, "minutes");
+        localStorage.setItem("user", JSON.stringify(response));
+        return response;
+      },
     }),
   }),
 });
