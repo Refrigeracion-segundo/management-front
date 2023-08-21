@@ -1,34 +1,41 @@
+"use client";
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
   Grid,
   InputAdornment,
   Paper,
   TextField,
   Typography,
-  makeStyles,
 } from "@mui/material";
 import React from "react";
-// import logo from '../assets/logo.png'
 import PersonIcon from "@mui/icons-material/Person";
 import { Lock } from "@mui/icons-material";
 import "@fontsource/roboto/500.css";
+import { useForm } from "react-hook-form";
+import { IFormLogin, ILogin } from "@/common";
+import { useRouter } from "next/navigation";
+
 export const Login = () => {
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm<IFormLogin>();
+  const router = useRouter();
+  const loginUser = (data: ILogin) => {
+    localStorage.setItem("user", JSON.stringify(data));
+    window.location.reload();
+  };
   return (
     <Grid
       container
       justifyContent="center"
       alignContent="center"
-      // alignItems="center"
-      // justifyItems="center"
       gap={2}
-      style={{ backgroundColor: "#2c3338", height: "100vh", width: "100%" }}
+      style={{ height: "100vh", width: "100%" }}
     >
       <Grid item xs={5}>
-        <Paper style={{ backgroundColor: "transparent" }} elevation={0}>
+        <Paper elevation={0}>
           <Grid
             container
             gap={1}
@@ -58,6 +65,15 @@ export const Login = () => {
                   ),
                   style: { color: "#fff" },
                 }}
+                {...register("user", {
+                  required: {
+                    value: true,
+                    message: "Ingrese un usuario valido",
+                  },
+                  setValueAs: (value: string) => value.toLowerCase().trim(),
+                })}
+                helperText={!!errors.user && errors.user.message}
+                error={!!errors.user}
               />
             </Grid>
             <Grid item xs={6}>
@@ -71,10 +87,22 @@ export const Login = () => {
                   ),
                   style: { color: "#fff" },
                 }}
+                {...register("password", {
+                  required: {
+                    value: true,
+                    message: "Ingrese un usuario valido",
+                  },
+                  setValueAs: (value: string) => value.trim(),
+                })}
+                helperText={!!errors.password && errors.password.message}
+                error={!!errors.password}
               />
             </Grid>
             <Grid item xs={6}>
-              <Button style={{ float: "right", color: "#fff" }}>
+              <Button
+                style={{ float: "right", color: "#fff" }}
+                onClick={handleSubmit(loginUser)}
+              >
                 Iniciar sesión
               </Button>
             </Grid>
@@ -84,3 +112,5 @@ export const Login = () => {
     </Grid>
   );
 };
+
+export default Login;

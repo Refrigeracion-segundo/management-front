@@ -1,11 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface DialogUser {
   openDialog: boolean;
+  isUpdate: boolean;
 }
 
 const initialState: DialogUser = {
   openDialog: false,
+  isUpdate: false,
 };
 
 export const dialogUserSlice = createSlice({
@@ -18,9 +20,16 @@ export const dialogUserSlice = createSlice({
     close: (state) => {
       state.openDialog = false;
     },
+    isUpdating: (state, value: PayloadAction<boolean>) => {
+      state.isUpdate = value.payload;
+    },
   },
 });
 
-export const { open, close } = dialogUserSlice.actions;
+export const {
+  open,
+  close,
+  isUpdating: isUpdatingUser,
+} = dialogUserSlice.actions;
 
 export default dialogUserSlice.reducer;

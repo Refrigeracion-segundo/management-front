@@ -10,3 +10,6 @@ export * from "./clientUpdate";
 export * from "./userRegister";
 export * from "./userResponse";
 export * from "./userUpdate";
+
+// INTERFACES FORMS
+export * from "./formLogin";
