@@ -106,7 +106,7 @@ export const DialogUser = (props: {
                 {...register("lastName", {
                   required: {
                     value: true,
-                    message: "El apellido es requerido",
+                    message: "El apellido es requerido 2",
                   },
                 })}
                 helperText={!!errors.lastName && errors.lastName.message}
