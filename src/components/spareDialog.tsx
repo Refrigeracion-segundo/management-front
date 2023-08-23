@@ -1,0 +1,137 @@
+"use client";
+
+import { Add } from "@mui/icons-material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+
+import {
+  FormState,
+  UseFormClearErrors,
+  UseFormGetValues,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormReset,
+} from "react-hook-form";
+import { ISpareRegister } from "@/common";
+import {
+  closeSpare,
+  isUpdatingSpare,
+  openSpare,
+} from "@/redux/slices/dialogSpare";
+
+export const DialogSpare = (props: {
+  register: UseFormRegister<ISpareRegister>;
+  formState: FormState<ISpareRegister>;
+  clearErrors: UseFormClearErrors<ISpareRegister>;
+  handleSubmit: UseFormHandleSubmit<ISpareRegister>;
+  getValues: UseFormGetValues<ISpareRegister>;
+  reset: UseFormReset<ISpareRegister>;
+}) => {
+  const {
+    register,
+    formState: { errors },
+    clearErrors,
+    handleSubmit,
+    getValues,
+    reset,
+  } = props;
+  const { openDialog, isUpdate } = useSelector(
+    (store: RootState) => store.dialogSpare
+  );
+
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <IconButton
+        onClick={() => {
+          reset();
+          dispatch(openSpare());
+        }}
+      >
+        <Add />
+      </IconButton>
+      <Dialog
+        open={openDialog}
+        onClose={() => {
+          dispatch(closeSpare());
+          dispatch(isUpdatingSpare(false));
+        }}
+      >
+        <DialogTitle>
+          <Typography variant="h6" align="center">
+            Formulario de Repuestos
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Grid
+            container
+            justifyContent="center"
+            alignContent="center"
+            direction="column"
+            gap={2}
+          >
+            <Grid item xs={6}>
+              <TextField
+                autoFocus
+                placeholder="Descripcion"
+                {...register("description", {
+                  required: {
+                    value: true,
+                    message: "La descripcion es requerida",
+                  },
+                })}
+                helperText={!!errors.description && errors.description.message}
+                error={!!errors.description}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                placeholder="Precio sugerido"
+                {...register("suggestedPrice", {
+                  required: {
+                    value: true,
+                    message: "El precio sugerido es requerido",
+                  },
+                  min: {
+                    value: 0,
+                    message: "El precio sugerido debe ser mayor a 0",
+                  },
+                  max: {
+                    value: 1000000000,
+                    message: "El precio sugerido debe ser menor a 1000000000",
+                  },
+                  valueAsNumber: true,
+                })}
+                type="number"
+                helperText={
+                  !!errors.suggestedPrice && errors.suggestedPrice.message
+                }
+                error={!!errors.suggestedPrice}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button color="secondary" onClick={() => dispatch(closeSpare())}>
+            Cancelar
+          </Button>
+          <Button onClick={handleSubmit((data) => console.log(data))}>
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};

@@ -10,7 +10,7 @@ import {
   IClientResponse,
   IClientUpdate,
   IDeleteGeneral,
-} from "@/app/common";
+} from "@/common";
 
 export const clientsApi = createApi({
   reducerPath: ReducerPaths.CLIENTS,

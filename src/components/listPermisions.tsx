@@ -24,13 +24,13 @@ export const ListPermisions = (props: { role: string }) => {
     {
       text: "Servicios",
       icon: <HomeRepairService />,
-      redirect: "/lol",
+      redirect: "/equipment",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
       text: "Clientes",
       icon: <Diversity3 />,
-      redirect: "/lol",
+      redirect: "/customer",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
@@ -46,9 +46,9 @@ export const ListPermisions = (props: { role: string }) => {
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
-      text: "Materiales",
+      text: "Repuestos",
       icon: <Construction />,
-      redirect: "/home/contain",
+      redirect: "/spare",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
   ];

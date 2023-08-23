@@ -1,8 +1,14 @@
 export interface IClientRegister {
   name: string;
-  outNumber: string;
+  contactPerson: string;
+  phone: string;
+  rfc: string;
   street: string;
-  colony: string;
-  cp: string;
-  telephone: string;
+  streetNumber: string;
+  apartmentNumber: string;
+  zipCode: string;
+  state: string;
+  city: string;
+  suburb: string;
+  fiscalRegime: string;
 }

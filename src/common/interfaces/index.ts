@@ -10,6 +10,15 @@ export * from "./clientUpdate";
 export * from "./userRegister";
 export * from "./userResponse";
 export * from "./userUpdate";
+export * from "./spareRegister";
+export * from "./spareUpdate";
+export * from "./userResponse";
+export * from "./serviceRegister";
+export * from "./serviceResponse";
+export * from "./serviceUpdate";
+export * from "./equipmentRegister";
+export * from "./equipmentUpdate";
+export * from "./equipmentResponse";
 
 // INTERFACES FORMS
 export * from "./formLogin";

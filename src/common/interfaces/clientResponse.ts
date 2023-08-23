@@ -5,4 +5,5 @@ export interface IClientResponse extends IClientRegister {
   createdAt: Date;
   updatedAt: Date;
   status: string;
+  deletedAt?: Date;
 }
