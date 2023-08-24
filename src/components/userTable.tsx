@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,13 +7,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { CircularProgress, IconButton, Skeleton } from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
 import { IUserRegister, IUserUpdate, ROLES } from "@/common";
 import { useDispatch } from "react-redux";
 import { isUpdatingUser, open } from "@/redux/slices/dialogUser";
+import { useDeleteUserMutation, useLazyFindAllUsersQuery } from "@/redux/api";
 
 function createData(
   name: string,
@@ -42,21 +43,22 @@ export const TableUser = (props: {
   const { setValue } = props;
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const handleDelete = (name: string) => {
+  const [getUsers, { data, isLoading }] = useLazyFindAllUsersQuery();
+  const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja al usuario ${name}? :(`,
-    })
-      .then(() => {
-        /* ... */
-      })
-      .catch(() => {
-        /* ... */
-      });
+    }).then(() => {
+      deleteUser({ id });
+    });
   };
 
   const handleEdit = (data: IUserUpdate) => {
-    console.log(data);
     dispatch(open());
     dispatch(isUpdatingUser(true));
     // setValue({ ...data }, is);
@@ -80,34 +82,38 @@ export const TableUser = (props: {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.email}</TableCell>
-              <TableCell align="right">{row.lastName}</TableCell>
-              <TableCell align="right">{row.rol.toString()}</TableCell>
-              <TableCell align="right">{row.protein.toString()}</TableCell>
-              <TableCell>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleDelete(row.name)}
-                >
-                  <Delete />
-                </IconButton>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleEdit(row as unknown as IUserUpdate)}
-                >
-                  <Edit />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            data?.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="right">{row.email}</TableCell>
+                <TableCell align="right">{row.lastName}</TableCell>
+                <TableCell align="right">{row.rol}</TableCell>
+                <TableCell align="right">{row.status}</TableCell>
+                <TableCell>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDelete(row.name, row._id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleEdit(row as unknown as IUserUpdate)}
+                  >
+                    <Edit />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>

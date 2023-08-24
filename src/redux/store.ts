@@ -6,6 +6,8 @@ import dialogSpare from "./slices/dialogSpare";
 import dialogClient from "./slices/dialogClient";
 import dialogEquipment from "./slices/dialogEquipment";
 import fiscalRegime from "./slices/fiscalRegime";
+import { userApi } from "./api";
+import { setupAxiosTokenInterceptor } from "@/app/interceptor/interceptor";
 
 export const store = configureStore({
   reducer: {
@@ -16,8 +18,11 @@ export const store = configureStore({
     dialogClient: dialogClient,
     equipment: dialogEquipment,
     fiscalRegime: fiscalRegime,
+    [userApi.reducerPath]: userApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(userApi.middleware),
 });
-
 export type RootState = ReturnType<typeof store.getState>;
+setupAxiosTokenInterceptor(store);
 export type AppDispatch = typeof store.dispatch;

@@ -1,0 +1,37 @@
+import { RootState } from "@/redux/store";
+import axios from "axios";
+import { Store } from "redux";
+// import AuthActions from '../redux/actions/auth'
+// import { ADD_NOTIFICATION, REFRESH_FAIL } from '../redux/actions/types'
+
+export const setupAxiosTokenInterceptor = (store: Store<RootState>): any => {
+  axios.interceptors.request.use((config: any) => {
+    const storedUserStr = localStorage.getItem("user");
+    if (!storedUserStr) return config;
+    const userLogged = JSON.parse(storedUserStr);
+    config.headers = {
+      authorization: `bearer ${userLogged.token}`,
+    };
+
+    return config;
+  });
+
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async function (error) {
+      if (error.response.status === 401) {
+        // store.dispatch({ type: REFRESH_FAIL })
+        // window.location.replace('/login')
+        // AuthActions.logout()(store)
+      }
+      console.log(error.response.data);
+      //   store.dispatch({
+      //     type: ADD_NOTIFICATION,
+      //     payload: { message: error.response.data.message, type: 'error' },
+      //   })
+      return Promise.reject(error);
+    }
+  );
+};

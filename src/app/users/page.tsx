@@ -1,7 +1,7 @@
 "use client";
 import { IUserRegister, IUserUpdate } from "@/common";
-import { DialogUser } from "@/components/dialogUser";
-import { TableUser } from "@/components/tableUser";
+import { DialogUser } from "@/components/userDialog";
+import { TableUser } from "@/components/userTable";
 import { Box, Divider, Grid, TextField } from "@mui/material";
 import React from "react";
 import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";

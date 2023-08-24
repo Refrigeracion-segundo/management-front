@@ -1,3 +1,5 @@
+const URL_DEFAULT = "http://localhost:3333/v1";
+
 export const enum LOGIN_URL {
   LOGIN = "",
 }
@@ -17,8 +19,8 @@ export const enum CLIENTS_URL {
 }
 
 export const enum USER_URL {
-  REGISTER = "",
-  FIND_ALL = "",
+  REGISTER = "/user",
+  FIND_ALL = "/user",
   UPDATE = "",
-  DELETE = "",
+  DELETE = "/user",
 }

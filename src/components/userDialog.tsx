@@ -1,6 +1,6 @@
 "use client";
 
-import { Add } from "@mui/icons-material";
+import { Add, Save } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
@@ -27,13 +27,8 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { IUserRegister, ROLES } from "@/common";
-
-/*
-formState: FormState<InvoiceData>
-  register: UseFormRegister<InvoiceData>
-  clearErrors: UseFormClearErrors<InvoiceData>
-  setError?: UseFormSetError<InvoiceData>
-*/
+import { useRegisterUserMutation } from "@/redux/api";
+import { LoadingButton } from "@mui/lab";
 
 export const DialogUser = (props: {
   register: UseFormRegister<IUserRegister>;
@@ -54,7 +49,13 @@ export const DialogUser = (props: {
   const { openDialog, isUpdate } = useSelector(
     (store: RootState) => store.dialogUser
   );
+  const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation();
 
+  const createUser = async (data: IUserRegister) => {
+    await registerUser(data).unwrap();
+
+    isSuccess && dispatch(close());
+  };
   const dispatch = useDispatch();
   return (
     <div>
@@ -72,6 +73,8 @@ export const DialogUser = (props: {
           dispatch(close());
           dispatch(isUpdatingUser(false));
         }}
+        maxWidth="sm"
+        fullWidth
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
@@ -83,12 +86,14 @@ export const DialogUser = (props: {
             container
             justifyContent="center"
             alignContent="center"
-            direction="column"
+            direction="row"
             gap={2}
+            style={{ marginTop: "2%" }}
           >
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <TextField
                 autoFocus
+                label="Nombre del usuario"
                 placeholder="Nombre"
                 {...register("name", {
                   required: {
@@ -100,9 +105,10 @@ export const DialogUser = (props: {
                 error={!!errors.name}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <TextField
                 placeholder="Apellido"
+                label="Apellido del usuario"
                 {...register("lastName", {
                   required: {
                     value: true,
@@ -113,9 +119,10 @@ export const DialogUser = (props: {
                 error={!!errors.lastName}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <TextField
                 placeholder="Correo electrónico"
+                label="Correo electronico"
                 {...register("email", {
                   required: {
                     value: true,
@@ -127,9 +134,10 @@ export const DialogUser = (props: {
               />
             </Grid>
             {!isUpdate && (
-              <Grid item xs={6}>
+              <Grid item xs={5}>
                 <TextField
                   type="password"
+                  label="Contraseña"
                   placeholder="Contraseña"
                   {...register("password", {
                     required: {
@@ -182,9 +190,16 @@ export const DialogUser = (props: {
           <Button color="secondary" onClick={() => dispatch(close())}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit((data) => console.log(data))}>
+          <LoadingButton
+            loading={isLoading}
+            loadingPosition="end"
+            onClick={handleSubmit((data) =>
+              registerUser({ ...data, roles: [data.rol] } as any)
+            )}
+            style={{ width: "20%" }}
+          >
             Guardar
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </div>

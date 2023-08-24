@@ -11,11 +11,12 @@ import {
   IUserRegister,
   IUserResponse,
   IUserUpdate,
-} from "@/app/common";
+} from "@/common";
 
 export const userApi = createApi({
   reducerPath: ReducerPaths.USERS,
   baseQuery: axiosBaseQuery(),
+  tagTypes: ["registerUser"],
   endpoints: (builder) => ({
     registerUser: builder.mutation<IUserResponse, IUserRegister>({
       query: (data: IUserRegister) => ({
@@ -23,12 +24,14 @@ export const userApi = createApi({
         method: METHOD_TYPES.POST,
         data,
       }),
+      invalidatesTags: ["registerUser"],
     }),
     findAllUsers: builder.query<Array<IUserResponse>, void>({
       query: () => ({
         url: USER_URL.FIND_ALL,
         method: METHOD_TYPES.GET,
       }),
+      providesTags: ["registerUser"],
     }),
     updateUser: builder.mutation<IUserResponse, IUserUpdate>({
       query: (data: IUserUpdate) => ({
@@ -43,6 +46,7 @@ export const userApi = createApi({
         method: METHOD_TYPES.DELETE,
         params,
       }),
+      invalidatesTags: ["registerUser"],
     }),
   }),
 });
