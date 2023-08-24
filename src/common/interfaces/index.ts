@@ -19,6 +19,9 @@ export * from "./serviceUpdate";
 export * from "./equipmentRegister";
 export * from "./equipmentUpdate";
 export * from "./equipmentResponse";
+export * from "./regimeRegister";
+export * from "./regimeResponse";
+export * from "./regimeUpdate";
 
 // INTERFACES FORMS
 export * from "./formLogin";

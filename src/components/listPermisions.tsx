@@ -51,6 +51,12 @@ export const ListPermisions = (props: { role: string }) => {
       redirect: "/spare",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
+    {
+      text: "Regimen fiscal",
+      icon: <Construction />,
+      redirect: "/fiscalRegime",
+      allowedRol: [ROLES.ADMIN, ROLES.USER],
+    },
   ];
   return (
     <Box sx={{ width: 250 }} role="presentation">

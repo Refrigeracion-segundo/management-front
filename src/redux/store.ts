@@ -5,6 +5,7 @@ import sliderReducer from "./slices/slider";
 import dialogSpare from "./slices/dialogSpare";
 import dialogClient from "./slices/dialogClient";
 import dialogEquipment from "./slices/dialogEquipment";
+import fiscalRegime from "./slices/fiscalRegime";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     dialogSpare: dialogSpare,
     dialogClient: dialogClient,
     equipment: dialogEquipment,
+    fiscalRegime: fiscalRegime,
   },
 });
 
