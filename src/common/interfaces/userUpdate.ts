@@ -1,5 +1,6 @@
 import { IUserRegister } from "./userRegister";
 
 export interface IUserUpdate extends IUserRegister {
-  _id: string;
+  id: string;
+  _id?: string;
 }

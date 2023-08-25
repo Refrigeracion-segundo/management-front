@@ -3,5 +3,5 @@ export interface IUserRegister {
   lastName: string;
   email: string;
   password: string;
-  rol: string;
+  roles: Array<string>;
 }

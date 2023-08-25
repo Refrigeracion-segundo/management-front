@@ -13,7 +13,7 @@ import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
 import { IUserRegister, IUserUpdate, ROLES } from "@/common";
 import { useDispatch } from "react-redux";
-import { isUpdatingUser, open } from "@/redux/slices/dialogUser";
+import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
 import { useDeleteUserMutation, useLazyFindAllUsersQuery } from "@/redux/api";
 
 function createData(
@@ -62,10 +62,7 @@ export const TableUser = (props: {
     dispatch(open());
     dispatch(isUpdatingUser(true));
     // setValue({ ...data }, is);
-    setValue("email", data.email);
-    setValue("lastName", data.lastName);
-    setValue("name", data.name);
-    setValue("rol", data.rol);
+    dispatch(saveUser(data));
   };
 
   return (
@@ -87,7 +84,7 @@ export const TableUser = (props: {
           ) : (
             data?.map((row) => (
               <TableRow
-                key={row.name}
+                key={row._id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -95,7 +92,7 @@ export const TableUser = (props: {
                 </TableCell>
                 <TableCell align="right">{row.email}</TableCell>
                 <TableCell align="right">{row.lastName}</TableCell>
-                <TableCell align="right">{row.rol}</TableCell>
+                <TableCell align="right">{row.roles[0]}</TableCell>
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell>
                   <IconButton

@@ -26,8 +26,8 @@ import {
   UseFormReset,
   UseFormSetValue,
 } from "react-hook-form";
-import { IUserRegister, ROLES } from "@/common";
-import { useRegisterUserMutation } from "@/redux/api";
+import { IUserRegister, IUserUpdate, ROLES } from "@/common";
+import { useRegisterUserMutation, useUpdateUserMutation } from "@/redux/api";
 import { LoadingButton } from "@mui/lab";
 
 export const DialogUser = (props: {
@@ -46,15 +46,23 @@ export const DialogUser = (props: {
     getValues,
     reset,
   } = props;
-  const { openDialog, isUpdate } = useSelector(
+  const { openDialog, isUpdate, user } = useSelector(
     (store: RootState) => store.dialogUser
   );
   const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation();
-
+  const [
+    updateUser,
+    { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate },
+  ] = useUpdateUserMutation();
   const createUser = async (data: IUserRegister) => {
-    await registerUser(data).unwrap();
+    if (!isUpdate) {
+      registerUser({ ...data, roles: [data.roles] } as any);
+    } else {
+      updateUser({ id: (user as IUserUpdate)._id as string, ...data });
+      dispatch(close());
+    }
 
-    isSuccess && dispatch(close());
+    isSuccess || (isSuccessUpdate && dispatch(close()));
   };
   const dispatch = useDispatch();
   return (
@@ -74,7 +82,7 @@ export const DialogUser = (props: {
           dispatch(isUpdatingUser(false));
         }}
         maxWidth="sm"
-        fullWidth
+        fullWidth={!isUpdate}
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
@@ -86,7 +94,7 @@ export const DialogUser = (props: {
             container
             justifyContent="center"
             alignContent="center"
-            direction="row"
+            direction={isUpdate ? "column" : "row"}
             gap={2}
             style={{ marginTop: "2%" }}
           >
@@ -141,7 +149,7 @@ export const DialogUser = (props: {
                   placeholder="Contraseña"
                   {...register("password", {
                     required: {
-                      value: true,
+                      value: false,
                       message: "Contraseña requerida",
                     },
                     minLength: {
@@ -161,25 +169,25 @@ export const DialogUser = (props: {
 
             <Grid item xs={6}>
               <Autocomplete
-                defaultValue={getValues("rol")}
+                defaultValue={isUpdate ? (user.roles[0] as string) : ""}
                 disablePortal
                 // multiple
                 options={Object.values(ROLES)}
                 onChange={(value, newValue) => {
-                  clearErrors("rol");
+                  clearErrors("roles");
                 }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Rol "
-                    {...register("rol", {
+                    label="Roles "
+                    {...register("roles", {
                       required: {
                         value: true,
                         message: "Seleccione un rol valido",
                       },
                     })}
-                    helperText={!!errors.rol && errors.rol.message}
-                    error={!!errors.rol}
+                    helperText={!!errors.roles && errors.roles.message}
+                    error={!!errors.roles}
                   />
                 )}
               />
@@ -191,11 +199,9 @@ export const DialogUser = (props: {
             Cancelar
           </Button>
           <LoadingButton
-            loading={isLoading}
+            loading={isLoading || isLoadingUpdate}
             loadingPosition="end"
-            onClick={handleSubmit((data) =>
-              registerUser({ ...data, roles: [data.rol] } as any)
-            )}
+            onClick={handleSubmit(createUser)}
             style={{ width: "20%" }}
           >
             Guardar

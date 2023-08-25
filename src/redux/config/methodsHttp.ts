@@ -3,4 +3,5 @@ export const enum METHOD_TYPES {
   POST = "post",
   PUT = "put",
   DELETE = "delete",
+  PATCH = "patch",
 }

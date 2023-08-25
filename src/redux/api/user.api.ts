@@ -16,7 +16,7 @@ import {
 export const userApi = createApi({
   reducerPath: ReducerPaths.USERS,
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["registerUser"],
+  tagTypes: ["findAllUsers"],
   endpoints: (builder) => ({
     registerUser: builder.mutation<IUserResponse, IUserRegister>({
       query: (data: IUserRegister) => ({
@@ -24,21 +24,22 @@ export const userApi = createApi({
         method: METHOD_TYPES.POST,
         data,
       }),
-      invalidatesTags: ["registerUser"],
+      invalidatesTags: ["findAllUsers"],
     }),
     findAllUsers: builder.query<Array<IUserResponse>, void>({
       query: () => ({
         url: USER_URL.FIND_ALL,
         method: METHOD_TYPES.GET,
       }),
-      providesTags: ["registerUser"],
+      providesTags: ["findAllUsers"],
     }),
     updateUser: builder.mutation<IUserResponse, IUserUpdate>({
       query: (data: IUserUpdate) => ({
-        url: USER_URL.REGISTER,
-        method: METHOD_TYPES.PUT,
+        url: USER_URL.UPDATE,
+        method: METHOD_TYPES.PATCH,
         data,
       }),
+      invalidatesTags: ["findAllUsers"],
     }),
     deleteUser: builder.mutation<IDeleteGeneral, IDeleteGeneral>({
       query: (params: IDeleteGeneral) => ({
@@ -46,7 +47,7 @@ export const userApi = createApi({
         method: METHOD_TYPES.DELETE,
         params,
       }),
-      invalidatesTags: ["registerUser"],
+      invalidatesTags: ["findAllUsers"],
     }),
   }),
 });

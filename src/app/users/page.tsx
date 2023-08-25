@@ -2,11 +2,14 @@
 import { IUserRegister, IUserUpdate } from "@/common";
 import { DialogUser } from "@/components/userDialog";
 import { TableUser } from "@/components/userTable";
+import { RootState } from "@/redux/store";
 import { Box, Divider, Grid, TextField } from "@mui/material";
 import React from "react";
 import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 export const Users = () => {
+  const { user } = useSelector((store: RootState) => store.dialogUser);
   const {
     formState,
     register,
@@ -15,7 +18,16 @@ export const Users = () => {
     setValue,
     getValues,
     reset,
-  } = useForm<IUserRegister | IUserUpdate>();
+  } = useForm<IUserRegister | IUserUpdate>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      roles: [],
+    },
+    values: user,
+  });
+
   return (
     <div style={{ marginTop: "1%" }}>
       <Divider variant="middle" />

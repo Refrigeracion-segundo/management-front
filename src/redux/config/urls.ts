@@ -21,6 +21,6 @@ export const enum CLIENTS_URL {
 export const enum USER_URL {
   REGISTER = "/user",
   FIND_ALL = "/user",
-  UPDATE = "",
+  UPDATE = "/user",
   DELETE = "/user",
 }
