@@ -8,6 +8,7 @@ import dialogEquipment from "./slices/dialogEquipment";
 import fiscalRegime from "./slices/fiscalRegime";
 import { userApi } from "./api";
 import { setupAxiosTokenInterceptor } from "@/app/interceptor/interceptor";
+import { equipmentApi } from "./api/equipment.api";
 
 export const store = configureStore({
   reducer: {
@@ -19,9 +20,10 @@ export const store = configureStore({
     equipment: dialogEquipment,
     fiscalRegime: fiscalRegime,
     [userApi.reducerPath]: userApi.reducer,
+    [equipmentApi.reducerPath]: equipmentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware),
+    getDefaultMiddleware().concat(userApi.middleware, equipmentApi.middleware),
 });
 export type RootState = ReturnType<typeof store.getState>;
 setupAxiosTokenInterceptor(store);

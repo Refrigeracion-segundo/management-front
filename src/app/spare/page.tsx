@@ -20,7 +20,9 @@ export const Spare = () => {
     setValue,
     getValues,
     reset,
-  } = useForm<ISpareRegister | ISpareUpdate>();
+  } = useForm<ISpareRegister | ISpareUpdate>({
+    defaultValues: { description: "", suggestedPrice: 0 },
+  });
   return (
     <div style={{ marginTop: "1%" }}>
       <Divider variant="middle" />

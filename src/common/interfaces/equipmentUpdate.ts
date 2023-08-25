@@ -1,5 +1,6 @@
 import { IEquipmentRegister } from "./equipmentRegister";
 
 export interface IEquipmentUpdate extends IEquipmentRegister {
-  _id: string;
+  _id?: string;
+  id: string;
 }

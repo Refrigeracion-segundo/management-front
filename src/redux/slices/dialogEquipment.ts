@@ -20,7 +20,6 @@ export const dialogEquipmentSlice = createSlice({
   initialState,
   reducers: {
     openEquipment: (state) => {
-      console.log(state);
       return {
         ...state,
         openDialog: true,

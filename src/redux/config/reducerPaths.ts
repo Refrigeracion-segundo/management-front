@@ -3,4 +3,5 @@ export const enum ReducerPaths {
   ROLES = "role",
   CLIENTS = "client",
   USERS = "user",
+  EQUIPMENT = "equipment_api",
 }

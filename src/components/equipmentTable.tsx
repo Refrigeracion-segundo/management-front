@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -26,32 +26,27 @@ import {
   openEquipment,
   saveEquipment,
 } from "@/redux/slices/dialogEquipment";
-
-function createData(data: IEquipmentResponse) {
-  return data;
-}
-
-const rows = [
-  createData({
-    _id: "",
-    name: "Test 1",
-
-    status: "Active",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }),
-];
+import {
+  useDeleteEquipmentMutation,
+  useLazyFindAllEquipmentQuery,
+} from "@/redux/api/equipment.api";
 
 export const EquipmentTable = () => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const handleDelete = (name: string) => {
+  const [getUsers, { data: rows, isLoading }] = useLazyFindAllEquipmentQuery();
+  const [deleteEquipment, {}] = useDeleteEquipmentMutation();
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+  const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? :(`,
     })
       .then(() => {
-        /* ... */
+        deleteEquipment({ id });
       })
       .catch(() => {
         /* ... */
@@ -60,6 +55,8 @@ export const EquipmentTable = () => {
 
   const handleEdit = (data: IEquipmentUpdate) => {
     dispatch(saveEquipment({ _id: data._id, name: data.name }));
+    dispatch(isUpdatingEquipment(true));
+    dispatch(openEquipment());
   };
 
   return (
@@ -76,7 +73,7 @@ export const EquipmentTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows?.map((row) => (
             <TableRow
               key={row.name}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -96,7 +93,7 @@ export const EquipmentTable = () => {
               <TableCell>
                 <IconButton
                   color="secondary"
-                  onClick={() => handleDelete(row._id)}
+                  onClick={() => handleDelete(row.name, row._id)}
                 >
                   <Delete />
                 </IconButton>

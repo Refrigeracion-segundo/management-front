@@ -24,3 +24,10 @@ export const enum USER_URL {
   UPDATE = "/user",
   DELETE = "/user",
 }
+
+export const enum EQUIPMENT_URL {
+  REGISTER = "/equipment-type",
+  FIND_ALL = "/equipment-type",
+  UPDATE = "/equipment-type",
+  DELETE = "/equipment-type",
+}

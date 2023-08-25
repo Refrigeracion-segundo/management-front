@@ -20,14 +20,12 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
-import { IEquipmentRegister } from "@/common";
+import { IEquipmentRegister, IEquipmentUpdate } from "@/common";
+import { closeEquipment, openEquipment } from "@/redux/slices/dialogEquipment";
 import {
-  clearEquipment,
-  closeEquipment,
-  isUpdatingEquipment,
-  openEquipment,
-  saveEquipment,
-} from "@/redux/slices/dialogEquipment";
+  useRegisterEquipmentMutation,
+  useUpdateEquipmentMutation,
+} from "@/redux/api/equipment.api";
 
 export const DialogEquipment = (props: {
   register: UseFormRegister<IEquipmentRegister>;
@@ -39,11 +37,13 @@ export const DialogEquipment = (props: {
     formState: { errors },
     handleSubmit,
   } = props;
-  const { openDialog, data, isUpdate } = useSelector(
+  const { openDialog, isUpdate } = useSelector(
     (store: RootState) => store.equipment
   );
-
-  useEffect(() => {}, [isUpdate]);
+  const [registerEquipment, { isSuccess: isSuccessRegister }] =
+    useRegisterEquipmentMutation();
+  const [updateEquipment, { isSuccess: isSuccessUpdate }] =
+    useUpdateEquipmentMutation();
 
   const dispatch = useDispatch();
   return (
@@ -94,7 +94,19 @@ export const DialogEquipment = (props: {
           <Button color="secondary" onClick={() => dispatch(closeEquipment())}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit((data) => console.log(data))}>
+          <Button
+            onClick={handleSubmit((data) => {
+              !isUpdate
+                ? registerEquipment(data)
+                : updateEquipment({
+                    ...data,
+                    id: (data as IEquipmentUpdate)._id as string,
+                  });
+
+              (isSuccessRegister || isSuccessUpdate) &&
+                dispatch(closeEquipment());
+            })}
+          >
             Guardar
           </Button>
         </DialogActions>

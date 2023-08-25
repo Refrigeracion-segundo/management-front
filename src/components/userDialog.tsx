@@ -62,7 +62,7 @@ export const DialogUser = (props: {
       dispatch(close());
     }
 
-    isSuccess || (isSuccessUpdate && dispatch(close()));
+    (isSuccess || isSuccessUpdate) && dispatch(close());
   };
   const dispatch = useDispatch();
   return (

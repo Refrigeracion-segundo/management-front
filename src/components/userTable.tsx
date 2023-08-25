@@ -7,7 +7,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
-import { CircularProgress, IconButton, Skeleton } from "@mui/material";
+import {
+  CircularProgress,
+  Grid,
+  IconButton,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
@@ -80,7 +86,17 @@ export const TableUser = (props: {
         </TableHead>
         <TableBody>
           {isLoading ? (
-            <CircularProgress />
+            <TableCell colSpan={6}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress />
+              </div>
+            </TableCell>
           ) : (
             data?.map((row) => (
               <TableRow
