@@ -1,4 +1,4 @@
 export interface IRegimeRegister {
   description: string;
-  key: string;
+  key: number;
 }

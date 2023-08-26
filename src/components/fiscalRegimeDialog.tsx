@@ -20,11 +20,16 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
-import { IRegimeRegister } from "@/common";
+import { IRegimeRegister, IRegimeUpdate } from "@/common";
 import {
   closeFiscalRegime,
   openFiscalRegime,
 } from "@/redux/slices/fiscalRegime";
+import {
+  useRegisterRegimeMutation,
+  useUpdateRegimeMutation,
+} from "@/redux/api/fiscalRegime";
+import { LoadingButton } from "@mui/lab";
 
 export const DialogFiscalRegime = (props: {
   register: UseFormRegister<IRegimeRegister>;
@@ -39,6 +44,9 @@ export const DialogFiscalRegime = (props: {
   const { openDialog, data, isUpdate } = useSelector(
     (store: RootState) => store.fiscalRegime
   );
+  const [registerRegime, { isLoading }] = useRegisterRegimeMutation();
+  const [updateRegime, { isLoading: isLoadingUpdate }] =
+    useUpdateRegimeMutation();
 
   useEffect(() => {}, [isUpdate]);
 
@@ -60,7 +68,7 @@ export const DialogFiscalRegime = (props: {
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
-            Formulario de Repuestos
+            Formulario del SAT
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -74,12 +82,14 @@ export const DialogFiscalRegime = (props: {
             <Grid item xs={6}>
               <TextField
                 autoFocus
+                type="number"
                 placeholder="Clave"
                 {...register("key", {
                   required: {
                     value: true,
                     message: "La clave es requerida",
                   },
+                  valueAsNumber: true,
                 })}
                 helperText={!!errors.description && errors.description.message}
                 error={!!errors.description}
@@ -107,9 +117,18 @@ export const DialogFiscalRegime = (props: {
           >
             Cancelar
           </Button>
-          <Button onClick={handleSubmit((data) => console.log(data))}>
+          <LoadingButton
+            loading={isLoading || isLoadingUpdate}
+            loadingPosition="end"
+            onClick={handleSubmit((newData) => {
+              isUpdate
+                ? updateRegime({ ...newData, _id: (data as IRegimeUpdate)._id })
+                : registerRegime({ ...newData });
+            })}
+            style={{ width: "20%" }}
+          >
             Guardar
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </div>

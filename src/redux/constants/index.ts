@@ -1,1 +1,1 @@
-export const API_URL = "http://localhost:3333/v1";
+export const API_URL = "https://management-services-telo-dev.fl0.io/v1";

@@ -5,7 +5,7 @@ import {
   ReducerPaths,
   axiosBaseQuery,
 } from "../config";
-import { ILogin, ILoginResponse } from "@/app/common";
+import { ILogin, ILoginResponse } from "@/common";
 import moment from "moment";
 
 export const loginApi = createApi({

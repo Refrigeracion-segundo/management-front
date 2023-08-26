@@ -9,6 +9,7 @@ import fiscalRegime from "./slices/fiscalRegime";
 import { userApi } from "./api";
 import { setupAxiosTokenInterceptor } from "@/app/interceptor/interceptor";
 import { equipmentApi } from "./api/equipment.api";
+import { fiscalRegimeApi } from "./api/fiscalRegime";
 
 export const store = configureStore({
   reducer: {
@@ -21,9 +22,14 @@ export const store = configureStore({
     fiscalRegime: fiscalRegime,
     [userApi.reducerPath]: userApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
+    [fiscalRegimeApi.reducerPath]: fiscalRegimeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware, equipmentApi.middleware),
+    getDefaultMiddleware().concat(
+      userApi.middleware,
+      equipmentApi.middleware,
+      fiscalRegimeApi.middleware
+    ),
 });
 export type RootState = ReturnType<typeof store.getState>;
 setupAxiosTokenInterceptor(store);

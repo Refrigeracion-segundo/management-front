@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 const FiscalRegime = () => {
   const { data } = useSelector((store: RootState) => store.fiscalRegime);
   const { formState, register, handleSubmit } = useForm<IRegimeRegister>({
-    defaultValues: { description: "", key: "" },
+    defaultValues: { description: "", key: 0 },
     values: {
       ...data,
     },

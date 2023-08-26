@@ -12,7 +12,7 @@ const initialState: FiscalRegime = {
   isUpdate: false,
   data: {
     description: "",
-    key: "",
+    key: 0,
   },
 };
 
