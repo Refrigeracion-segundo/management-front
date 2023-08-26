@@ -1,6 +1,8 @@
 "use client";
 import { ROLES } from "@/common";
 import {
+  AccountBalance,
+  Build,
   Checklist,
   Construction,
   Diversity3,
@@ -24,7 +26,7 @@ export const ListPermisions = (props: { role: string }) => {
     {
       text: "Servicios",
       icon: <HomeRepairService />,
-      redirect: "/equipment",
+      redirect: "/services",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
@@ -53,8 +55,14 @@ export const ListPermisions = (props: { role: string }) => {
     },
     {
       text: "Regimen fiscal",
-      icon: <Construction />,
+      icon: <AccountBalance />,
       redirect: "/fiscalRegime",
+      allowedRol: [ROLES.ADMIN, ROLES.USER],
+    },
+    {
+      text: "Equipamiento",
+      icon: <Build />,
+      redirect: "/equipment",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
   ];

@@ -38,3 +38,10 @@ export const enum FISCAL_REGIME_URL {
   UPDATE = "/fiscal-regime",
   DELETE = "/fiscal-regime",
 }
+
+export const enum SERVICE_URL {
+  REGISTER = "/service",
+  FIND_ALL = "/service",
+  UPDATE = "/service",
+  DELETE = "/service",
+}
