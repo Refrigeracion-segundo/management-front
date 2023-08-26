@@ -54,6 +54,7 @@ export const fiscalRegimeApi = createApi({
 export const {
   useRegisterRegimeMutation,
   useFindAllFiscalRegimeQuery,
+  useLazyFindAllFiscalRegimeQuery,
   useUpdateRegimeMutation,
   useDeleteRegimeMutation,
 } = fiscalRegimeApi;

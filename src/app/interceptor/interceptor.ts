@@ -5,13 +5,15 @@ import { Store } from "redux";
 // import { ADD_NOTIFICATION, REFRESH_FAIL } from '../redux/actions/types'
 
 export const setupAxiosTokenInterceptor = (store: Store<RootState>): any => {
-  axios.interceptors.request.use((config: any) => {
+  axios.interceptors.request.use((config) => {
     const storedUserStr = localStorage.getItem("user");
+    console.log(storedUserStr);
     if (!storedUserStr) return config;
     const userLogged = JSON.parse(storedUserStr);
+    console.log(userLogged);
     config.headers = {
-      authorization: `bearer ${userLogged.token}`,
-    };
+      Authorization: `bearer ${userLogged.token}`,
+    } as any;
 
     return config;
   });

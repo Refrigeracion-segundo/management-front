@@ -7,8 +7,8 @@ export interface IClientRegister {
   streetNumber: string;
   apartmentNumber: string;
   zipCode: string;
-  state: string;
-  city: string;
+  state?: { id: number; name: string };
+  city?: { id: number; name: string };
   suburb: string;
   fiscalRegime: string;
 }

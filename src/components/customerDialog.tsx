@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { Add } from "@mui/icons-material";
@@ -14,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { open, close, isUpdatingUser } from "../redux/slices/dialogUser";
@@ -32,7 +33,14 @@ import {
   closeClient,
   isUpdatingClient,
   openClient,
+  saveClient,
 } from "@/redux/slices/dialogClient";
+import { useLazyFindAllFiscalRegimeQuery } from "@/redux/api/fiscalRegime";
+import {
+  useLazyFindCitiesQuery,
+  useLazyFindCountryQuery,
+  useLazyFindStateQuery,
+} from "@/redux/api/countryState.api";
 
 export const DialogCustomer = (props: {
   register: UseFormRegister<IClientRegister>;
@@ -50,7 +58,56 @@ export const DialogCustomer = (props: {
     getValues,
     reset,
   } = props;
-  const { openDialog } = useSelector((store: RootState) => store.dialogClient);
+  const { openDialog, dataClient } = useSelector(
+    (store: RootState) => store.dialogClient
+  );
+  const [
+    getRegime,
+    {
+      isLoading: isLoadingRegime,
+      data: dataRegime,
+      isSuccess: isSuccessRegime,
+    },
+  ] = useLazyFindAllFiscalRegimeQuery();
+  const [
+    getCities,
+    {
+      isLoading: isLoadingCities,
+      data: dataCities,
+      isSuccess: isSuccessCities,
+    },
+  ] = useLazyFindCitiesQuery();
+
+  const [
+    getState,
+    {
+      isLoading: isLoadingCountry,
+      data: dataState,
+      isSuccess: isSuccessCountry,
+    },
+  ] = useLazyFindStateQuery();
+  const debounceTime = 500;
+  const [stateName, setStateName] = useState("");
+  const [cityName, setCityName] = useState("");
+
+  useEffect(() => {
+    console.log("stateName >> ", stateName);
+    const debounce = setTimeout(() => {
+      console.log("debounce >> ", stateName);
+      getState(stateName);
+    }, debounceTime);
+
+    return () => {
+      clearTimeout(debounce);
+    };
+  }, [stateName]);
+
+  useEffect(() => {
+    getCities({
+      stateId: dataClient.state ? dataClient.state.id : 0,
+      name: cityName,
+    });
+  }, [dataClient.state]);
 
   const dispatch = useDispatch();
   return (
@@ -115,11 +172,12 @@ export const DialogCustomer = (props: {
                 <Autocomplete
                   disablePortal
                   blurOnSelect
-                  loading
+                  loading={isLoadingRegime}
+                  onOpen={() => getRegime()}
                   id="fiscalRegime"
-                  options={[]}
+                  options={isSuccessRegime && dataRegime ? dataRegime : []}
                   getOptionLabel={(option: IRegimeResponse) =>
-                    `${option.code} - ${option.name}`
+                    `${option.key} - ${option.description}`
                   }
                   onChange={(value, newValue) => {
                     clearErrors("fiscalRegime");
@@ -189,7 +247,10 @@ export const DialogCustomer = (props: {
               <Grid item xs={8}>
                 <Autocomplete
                   disablePortal
-                  options={[]}
+                  defaultValue={
+                    dataClient.state ? dataClient.state : { id: 0, name: "" }
+                  }
+                  options={dataState?.items ? dataState.items : []}
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }
@@ -197,7 +258,10 @@ export const DialogCustomer = (props: {
                     option.name
                   }
                   onChange={(e, value) => {
+                    console.log(value);
                     if (value) {
+                      // setStateName(value.name);
+                      dispatch(saveClient({ ...dataClient, state: value }));
                       clearErrors("state");
                     }
                   }}
@@ -215,6 +279,9 @@ export const DialogCustomer = (props: {
                           message: "Este campo es requerido",
                         },
                       })}
+                      onChange={(e) => {
+                        setStateName(e.target.value);
+                      }}
                       error={!!errors.state}
                       helperText={!!errors.state && errors.state.message}
                     />
@@ -227,7 +294,7 @@ export const DialogCustomer = (props: {
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }
-                  options={[]}
+                  options={dataCities?.items ? dataCities.items : []}
                   getOptionLabel={(option: { id: number; name: string }) =>
                     option.name
                   }
@@ -249,6 +316,9 @@ export const DialogCustomer = (props: {
                           message: "La ciudad es requerida",
                         },
                       })}
+                      onChange={(e) => {
+                        setCityName(e.target.value);
+                      }}
                       error={!!errors.city}
                     />
                   )}

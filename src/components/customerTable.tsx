@@ -22,27 +22,7 @@ import {
 import { useDispatch } from "react-redux";
 import { isUpdatingUser, open } from "@/redux/slices/dialogUser";
 import { CustomerTableRows } from "./customerTableRows";
-
-function createData(
-  name: string,
-  email: string,
-  lastName: string,
-  rol: string,
-  protein: string
-) {
-  return { name, email, lastName, rol, protein };
-}
-
-const rows = [
-  createData(
-    "Jose Alberto",
-    "jose@gmail.com",
-    "Zamarripa",
-    ROLES.ADMIN,
-    // "Activo",
-    moment(new Date()).format("YYYY-MM-DD")
-  ),
-];
+import { useFindAllClientsQuery } from "@/redux/api";
 
 export const CustomerTable = (props: {
   setValue: UseFormSetValue<IClientUpdate>;
@@ -50,7 +30,7 @@ export const CustomerTable = (props: {
   const { setValue } = props;
   const confirm = useConfirm();
   const dispatch = useDispatch();
-
+  const { data: rows, isSuccess } = useFindAllClientsQuery();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
@@ -67,12 +47,13 @@ export const CustomerTable = (props: {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
-            <CustomerTableRows
-              key={index}
-              row={row as unknown as IClientResponse}
-            />
-          ))}
+          {isSuccess &&
+            rows?.map((row, index) => (
+              <CustomerTableRows
+                key={index}
+                row={row as unknown as IClientResponse}
+              />
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

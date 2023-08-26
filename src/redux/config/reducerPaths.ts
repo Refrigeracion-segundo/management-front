@@ -1,9 +1,10 @@
 export const enum ReducerPaths {
-  LOGIN = "login",
-  ROLES = "role",
-  CLIENTS = "client",
-  USERS = "user",
+  LOGIN = "login_api",
+  ROLES = "role_api",
+  CLIENTS = "client_api",
+  USERS = "user_api",
   EQUIPMENT = "equipment_api",
   FISCAL_REGIME = "fiscal_regime_api",
   SERVICE = "service_api",
+  COUNTRY_STATE = "country_state_api",
 }

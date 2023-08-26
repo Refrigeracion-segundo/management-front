@@ -22,6 +22,6 @@ export * from "./equipmentResponse";
 export * from "./regimeRegister";
 export * from "./regimeResponse";
 export * from "./regimeUpdate";
-
+export * from "./countryStateCities";
 // INTERFACES FORMS
 export * from "./formLogin";

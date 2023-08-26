@@ -14,6 +14,7 @@ import "@fontsource/roboto/500.css";
 import { useForm } from "react-hook-form";
 import { IFormLogin, ILogin } from "@/common";
 import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/redux/api";
 
 export const Login = () => {
   const {
@@ -22,9 +23,14 @@ export const Login = () => {
     handleSubmit,
   } = useForm<IFormLogin>();
   const router = useRouter();
+  const [login, { isSuccess }] = useLoginMutation();
   const loginUser = (data: ILogin) => {
-    localStorage.setItem("user", JSON.stringify(data));
-    window.location.reload();
+    login(data)
+      .unwrap()
+      .then(() => {
+        window.location.reload();
+      });
+    // localStorage.setItem("user", JSON.stringify(data));
   };
   return (
     <Grid
@@ -65,15 +71,15 @@ export const Login = () => {
                   ),
                   style: { color: "#fff" },
                 }}
-                {...register("user", {
+                {...register("email", {
                   required: {
                     value: true,
                     message: "Ingrese un usuario valido",
                   },
                   setValueAs: (value: string) => value.toLowerCase().trim(),
                 })}
-                helperText={!!errors.user && errors.user.message}
-                error={!!errors.user}
+                helperText={!!errors.email && errors.email.message}
+                error={!!errors.email}
               />
             </Grid>
             <Grid item xs={6}>
