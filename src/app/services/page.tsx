@@ -1,6 +1,7 @@
 "use client";
 import { IServiceRegister } from "@/common";
 import { DialogService } from "@/components/serviceDialog";
+import { ServiceTable } from "@/components/serviceTable";
 import { RootState } from "@/redux/store";
 import { Box } from "@mui/material";
 import React from "react";
@@ -9,21 +10,11 @@ import { useSelector } from "react-redux";
 
 const Services = () => {
   const { data } = useSelector((store: RootState) => store.service);
-  const { formState, register, handleSubmit, clearErrors } =
-    useForm<IServiceRegister>({
-      defaultValues: { ...data },
-      values: {
-        ...data,
-      },
-    });
+
   return (
     <Box sx={{ p: 5 }}>
-      <DialogService
-        register={register}
-        formState={formState}
-        handleSubmit={handleSubmit}
-        clearErrors={clearErrors}
-      />
+      <DialogService />
+      <ServiceTable />
     </Box>
   );
 };

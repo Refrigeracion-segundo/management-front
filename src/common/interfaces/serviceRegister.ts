@@ -6,5 +6,5 @@ export interface IServiceRegister {
   suggestedPrice: number;
   equipmentCapacity: string;
   equipmentApplication: string;
-  equipmentType: IEquipmentResponse;
+  equipmentType: IEquipmentResponse | string;
 }

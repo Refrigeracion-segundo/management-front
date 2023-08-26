@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -21,36 +21,44 @@ import {
   UseFormClearErrors,
   UseFormHandleSubmit,
   UseFormRegister,
+  UseFormReset,
+  useForm,
 } from "react-hook-form";
 import {
   IServiceRegister,
   IEquipmentUpdate,
   IEquipmentResponse,
+  IServiceUpdate,
 } from "@/common";
-import { closeService, openService } from "@/redux/slices/service";
+import {
+  clearService,
+  closeService,
+  openService,
+  saveService,
+} from "@/redux/slices/service";
 import {
   useLazyFindAllEquipmentQuery,
   useRegisterEquipmentMutation,
   useUpdateEquipmentMutation,
 } from "@/redux/api/equipment.api";
+import {
+  useRegisterServiceMutation,
+  useUpdateServiceMutation,
+} from "@/redux/api/services.api";
 
-export const DialogService = (props: {
-  register: UseFormRegister<IServiceRegister>;
-  formState: FormState<IServiceRegister>;
-  handleSubmit: UseFormHandleSubmit<IServiceRegister>;
-  clearErrors: UseFormClearErrors<IServiceRegister>;
-}) => {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    clearErrors,
-  } = props;
+export const DialogService = () => {
   const {
     openDialog,
     isUpdate,
     data: dataService,
   } = useSelector((store: RootState) => store.service);
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+    clearErrors,
+    reset,
+  } = useForm<IServiceRegister>();
   const [
     getEquipment,
     {
@@ -60,10 +68,10 @@ export const DialogService = (props: {
       isFetching: isFetchingEquipment,
     },
   ] = useLazyFindAllEquipmentQuery();
-  // const [registerEquipment, { isSuccess: isSuccessRegister }] =
-  //   useRegisterEquipmentMutation();
-  // const [updateEquipment, { isSuccess: isSuccessUpdate }] =
-  //   useUpdateEquipmentMutation();
+  const [registerService, { isSuccess: isSuccessRegister }] =
+    useRegisterServiceMutation();
+  const [updateService, { isSuccess: isSuccessUpdate }] =
+    useUpdateServiceMutation();
 
   const dispatch = useDispatch();
   return (
@@ -79,46 +87,35 @@ export const DialogService = (props: {
         open={openDialog}
         onClose={() => {
           dispatch(closeService());
+          reset(undefined);
         }}
         fullWidth
         maxWidth="md"
       >
         <DialogTitle>
-          <Typography variant="h6" align="center">
-            Formulario de Servicios
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Grid
-            container
-            justifyContent="center"
-            alignContent="center"
-            direction="row"
-            gap={2}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              width: "100%",
+            }}
           >
-            <Grid item xs={5}>
-              <TextField
-                autoFocus
-                fullWidth
-                placeholder="Nombre"
-                {...register("name", {
-                  required: {
-                    value: true,
-                    message: "El nombre es requerido",
-                  },
-                })}
-                helperText={!!errors.name && errors.name.message}
-                error={!!errors.name}
-              />
-            </Grid>
-            <Grid item xs={5}>
+            <Typography
+              variant="h6"
+              textAlign="center"
+              style={{ marginRight: "9%" }}
+            >
+              Formulario de Servicios
+            </Typography>
+
+            <div style={{ width: 250 }}>
               <Autocomplete
-                defaultValue={
-                  isUpdate
-                    ? dataService.equipmentType
-                    : dataService.equipmentType
-                }
+                autoFocus
                 disablePortal
+                defaultValue={
+                  isUpdate ? dataService.equipmentType : ("" as any)
+                }
                 loading={isLoadingEquipment}
                 onOpen={() => getEquipment()}
                 // multiple
@@ -128,18 +125,30 @@ export const DialogService = (props: {
                     : []
                 }
                 onChange={(value, newValue) => {
-                  clearErrors("equipmentType");
+                  if (newValue && newValue.name !== "Seleccione") {
+                    dispatch(
+                      saveService({
+                        ...dataService,
+                        equipmentType: newValue as any as IEquipmentResponse,
+                      })
+                    );
+                    clearErrors("equipmentType");
+                  }
                 }}
-                getOptionLabel={(option) => option.name}
+                // isOptionEqualToValue={(option, value) =>
+                //   option.name === value.name
+                // }
+                getOptionLabel={(option) => (!!option?.name ? option.name : "")}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Roles "
+                    label="Tipo de equipamiento"
                     {...register("equipmentType", {
                       required: {
                         value: true,
-                        message: "Seleccione un rol valido",
+                        message: "Seleccione un equipamiento válido",
                       },
+                      value: dataService.equipmentType,
                     })}
                     helperText={
                       !!errors.equipmentType && errors.equipmentType.message
@@ -148,10 +157,20 @@ export const DialogService = (props: {
                   />
                 )}
               />
-            </Grid>
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent>
+          <Grid
+            container
+            justifyContent="center"
+            alignContent="center"
+            direction="row"
+            spacing={2}
+            sx={{ marginTop: 1 }}
+          >
             <Grid item xs={5}>
               <TextField
-                autoFocus
                 fullWidth
                 placeholder="Nombre"
                 {...register("name", {
@@ -159,42 +178,187 @@ export const DialogService = (props: {
                     value: true,
                     message: "El nombre es requerido",
                   },
+                  value: dataService.name,
                 })}
+                onChange={(e) => {
+                  if (e.target.value)
+                    dispatch(
+                      saveService({ ...dataService, name: e.target.value })
+                    );
+                }}
                 helperText={!!errors.name && errors.name.message}
                 error={!!errors.name}
               />
             </Grid>
             <Grid item xs={5}>
               <TextField
-                autoFocus
                 fullWidth
-                placeholder="Nombre"
-                {...register("name", {
+                type="number"
+                placeholder="Precio sugerido"
+                {...register("suggestedPrice", {
                   required: {
                     value: true,
-                    message: "El nombre es requerido",
+                    message: "El precio sugerido es requerido",
                   },
+                  min: {
+                    value: 0,
+                    message: "El precio tiene que ser mTestayor a 0",
+                  },
+                  valueAsNumber: true,
+                  value: dataService.suggestedPrice,
                 })}
-                helperText={!!errors.name && errors.name.message}
-                error={!!errors.name}
+                onChange={(e) => {
+                  if (e.target.value)
+                    dispatch(
+                      saveService({
+                        ...dataService,
+                        suggestedPrice: parseFloat(e.target.value),
+                      })
+                    );
+                }}
+                helperText={
+                  !!errors.suggestedPrice && errors.suggestedPrice.message
+                }
+                error={!!errors.suggestedPrice}
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <TextField
+                fullWidth
+                placeholder="Capacidad de equipamiento"
+                {...register("equipmentCapacity", {
+                  required: {
+                    value: true,
+                    message: "La capacidad de equipamiento es requerido",
+                  },
+                  value: dataService.equipmentCapacity,
+                })}
+                onChange={(e) => {
+                  if (e.target.value)
+                    dispatch(
+                      saveService({
+                        ...dataService,
+                        equipmentCapacity: e.target.value,
+                      })
+                    );
+                }}
+                helperText={
+                  !!errors.equipmentCapacity && errors.equipmentCapacity.message
+                }
+                error={!!errors.equipmentCapacity}
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <Autocomplete
+                disablePortal
+                defaultValue={
+                  isUpdate ? dataService.equipmentApplication : ("" as any)
+                }
+                // multiple
+                options={["COOL_ROOM", "AIR_CONDITIONING"] as Array<string>}
+                onChange={(value, newValue) => {
+                  if (newValue)
+                    dispatch(
+                      saveService({
+                        ...dataService,
+                        equipmentApplication: newValue,
+                      })
+                    );
+                  clearErrors("equipmentApplication");
+                }}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Tipa de aplicacion"
+                    {...register("equipmentApplication", {
+                      required: {
+                        value: true,
+                        message: "Tipo de aplicacion",
+                      },
+                      value: dataService.equipmentApplication,
+                    })}
+                    helperText={
+                      !!errors.equipmentApplication &&
+                      errors.equipmentApplication.message
+                    }
+                    error={!!errors.equipmentApplication}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={10}>
+              <TextField
+                fullWidth
+                defaultValue={isUpdate ? dataService.description : ""}
+                placeholder="Descripcion"
+                multiline
+                rows={4}
+                {...register("description", {
+                  required: {
+                    value: true,
+                    message: "La descripcion es requerido",
+                  },
+                  value: dataService.description,
+                })}
+                onChange={(e) => {
+                  if (e.target.value)
+                    dispatch(
+                      saveService({
+                        ...dataService,
+                        description: e.target.value,
+                      })
+                    );
+                }}
+                helperText={!!errors.description && errors.description.message}
+                error={!!errors.description}
               />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => dispatch(closeService())}>
+          <Button
+            color="secondary"
+            onClick={() => {
+              dispatch(closeService());
+              reset(undefined);
+            }}
+          >
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit((data) => {
-              // !isUpdate
-              //   ? registerEquipment(data)
-              //   : updateEquipment({
-              //       ...data,
-              //       id: (data as IEquipmentUpdate)._id as string,
-              //     });
-              // (isSuccessRegister || isSuccessUpdate) &&
-              //   dispatch(closeService());
+              console.log({
+                ...data,
+                equipmentType: dataService.equipmentType,
+              });
+              !isUpdate
+                ? registerService({
+                    ...data,
+                    equipmentType: (
+                      dataService.equipmentType as IEquipmentResponse
+                    )._id,
+                  })
+                    .unwrap()
+                    .then(() => {
+                      dispatch(closeService());
+                      dispatch(clearService());
+                      reset(undefined);
+                    })
+                : updateService({
+                    ...data,
+                    _id: (dataService as IServiceUpdate)._id as string,
+                    equipmentType: (
+                      dataService.equipmentType as IEquipmentResponse
+                    )._id,
+                  })
+                    .unwrap()
+                    .then(() => {
+                      dispatch(closeService());
+                      dispatch(clearService());
+                      reset(null as any);
+                    });
             })}
           >
             Guardar

@@ -17,6 +17,7 @@ import {
   IUserUpdate,
   ROLES,
   IEquipmentResponse,
+  IServiceUpdate,
 } from "@/common";
 import { useDispatch } from "react-redux";
 import { isUpdatingSpare, openSpare } from "@/redux/slices/dialogSpare";
@@ -30,33 +31,40 @@ import {
   useDeleteEquipmentMutation,
   useLazyFindAllEquipmentQuery,
 } from "@/redux/api/equipment.api";
+import {
+  useDeleteServiceMutation,
+  useFindAllServiceQuery,
+} from "@/redux/api/services.api";
+import {
+  isUpdatingService,
+  openService,
+  saveService,
+} from "@/redux/slices/service";
 
-export const EquipmentTable = () => {
+export const ServiceTable = () => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const [getUsers, { data: rows, isLoading }] = useLazyFindAllEquipmentQuery();
-  const [deleteEquipment, {}] = useDeleteEquipmentMutation();
+  const { data: rows, isLoading } = useFindAllServiceQuery();
+  const [deleteService, {}] = useDeleteServiceMutation();
 
-  useEffect(() => {
-    getUsers();
-  }, []);
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? :(`,
     })
       .then(() => {
-        deleteEquipment({ id });
+        deleteService({ id });
       })
       .catch(() => {
         /* ... */
       });
   };
 
-  const handleEdit = (data: IEquipmentUpdate) => {
-    dispatch(saveEquipment({ _id: data._id, name: data.name }));
-    dispatch(isUpdatingEquipment(true));
-    dispatch(openEquipment());
+  const handleEdit = (data: IServiceUpdate) => {
+    console.log(data);
+    dispatch(saveService({ ...data }));
+    dispatch(isUpdatingService(true));
+    dispatch(openService());
   };
 
   return (
@@ -99,7 +107,7 @@ export const EquipmentTable = () => {
                 </IconButton>
                 <IconButton
                   color="secondary"
-                  onClick={() => handleEdit(row as unknown as IEquipmentUpdate)}
+                  onClick={() => handleEdit(row as unknown as IServiceUpdate)}
                 >
                   <Edit />
                 </IconButton>

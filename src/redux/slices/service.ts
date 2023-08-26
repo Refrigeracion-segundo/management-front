@@ -1,4 +1,4 @@
-import { IServiceRegister, IServiceUpdate } from "@/common";
+import { IEquipmentResponse, IServiceRegister, IServiceUpdate } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface Service {
@@ -20,9 +20,9 @@ const initialState: Service = {
       _id: "",
       name: "",
       status: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
+      createdAt: 0,
+      updatedAt: 0,
+    } as any as IEquipmentResponse,
   },
 };
 
@@ -31,7 +31,6 @@ export const serviceSlice = createSlice({
   initialState,
   reducers: {
     openService: (state) => {
-      console.log(state);
       return {
         ...state,
         openDialog: true,
@@ -58,14 +57,12 @@ export const serviceSlice = createSlice({
       return {
         ...state,
         data: value.payload,
-        isUpdate: true,
-        openDialog: true,
+
+        // openDialog: true,
       };
     },
     clearService: (state) => {
-      return {
-        ...initialState,
-      };
+      state.data = initialState.data;
     },
   },
 });
