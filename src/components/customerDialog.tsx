@@ -27,7 +27,7 @@ import {
   UseFormRegister,
   UseFormReset,
 } from "react-hook-form";
-import { IClientRegister, ROLES } from "@/common";
+import { ICityState, IClientRegister, IClientUpdate, ROLES } from "@/common";
 import { IRegimeResponse } from "@/common/interfaces/regimeResponse";
 import {
   closeClient,
@@ -41,6 +41,10 @@ import {
   useLazyFindCountryQuery,
   useLazyFindStateQuery,
 } from "@/redux/api/countryState.api";
+import {
+  useRegisterClientMutation,
+  useUpdateClientMutation,
+} from "@/redux/api";
 
 export const DialogCustomer = (props: {
   register: UseFormRegister<IClientRegister>;
@@ -58,7 +62,7 @@ export const DialogCustomer = (props: {
     getValues,
     reset,
   } = props;
-  const { openDialog, dataClient } = useSelector(
+  const { openDialog, dataClient, isUpdate } = useSelector(
     (store: RootState) => store.dialogClient
   );
   const [
@@ -86,14 +90,20 @@ export const DialogCustomer = (props: {
       isSuccess: isSuccessCountry,
     },
   ] = useLazyFindStateQuery();
+  const [
+    registerCustomer,
+    { isLoading: isLoadingCustomer, isSuccess: isSuccessCustomer },
+  ] = useRegisterClientMutation();
+  const [
+    updateCustomer,
+    { isLoading: isLoadingUpdateCustomer, isSuccess: isSuccessUpdateCustomer },
+  ] = useUpdateClientMutation();
   const debounceTime = 500;
   const [stateName, setStateName] = useState("");
   const [cityName, setCityName] = useState("");
 
   useEffect(() => {
-    console.log("stateName >> ", stateName);
     const debounce = setTimeout(() => {
-      console.log("debounce >> ", stateName);
       getState(stateName);
     }, debounceTime);
 
@@ -104,12 +114,35 @@ export const DialogCustomer = (props: {
 
   useEffect(() => {
     getCities({
-      stateId: dataClient.state ? dataClient.state.id : 0,
+      stateId: dataClient.state ? (dataClient.state as ICityState).id : 0,
       name: cityName,
     });
   }, [dataClient.state]);
 
   const dispatch = useDispatch();
+
+  const handleClickSave = (data: IClientRegister | IClientUpdate) => {
+    console.log(data);
+    if (isUpdate) {
+      updateCustomer({
+        ...data,
+        fiscalRegime: (dataClient.fiscalRegime as IRegimeResponse)._id,
+        _id: (data as IClientUpdate)._id,
+      })
+        .unwrap()
+        .then(() => {
+          dispatch(closeClient());
+        });
+    } else {
+      registerCustomer({ ...data, fiscalRegime: dataClient.fiscalRegime })
+        .unwrap()
+        .then(() => {
+          dispatch(closeClient());
+        });
+      // dispatch(openClient(data));
+    }
+  };
+
   return (
     <div>
       <IconButton
@@ -131,7 +164,7 @@ export const DialogCustomer = (props: {
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
-            Formulario de usuarios
+            Formulario de clientes
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -168,19 +201,87 @@ export const DialogCustomer = (props: {
                   helperText={!!errors.name && errors.name.message}
                 />
               </Grid>
+              <Grid item xs={11} container alignItems="center">
+                <TextField
+                  variant="standard"
+                  margin="dense"
+                  id="companyName"
+                  label="Persona de contacto"
+                  type="text"
+                  size="small"
+                  fullWidth
+                  {...register("contactPerson", {
+                    required: {
+                      value: true,
+                      message: "Persona de contacto es requerida",
+                    },
+                    maxLength: {
+                      value: 80,
+                      message: "La maxima longitud es de 80 caracteres.",
+                    },
+                  })}
+                  error={!!errors.contactPerson}
+                  helperText={
+                    !!errors.contactPerson && errors.contactPerson.message
+                  }
+                />
+              </Grid>
+              <Grid item xs={11} container alignItems="center">
+                <TextField
+                  variant="standard"
+                  margin="dense"
+                  id="companyName"
+                  label="Celular"
+                  type="tel"
+                  size="small"
+                  fullWidth
+                  {...register("phone", {
+                    required: {
+                      value: true,
+                      message: "El telefono es requerido",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "Numero invalido",
+                    },
+                    minLength: {
+                      value: 10,
+                      message: "Numero invalido",
+                    },
+                  })}
+                  error={!!errors.phone}
+                  helperText={!!errors.phone && errors.phone.message}
+                />
+              </Grid>
               <Grid item xs={11}>
                 <Autocomplete
                   disablePortal
                   blurOnSelect
+                  defaultValue={
+                    isUpdate
+                      ? (dataClient.fiscalRegime as IRegimeResponse)
+                      : ("" as any)
+                  }
                   loading={isLoadingRegime}
                   onOpen={() => getRegime()}
                   id="fiscalRegime"
                   options={isSuccessRegime && dataRegime ? dataRegime : []}
-                  getOptionLabel={(option: IRegimeResponse) =>
-                    `${option.key} - ${option.description}`
-                  }
+                  getOptionLabel={(option: IRegimeResponse) => {
+                    return option?.key
+                      ? `${option.key} - ${option.description}`
+                      : "";
+                  }}
                   onChange={(value, newValue) => {
-                    clearErrors("fiscalRegime");
+                    if (newValue) {
+                      dispatch(
+                        saveClient({
+                          ...dataClient,
+                          fiscalRegime: newValue?._id,
+                        })
+                      );
+
+                      clearErrors("fiscalRegime");
+                    }
                   }}
                   fullWidth
                   // sx={{ width: 300, marginTop: "-3px" }}
@@ -248,7 +349,11 @@ export const DialogCustomer = (props: {
                 <Autocomplete
                   disablePortal
                   defaultValue={
-                    dataClient.state ? dataClient.state : { id: 0, name: "" }
+                    isUpdate
+                      ? { id: 0, name: dataClient.state as string }
+                      : dataClient.state
+                      ? (dataClient.state as ICityState)
+                      : { id: 0, name: "" }
                   }
                   options={dataState?.items ? dataState.items : []}
                   isOptionEqualToValue={(option, value) =>
@@ -293,6 +398,11 @@ export const DialogCustomer = (props: {
                   disablePortal
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
+                  }
+                  defaultValue={
+                    isUpdate
+                      ? { id: 0, name: dataClient.city as string }
+                      : { id: 0, name: "" }
                   }
                   options={dataCities?.items ? dataCities.items : []}
                   getOptionLabel={(option: { id: number; name: string }) =>
@@ -437,12 +547,10 @@ export const DialogCustomer = (props: {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => dispatch(close())}>
+          <Button color="secondary" onClick={() => dispatch(closeClient())}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit((data) => console.log(data))}>
-            Guardar
-          </Button>
+          <Button onClick={handleSubmit(handleClickSave)}>Guardar</Button>
         </DialogActions>
       </Dialog>
     </div>

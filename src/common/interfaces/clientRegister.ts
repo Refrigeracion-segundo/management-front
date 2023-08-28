@@ -1,3 +1,5 @@
+import { IRegimeResponse } from ".";
+
 export interface IClientRegister {
   name: string;
   contactPerson: string;
@@ -7,8 +9,13 @@ export interface IClientRegister {
   streetNumber: string;
   apartmentNumber: string;
   zipCode: string;
-  state?: { id: number; name: string };
-  city?: { id: number; name: string };
+  state?: ICityState | string;
+  city?: ICityState | string;
   suburb: string;
-  fiscalRegime: string;
+  fiscalRegime: string | IRegimeResponse;
+}
+
+export interface ICityState {
+  id: number;
+  name: string;
 }

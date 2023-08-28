@@ -2,11 +2,14 @@
 import { IClientRegister, IClientUpdate } from "@/common";
 import { DialogCustomer } from "@/components/customerDialog";
 import { CustomerTable } from "@/components/customerTable";
+import { RootState } from "@/redux/store";
 import { Box } from "@mui/material";
 import React, { Fragment } from "react";
 import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 const Clients = () => {
+  const { dataClient } = useSelector((store: RootState) => store.dialogClient);
   const {
     formState,
     register,
@@ -15,7 +18,7 @@ const Clients = () => {
     setValue,
     getValues,
     reset,
-  } = useForm<IClientRegister | IClientUpdate>();
+  } = useForm<IClientRegister | IClientUpdate>({ values: dataClient });
   return (
     <Box sx={{ p: 5 }}>
       <DialogCustomer

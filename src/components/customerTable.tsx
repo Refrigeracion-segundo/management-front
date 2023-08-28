@@ -50,7 +50,7 @@ export const CustomerTable = (props: {
           {isSuccess &&
             rows?.map((row, index) => (
               <CustomerTableRows
-                key={index}
+                key={row._id}
                 row={row as unknown as IClientResponse}
               />
             ))}

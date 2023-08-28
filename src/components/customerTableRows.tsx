@@ -1,6 +1,11 @@
 "use client";
-import { IClientResponse, IClientUpdate } from "@/common";
-import { isUpdatingClient, openClient } from "@/redux/slices/dialogClient";
+import { IClientResponse, IClientUpdate, IRegimeResponse } from "@/common";
+import { useDeleteClientMutation } from "@/redux/api";
+import {
+  isUpdatingClient,
+  openClient,
+  saveClient,
+} from "@/redux/slices/dialogClient";
 import {
   Delete,
   Edit,
@@ -27,29 +32,27 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   const [open, setOpen] = useState(false);
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const handleDelete = (name: string) => {
+  const [deleteClient] = useDeleteClientMutation();
+  const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja al usuario ${name}? :(`,
-    })
-      .then(() => {
-        /* ... */
-      })
-      .catch(() => {
-        /* ... */
-      });
+    }).then(() => {
+      deleteClient({ id });
+    });
   };
 
   const handleEdit = (data: IClientUpdate) => {
     console.log(data);
     dispatch(openClient());
+    dispatch(saveClient(data));
     dispatch(isUpdatingClient(true));
     // setValue("description", data.description);
     // setValue("suggestedPrice", data.suggestedPrice);
   };
 
   return (
-    <Fragment>
+    <Fragment key={row.rfc}>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
@@ -63,21 +66,22 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
         <TableCell component="th" scope="row">
           {row.name}
         </TableCell>
-        <TableCell align="left">{row.name}</TableCell>
-        <TableCell align="left">{row.name}</TableCell>
-        <TableCell align="left">{row.name}</TableCell>
-        <TableCell align="left">{row.name}</TableCell>
-        <TableCell></TableCell>
+        <TableCell align="left">{row.phone}</TableCell>
+        <TableCell align="left">{row.contactPerson}</TableCell>
+        <TableCell align="left">{row.status}</TableCell>
+        <TableCell align="left">{row.createdAt.toString()}</TableCell>
+        <TableCell align="left">{row.updatedAt.toString()}</TableCell>
+
         <TableCell>
           <IconButton
             color="secondary"
-            // onClick={() => handleDelete(row.name)}
+            onClick={() => handleDelete(row.name, row._id)}
           >
             <Delete />
           </IconButton>
           <IconButton
             color="secondary"
-            // onClick={() => handleEdit(row as unknown as IUserUpdate)}
+            onClick={() => handleEdit(row as unknown as IClientUpdate)}
           >
             <Edit />
           </IconButton>
@@ -89,33 +93,39 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                History
+                Datos generales y fiscales
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="right">RFC</TableCell>
-                    <TableCell align="right">Calle</TableCell>
-                    <TableCell align="right">Numero interior</TableCell>
-                    <TableCell align="right">Numero exterior</TableCell>
-                    <TableCell align="right">Estado</TableCell>
-                    <TableCell align="right">Ciudad</TableCell>
-                    <TableCell align="right">Regimen fiscal</TableCell>
+                    <TableCell>RFC</TableCell>
+                    <TableCell>Regimen fiscal</TableCell>
+                    <TableCell>Estado</TableCell>
+                    <TableCell>Ciudad</TableCell>
+                    <TableCell>Calle</TableCell>
+                    <TableCell>Numero interior</TableCell>
+                    <TableCell>Numero exterior</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component="th" scope="row">
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
-                    </TableRow>
-                  ))} */}
+                  <TableRow>
+                    <TableCell>{row.rfc}</TableCell>
+                    <TableCell>
+                      {(row.fiscalRegime as IRegimeResponse).key +
+                        " - " +
+                        (row.fiscalRegime as IRegimeResponse).description}
+                    </TableCell>
+                    <TableCell>{row?.state as string}</TableCell>
+                    <TableCell>{row?.city as string}</TableCell>
+                    <TableCell>{row.street}</TableCell>
+                    <TableCell>{row.streetNumber}</TableCell>
+
+                    <TableCell>
+                      {!!row.apartmentNumber
+                        ? row.apartmentNumber
+                        : "SIN NUMERO"}
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </Box>

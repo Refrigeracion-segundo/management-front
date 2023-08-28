@@ -11,10 +11,10 @@ export const setupAxiosTokenInterceptor = (store: Store<RootState>): any => {
     if (!storedUserStr) return config;
     const userLogged = JSON.parse(storedUserStr);
     console.log(userLogged);
-    config.headers = {
-      Authorization: `bearer ${userLogged.token}`,
-    } as any;
-
+    // config.headers = {
+    //   Authorization: `bearer ${userLogged.token}`,
+    // } as any;
+    config.headers.Authorization = `Bearer ${userLogged.token}`;
     return config;
   });
 

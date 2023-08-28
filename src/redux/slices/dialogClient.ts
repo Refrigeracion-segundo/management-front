@@ -35,6 +35,7 @@ export const dialogClientSlice = createSlice({
     },
     closeClient: (state) => {
       state.openDialog = false;
+      if (state.isUpdate) state.dataClient = initialState.dataClient;
     },
     isUpdatingClient: (state, value: PayloadAction<boolean>) => {
       state.isUpdate = value.payload;
