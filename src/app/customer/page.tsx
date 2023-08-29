@@ -29,7 +29,7 @@ const Clients = () => {
         getValues={getValues as UseFormGetValues<IClientRegister>}
         reset={reset}
       />
-      <CustomerTable setValue={setValue as UseFormSetValue<IClientUpdate>} />
+      <CustomerTable />
     </Box>
   );
 };

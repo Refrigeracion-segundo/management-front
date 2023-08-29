@@ -65,6 +65,12 @@ export const ListPermisions = (props: { role: string }) => {
       redirect: "/equipment",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
+    {
+      text: "Descripcion de servicios",
+      icon: <Build />,
+      redirect: "/serviceDescription",
+      allowedRol: [ROLES.ADMIN, ROLES.USER],
+    },
   ];
   return (
     <Box sx={{ width: 250 }} role="presentation">

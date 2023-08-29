@@ -11,19 +11,27 @@ import { Delete, Edit } from "@mui/icons-material";
 import { CircularProgress, IconButton, TableFooter } from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
-import { IRegimeUpdate } from "@/common";
+import { IServiceDescriptionUpdate, IServiceResponse } from "@/common";
 import { useDispatch } from "react-redux";
-import { saveFiscalRegime } from "@/redux/slices/fiscalRegime";
 import {
-  useDeleteRegimeMutation,
-  useFindAllFiscalRegimeQuery,
-} from "@/redux/api/fiscalRegime";
+  useDeleteServiceDescriptionMutation,
+  useFindAllServiceDescriptionQuery,
+} from "@/redux/api/serviceDescription.api";
+import {
+  isUpdatingServiceDescription,
+  openServiceDescription,
+  saveServiceDescription,
+} from "@/redux/slices/serviceDescription";
 
-export const FiscalRegimeTable = () => {
+export const ServiceDescriptionTable = () => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const { data: rows, isLoading, isFetching } = useFindAllFiscalRegimeQuery();
-  const [deleteRegime] = useDeleteRegimeMutation();
+  const {
+    data: rows,
+    isLoading,
+    isFetching,
+  } = useFindAllServiceDescriptionQuery();
+  const [deleteRegime] = useDeleteServiceDescriptionMutation();
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
@@ -33,18 +41,19 @@ export const FiscalRegimeTable = () => {
     });
   };
 
-  const handleEdit = (data: IRegimeUpdate) => {
-    dispatch(saveFiscalRegime(data));
+  const handleEdit = (data: IServiceDescriptionUpdate) => {
+    dispatch(isUpdatingServiceDescription(true));
+    dispatch(saveServiceDescription(data));
+    dispatch(openServiceDescription());
   };
 
   return (
     <TableContainer component={Paper}>
-      {isLoading && <CircularProgress />}
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Clave</TableCell>
             <TableCell>Descripcion</TableCell>
+            <TableCell>Servicio</TableCell>
             <TableCell>Estatus</TableCell>
             <TableCell>Fecha creacio</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
@@ -54,14 +63,14 @@ export const FiscalRegimeTable = () => {
         <TableBody>
           {rows?.map((row) => (
             <TableRow
-              key={row.key}
+              key={row._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.key}
+                {row.description}
               </TableCell>
               <TableCell component="th" scope="row">
-                {row.description}
+                {(row.service as IServiceResponse).name}
               </TableCell>
               <TableCell align="left">{row.status}</TableCell>
               <TableCell align="left">
@@ -80,7 +89,9 @@ export const FiscalRegimeTable = () => {
                 </IconButton>
                 <IconButton
                   color="secondary"
-                  onClick={() => handleEdit(row as unknown as IRegimeUpdate)}
+                  onClick={() =>
+                    handleEdit(row as unknown as IServiceDescriptionUpdate)
+                  }
                 >
                   <Edit />
                 </IconButton>
@@ -88,7 +99,7 @@ export const FiscalRegimeTable = () => {
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
+        {/* <TableFooter>
           {(isLoading || isFetching) && (
             <TableCell colSpan={6}>
               <div
@@ -102,7 +113,7 @@ export const FiscalRegimeTable = () => {
               </div>
             </TableCell>
           )}
-        </TableFooter>
+        </TableFooter> */}
       </Table>
     </TableContainer>
   );

@@ -43,12 +43,9 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   };
 
   const handleEdit = (data: IClientUpdate) => {
-    console.log(data);
     dispatch(openClient());
     dispatch(saveClient(data));
     dispatch(isUpdatingClient(true));
-    // setValue("description", data.description);
-    // setValue("suggestedPrice", data.suggestedPrice);
   };
 
   return (

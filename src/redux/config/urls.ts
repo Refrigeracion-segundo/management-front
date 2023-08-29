@@ -51,3 +51,10 @@ export const enum COUNTRY_URL {
   GET_STATES = "/countries-states-cities/states",
   GET_CITIES = "/countries-states-cities/cities",
 }
+
+export const enum SERVICE_DESCRIPTION_URL {
+  REGISTER = "/service/description",
+  FIND_ALL = "/service/description/all",
+  UPDATE = "/service/description",
+  DELETE = "/service/description",
+}

@@ -84,10 +84,10 @@ export const EquipmentTable = () => {
 
               <TableCell align="left">{row.status}</TableCell>
               <TableCell align="left">
-                {moment(row.createdAt).format("YYYY-MM")}
+                {moment(row.createdAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
-                {moment(row.updatedAt).format("YYYY-MM")}
+                {moment(row.updatedAt).format("LLLL")}
               </TableCell>
 
               <TableCell>

@@ -7,29 +7,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Delete, Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
-import {
-  IClientResponse,
-  IClientUpdate,
-  IUserRegister,
-  IUserUpdate,
-  ROLES,
-} from "@/common";
+import { IClientResponse, IClientUpdate } from "@/common";
 import { useDispatch } from "react-redux";
-import { isUpdatingUser, open } from "@/redux/slices/dialogUser";
 import { CustomerTableRows } from "./customerTableRows";
 import { useFindAllClientsQuery } from "@/redux/api";
 
-export const CustomerTable = (props: {
-  setValue: UseFormSetValue<IClientUpdate>;
-}) => {
-  const { setValue } = props;
-  const confirm = useConfirm();
-  const dispatch = useDispatch();
+export const CustomerTable = () => {
   const { data: rows, isSuccess } = useFindAllClientsQuery();
   return (
     <TableContainer component={Paper}>

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
 import { Add } from "@mui/icons-material";
 import {
   Autocomplete,
@@ -18,7 +17,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { open, close, isUpdatingUser } from "../redux/slices/dialogUser";
 import {
   FormState,
   UseFormClearErrors,
@@ -27,7 +25,7 @@ import {
   UseFormRegister,
   UseFormReset,
 } from "react-hook-form";
-import { ICityState, IClientRegister, IClientUpdate, ROLES } from "@/common";
+import { ICityState, IClientRegister, IClientUpdate } from "@/common";
 import { IRegimeResponse } from "@/common/interfaces/regimeResponse";
 import {
   closeClient,
@@ -38,7 +36,6 @@ import {
 import { useLazyFindAllFiscalRegimeQuery } from "@/redux/api/fiscalRegime";
 import {
   useLazyFindCitiesQuery,
-  useLazyFindCountryQuery,
   useLazyFindStateQuery,
 } from "@/redux/api/countryState.api";
 import {
@@ -59,7 +56,7 @@ export const DialogCustomer = (props: {
     formState: { errors },
     clearErrors,
     handleSubmit,
-    getValues,
+
     reset,
   } = props;
   const { openDialog, dataClient, isUpdate } = useSelector(

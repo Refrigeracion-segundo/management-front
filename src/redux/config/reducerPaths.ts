@@ -7,4 +7,5 @@ export const enum ReducerPaths {
   FISCAL_REGIME = "fiscal_regime_api",
   SERVICE = "service_api",
   COUNTRY_STATE = "country_state_api",
+  SERVICE_DESCRIPTION = "service_description_api",
 }

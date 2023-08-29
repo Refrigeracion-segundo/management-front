@@ -23,5 +23,8 @@ export * from "./regimeRegister";
 export * from "./regimeResponse";
 export * from "./regimeUpdate";
 export * from "./countryStateCities";
+export * from "./serviceDescriptionRegister";
+export * from "./serviceDescriptionUpdate";
+export * from "./serviceDescriptionResponse";
 // INTERFACES FORMS
 export * from "./formLogin";

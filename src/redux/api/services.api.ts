@@ -54,6 +54,7 @@ export const serviceApi = createApi({
 export const {
   useRegisterServiceMutation,
   useFindAllServiceQuery,
+  useLazyFindAllServiceQuery,
   useUpdateServiceMutation,
   useDeleteServiceMutation,
 } = serviceApi;

@@ -13,6 +13,8 @@ import { fiscalRegimeApi } from "./api/fiscalRegime";
 import service from "./slices/service";
 import { serviceApi } from "./api/services.api";
 import { countryStateApi } from "./api/countryState.api";
+import { serviceDescriptionApi } from "./api/serviceDescription.api";
+import serviceDescription from "./slices/serviceDescription";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +26,7 @@ export const store = configureStore({
     equipment: dialogEquipment,
     fiscalRegime: fiscalRegime,
     service: service,
+    serviceDescription: serviceDescription,
     [userApi.reducerPath]: userApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
     [fiscalRegimeApi.reducerPath]: fiscalRegimeApi.reducer,
@@ -31,6 +34,7 @@ export const store = configureStore({
     [countryStateApi.reducerPath]: countryStateApi.reducer,
     [clientsApi.reducerPath]: clientsApi.reducer,
     [loginApi.reducerPath]: loginApi.reducer,
+    [serviceDescriptionApi.reducerPath]: serviceDescriptionApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -40,7 +44,8 @@ export const store = configureStore({
       serviceApi.middleware,
       countryStateApi.middleware,
       clientsApi.middleware,
-      loginApi.middleware
+      loginApi.middleware,
+      serviceDescriptionApi.middleware
     ),
 });
 export type RootState = ReturnType<typeof store.getState>;
