@@ -22,6 +22,8 @@ export const NavBar = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+    localStorage.removeItem("user");
+    window.location.reload();
   };
   return (
     <Grid container spacing={1} style={{ marginTop: "1%" }} alignItems="center">
@@ -63,9 +65,7 @@ export const NavBar = () => {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
-            <MenuItem onClick={handleClose}>Logout</MenuItem>
+            <MenuItem onClick={handleClose}>Cerrar sesion</MenuItem>
           </Menu>
         </Grid>
       </Grid>

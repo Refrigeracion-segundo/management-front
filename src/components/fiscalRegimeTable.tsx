@@ -18,6 +18,7 @@ import {
   useDeleteRegimeMutation,
   useFindAllFiscalRegimeQuery,
 } from "@/redux/api/fiscalRegime";
+import { STATUS_DB } from "@/redux/constants";
 
 export const FiscalRegimeTable = () => {
   const confirm = useConfirm();
@@ -27,7 +28,7 @@ export const FiscalRegimeTable = () => {
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
-      description: `Seguro que deseas dar de baja a ${name}? :(`,
+      description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(async () => {
       await deleteRegime({ id }).unwrap();
     });
@@ -46,7 +47,7 @@ export const FiscalRegimeTable = () => {
             <TableCell>Clave</TableCell>
             <TableCell>Descripcion</TableCell>
             <TableCell>Estatus</TableCell>
-            <TableCell>Fecha creacio</TableCell>
+            <TableCell>Fecha creacion</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -63,7 +64,9 @@ export const FiscalRegimeTable = () => {
               <TableCell component="th" scope="row">
                 {row.description}
               </TableCell>
-              <TableCell align="left">{row.status}</TableCell>
+              <TableCell align="left">
+                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              </TableCell>
               <TableCell align="left">
                 {moment(row.createdAt).format("LLLL")}
               </TableCell>

@@ -56,6 +56,7 @@ export const equipmentApi = createApi({
 export const {
   useRegisterEquipmentMutation,
   useLazyFindAllEquipmentQuery,
+  useFindAllEquipmentQuery,
   useUpdateEquipmentMutation,
   useDeleteEquipmentMutation,
 } = equipmentApi;

@@ -58,3 +58,10 @@ export const enum SERVICE_DESCRIPTION_URL {
   UPDATE = "/service/description",
   DELETE = "/service/description",
 }
+
+export const enum SPARE_URL {
+  REGISTER = "/spare",
+  FIND_ALL = "/spare",
+  UPDATE = "/spare",
+  DELETE = "/spare",
+}

@@ -95,10 +95,10 @@ export const DialogServiceDescription = (props: {
             container
             justifyContent="center"
             alignContent="center"
-            direction="column"
+            direction="row"
             spacing={1}
           >
-            <Grid item xs={6}>
+            <Grid item xs={9}>
               <TextField
                 autoFocus
                 type="text"
@@ -114,7 +114,7 @@ export const DialogServiceDescription = (props: {
                 error={!!errors.description}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={9}>
               <Autocomplete
                 disablePortal
                 blurOnSelect
@@ -125,16 +125,18 @@ export const DialogServiceDescription = (props: {
                 onOpen={() => getServices()}
                 id="serviceDescription"
                 options={IsSuccessService && dataServices ? dataServices : []}
+                isOptionEqualToValue={(option, value) =>
+                  option._id === value._id
+                }
                 getOptionLabel={(option: IServiceResponse) => {
-                  return option?.name ? `${option.name}` : "";
+                  return option.name;
                 }}
                 onChange={(value, newValue) => {
                   if (newValue) {
-                    console.log(isUpdate);
                     dispatch(
                       saveServiceDescription({
                         ...data,
-                        service: newValue._id,
+                        service: newValue,
                       })
                     );
 
@@ -154,6 +156,7 @@ export const DialogServiceDescription = (props: {
                         value: true,
                         message: "El servicio es requerido",
                       },
+                      value: (data.service as IServiceResponse).name,
                     })}
                     error={!!errors.service}
                     helperText={!!errors.service && errors.service.message}

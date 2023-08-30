@@ -13,7 +13,7 @@ const initialState: DialogUser = {
   spare: {
     description: "",
     suggestedPrice: 0,
-  },
+  } as ISpareRegister,
 };
 
 export const dialogSpareSlice = createSlice({

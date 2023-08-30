@@ -3,6 +3,7 @@
 import { Add } from "@mui/icons-material";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,12 +25,14 @@ import {
   UseFormRegister,
   UseFormReset,
 } from "react-hook-form";
-import { ISpareRegister } from "@/common";
+import { ISpareRegister, ISpareUpdate } from "@/common";
 import {
   closeSpare,
   isUpdatingSpare,
   openSpare,
 } from "@/redux/slices/dialogSpare";
+import { useRegisterSpareMutation, useUpdateSpareMutation } from "@/redux/api";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogSpare = (props: {
   register: UseFormRegister<ISpareRegister>;
@@ -47,11 +50,32 @@ export const DialogSpare = (props: {
     getValues,
     reset,
   } = props;
-  const { openDialog, isUpdate } = useSelector(
-    (store: RootState) => store.dialogSpare
-  );
+  const {
+    openDialog,
+    isUpdate,
+    spare: dataSpare,
+  } = useSelector((store: RootState) => store.dialogSpare);
+  const [registerSpare, { isLoading: isLoadingRegister }] =
+    useRegisterSpareMutation();
+  const [updateSpare, { isLoading: isLoadingUpdate }] =
+    useUpdateSpareMutation();
 
   const dispatch = useDispatch();
+
+  const handleClickSave = async (data: ISpareRegister | ISpareUpdate) => {
+    try {
+      !isUpdate
+        ? await registerSpare(data).unwrap()
+        : await updateSpare({
+            ...data,
+            _id: (dataSpare as ISpareUpdate)._id as string,
+          }).unwrap();
+      enqueueSnackbar("Se guardo con exito", { variant: "success" });
+      dispatch(closeSpare());
+    } catch {
+      enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
+    }
+  };
   return (
     <div>
       <IconButton
@@ -127,7 +151,15 @@ export const DialogSpare = (props: {
           <Button color="secondary" onClick={() => dispatch(closeSpare())}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit((data) => console.log(data))}>
+          <Button
+            disabled={isLoadingRegister || isLoadingUpdate}
+            onClick={handleSubmit(handleClickSave)}
+            endIcon={
+              (isLoadingRegister || isLoadingUpdate) && (
+                <CircularProgress size={15} />
+              )
+            }
+          >
             Guardar
           </Button>
         </DialogActions>

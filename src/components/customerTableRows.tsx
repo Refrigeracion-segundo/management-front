@@ -1,6 +1,7 @@
 "use client";
 import { IClientResponse, IClientUpdate, IRegimeResponse } from "@/common";
 import { useDeleteClientMutation } from "@/redux/api";
+import { STATUS_DB } from "@/redux/constants";
 import {
   isUpdatingClient,
   openClient,
@@ -36,7 +37,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
-      description: `Seguro que deseas dar de baja al usuario ${name}? :(`,
+      description: `Seguro que deseas dar de baja al usuario ${name}? `,
     }).then(() => {
       deleteClient({ id });
     });
@@ -65,7 +66,9 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
         </TableCell>
         <TableCell align="left">{row.phone}</TableCell>
         <TableCell align="left">{row.contactPerson}</TableCell>
-        <TableCell align="left">{row.status}</TableCell>
+        <TableCell align="left">
+          {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+        </TableCell>
         <TableCell align="left">{row.createdAt.toString()}</TableCell>
         <TableCell align="left">{row.updatedAt.toString()}</TableCell>
 

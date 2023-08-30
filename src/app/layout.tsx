@@ -9,10 +9,10 @@ import Home from "./home";
 import useUser from "./lib/hooks/useUser";
 
 import { useEffect, useState } from "react";
-import { CustomBackdrop } from "@/components/backdrop";
+import { SnackbarProvider } from "notistack";
 import Login from "./login";
 import { ConfirmProvider } from "material-ui-confirm";
-
+import "moment/locale/es";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
@@ -45,13 +45,15 @@ export default function RootLayout({
         <Providers>
           <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <ConfirmProvider>
-              <Box>
-                {home.user && <Home />}
-                {!home.user && <Login />}
-                {children}
-              </Box>
-            </ConfirmProvider>
+            <SnackbarProvider>
+              <ConfirmProvider>
+                <Box>
+                  {home.user && <Home />}
+                  {!home.user && <Login />}
+                  {children}
+                </Box>
+              </ConfirmProvider>
+            </SnackbarProvider>
           </ThemeProvider>
         </Providers>
       </body>

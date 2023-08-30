@@ -11,6 +11,7 @@ export * from "./userRegister";
 export * from "./userResponse";
 export * from "./userUpdate";
 export * from "./spareRegister";
+export * from "./spareResponse";
 export * from "./spareUpdate";
 export * from "./userResponse";
 export * from "./serviceRegister";

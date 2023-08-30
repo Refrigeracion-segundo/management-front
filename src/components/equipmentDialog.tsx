@@ -2,6 +2,7 @@
 import { Add } from "@mui/icons-material";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -26,6 +27,7 @@ import {
   useRegisterEquipmentMutation,
   useUpdateEquipmentMutation,
 } from "@/redux/api/equipment.api";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogEquipment = (props: {
   register: UseFormRegister<IEquipmentRegister>;
@@ -40,12 +42,29 @@ export const DialogEquipment = (props: {
   const { openDialog, isUpdate } = useSelector(
     (store: RootState) => store.equipment
   );
-  const [registerEquipment, { isSuccess: isSuccessRegister }] =
+  const [registerEquipment, { isLoading: isLoadingRegister }] =
     useRegisterEquipmentMutation();
-  const [updateEquipment, { isSuccess: isSuccessUpdate }] =
+  const [updateEquipment, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentMutation();
 
   const dispatch = useDispatch();
+
+  const handleClickSave = async (
+    data: IEquipmentRegister | IEquipmentUpdate
+  ) => {
+    try {
+      !isUpdate
+        ? await registerEquipment(data).unwrap()
+        : await updateEquipment({
+            ...data,
+            id: (data as IEquipmentUpdate)._id as string,
+          }).unwrap();
+      enqueueSnackbar("Se guardo con exito", { variant: "success" });
+      dispatch(closeEquipment());
+    } catch {
+      enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
+    }
+  };
   return (
     <div>
       <IconButton
@@ -95,17 +114,9 @@ export const DialogEquipment = (props: {
             Cancelar
           </Button>
           <Button
-            onClick={handleSubmit((data) => {
-              !isUpdate
-                ? registerEquipment(data)
-                : updateEquipment({
-                    ...data,
-                    id: (data as IEquipmentUpdate)._id as string,
-                  });
-
-              (isSuccessRegister || isSuccessUpdate) &&
-                dispatch(closeEquipment());
-            })}
+            onClick={handleSubmit(handleClickSave)}
+            disabled={isLoadingRegister || isLoadingUpdate}
+            endIcon={isLoadingRegister && <CircularProgress size={15} />}
           >
             Guardar
           </Button>

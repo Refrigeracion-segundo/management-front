@@ -7,13 +7,10 @@ import { Store } from "redux";
 export const setupAxiosTokenInterceptor = (store: Store<RootState>): any => {
   axios.interceptors.request.use((config) => {
     const storedUserStr = localStorage.getItem("user");
-    console.log(storedUserStr);
+
     if (!storedUserStr) return config;
     const userLogged = JSON.parse(storedUserStr);
-    console.log(userLogged);
-    // config.headers = {
-    //   Authorization: `bearer ${userLogged.token}`,
-    // } as any;
+
     config.headers.Authorization = `Bearer ${userLogged.token}`;
     return config;
   });
@@ -24,15 +21,10 @@ export const setupAxiosTokenInterceptor = (store: Store<RootState>): any => {
     },
     async function (error) {
       if (error.response.status === 401) {
-        // store.dispatch({ type: REFRESH_FAIL })
-        // window.location.replace('/login')
-        // AuthActions.logout()(store)
+        localStorage.removeItem("user");
+        window.location.reload();
       }
-      console.log(error.response.data);
-      //   store.dispatch({
-      //     type: ADD_NOTIFICATION,
-      //     payload: { message: error.response.data.message, type: 'error' },
-      //   })
+
       return Promise.reject(error);
     }
   );

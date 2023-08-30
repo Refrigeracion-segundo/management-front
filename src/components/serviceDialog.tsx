@@ -12,35 +12,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-import {
-  FormState,
-  UseFormClearErrors,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormReset,
-  useForm,
-} from "react-hook-form";
-import {
-  IServiceRegister,
-  IEquipmentUpdate,
-  IEquipmentResponse,
-  IServiceUpdate,
-} from "@/common";
+import { useForm } from "react-hook-form";
+import { IServiceRegister, IEquipmentResponse, IServiceUpdate } from "@/common";
 import {
   clearService,
   closeService,
   openService,
   saveService,
 } from "@/redux/slices/service";
-import {
-  useLazyFindAllEquipmentQuery,
-  useRegisterEquipmentMutation,
-  useUpdateEquipmentMutation,
-} from "@/redux/api/equipment.api";
+import { useLazyFindAllEquipmentQuery } from "@/redux/api/equipment.api";
 import {
   useRegisterServiceMutation,
   useUpdateServiceMutation,

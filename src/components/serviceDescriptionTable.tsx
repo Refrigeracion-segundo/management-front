@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
-import { CircularProgress, IconButton, TableFooter } from "@mui/material";
+import { IconButton } from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { IServiceDescriptionUpdate, IServiceResponse } from "@/common";
@@ -22,6 +22,7 @@ import {
   openServiceDescription,
   saveServiceDescription,
 } from "@/redux/slices/serviceDescription";
+import { STATUS_DB } from "@/redux/constants";
 
 export const ServiceDescriptionTable = () => {
   const confirm = useConfirm();
@@ -35,7 +36,7 @@ export const ServiceDescriptionTable = () => {
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
-      description: `Seguro que deseas dar de baja a ${name}? :(`,
+      description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(async () => {
       await deleteRegime({ id }).unwrap();
     });
@@ -55,7 +56,7 @@ export const ServiceDescriptionTable = () => {
             <TableCell>Descripcion</TableCell>
             <TableCell>Servicio</TableCell>
             <TableCell>Estatus</TableCell>
-            <TableCell>Fecha creacio</TableCell>
+            <TableCell>Fecha creacion</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -72,7 +73,9 @@ export const ServiceDescriptionTable = () => {
               <TableCell component="th" scope="row">
                 {(row.service as IServiceResponse).name}
               </TableCell>
-              <TableCell align="left">{row.status}</TableCell>
+              <TableCell align="left">
+                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              </TableCell>
               <TableCell align="left">
                 {moment(row.createdAt).format("LLLL")}
               </TableCell>
@@ -99,21 +102,6 @@ export const ServiceDescriptionTable = () => {
             </TableRow>
           ))}
         </TableBody>
-        {/* <TableFooter>
-          {(isLoading || isFetching) && (
-            <TableCell colSpan={6}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            </TableCell>
-          )}
-        </TableFooter> */}
       </Table>
     </TableContainer>
   );

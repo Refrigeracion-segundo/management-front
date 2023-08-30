@@ -1,6 +1,7 @@
 "use client";
 import {
   Button,
+  CircularProgress,
   Grid,
   InputAdornment,
   Paper,
@@ -15,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { IFormLogin, ILogin } from "@/common";
 import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/redux/api";
+import { enqueueSnackbar } from "notistack";
 
 export const Login = () => {
   const {
@@ -23,13 +25,16 @@ export const Login = () => {
     handleSubmit,
   } = useForm<IFormLogin>();
   const router = useRouter();
-  const [login, { isSuccess }] = useLoginMutation();
-  const loginUser = (data: ILogin) => {
-    login(data)
-      .unwrap()
-      .then(() => {
-        window.location.reload();
-      });
+  const [login, { isLoading }] = useLoginMutation();
+  const loginUser = async (data: ILogin) => {
+    try {
+      await login(data).unwrap();
+
+      window.location.reload();
+    } catch {
+      enqueueSnackbar("Credenciales invalidas", { variant: "error" });
+    }
+
     // localStorage.setItem("user", JSON.stringify(data));
   };
   return (
@@ -85,6 +90,7 @@ export const Login = () => {
             <Grid item xs={6}>
               <TextField
                 placeholder="***********"
+                type="password"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -96,7 +102,7 @@ export const Login = () => {
                 {...register("password", {
                   required: {
                     value: true,
-                    message: "Ingrese un usuario valido",
+                    message: "Ingrese una contraseña valida",
                   },
                   setValueAs: (value: string) => value.trim(),
                 })}
@@ -108,6 +114,8 @@ export const Login = () => {
               <Button
                 style={{ float: "right", color: "#fff" }}
                 onClick={handleSubmit(loginUser)}
+                disabled={isLoading}
+                endIcon={isLoading && <CircularProgress size={15} />}
               >
                 Iniciar sesión
               </Button>
