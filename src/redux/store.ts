@@ -6,7 +6,7 @@ import dialogSpare from "./slices/dialogSpare";
 import dialogClient from "./slices/dialogClient";
 import dialogEquipment from "./slices/dialogEquipment";
 import fiscalRegime from "./slices/fiscalRegime";
-import { clientsApi, loginApi, spareApi, userApi } from "./api";
+import { clientsApi, loginApi, orderApi, spareApi, userApi } from "./api";
 import { setupAxiosTokenInterceptor } from "@/app/interceptor/interceptor";
 import { equipmentApi } from "./api/equipment.api";
 import { fiscalRegimeApi } from "./api/fiscalRegime";
@@ -15,6 +15,7 @@ import { serviceApi } from "./api/services.api";
 import { countryStateApi } from "./api/countryState.api";
 import { serviceDescriptionApi } from "./api/serviceDescription.api";
 import serviceDescription from "./slices/serviceDescription";
+import order from "./slices/order";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     fiscalRegime: fiscalRegime,
     service: service,
     serviceDescription: serviceDescription,
+    order: order,
     [userApi.reducerPath]: userApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
     [fiscalRegimeApi.reducerPath]: fiscalRegimeApi.reducer,
@@ -36,6 +38,7 @@ export const store = configureStore({
     [loginApi.reducerPath]: loginApi.reducer,
     [serviceDescriptionApi.reducerPath]: serviceDescriptionApi.reducer,
     [spareApi.reducerPath]: spareApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -47,7 +50,8 @@ export const store = configureStore({
       clientsApi.middleware,
       loginApi.middleware,
       serviceDescriptionApi.middleware,
-      spareApi.middleware
+      spareApi.middleware,
+      orderApi.middleware
     ),
 });
 export type RootState = ReturnType<typeof store.getState>;

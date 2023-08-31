@@ -9,4 +9,5 @@ export const enum ReducerPaths {
   COUNTRY_STATE = "country_state_api",
   SERVICE_DESCRIPTION = "service_description_api",
   SPARE = "spare_api",
+  ORDER = "order_api",
 }

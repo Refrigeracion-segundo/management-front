@@ -27,5 +27,8 @@ export * from "./countryStateCities";
 export * from "./serviceDescriptionRegister";
 export * from "./serviceDescriptionUpdate";
 export * from "./serviceDescriptionResponse";
+export * from "./orderRegister";
+export * from "./orderResponse";
+export * from "./orderUpdate";
 // INTERFACES FORMS
 export * from "./formLogin";

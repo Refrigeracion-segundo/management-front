@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,7 +8,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
-import { CircularProgress, IconButton, TableFooter } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  TableFooter,
+  TablePagination,
+} from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { IRegimeUpdate } from "@/common";
@@ -19,12 +24,15 @@ import {
   useFindAllFiscalRegimeQuery,
 } from "@/redux/api/fiscalRegime";
 import { STATUS_DB } from "@/redux/constants";
+import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 export const FiscalRegimeTable = () => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
   const { data: rows, isLoading, isFetching } = useFindAllFiscalRegimeQuery();
   const [deleteRegime] = useDeleteRegimeMutation();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
@@ -38,9 +46,22 @@ export const FiscalRegimeTable = () => {
     dispatch(saveFiscalRegime(data));
   };
 
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <TableContainer component={Paper}>
-      {isLoading && <CircularProgress />}
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -92,21 +113,36 @@ export const FiscalRegimeTable = () => {
           ))}
         </TableBody>
         <TableFooter>
-          {(isLoading || isFetching) && (
-            <TableCell colSpan={6}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress />
-              </div>
-            </TableCell>
-          )}
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              colSpan={6}
+              count={rows ? rows.length : 0}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              SelectProps={{
+                inputProps: {
+                  "aria-label": "Elementos por pagina",
+                },
+                native: true,
+              }}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
         </TableFooter>
       </Table>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+        }}
+      >
+        {(isLoading || isFetching) && <CircularProgress />}
+      </div>
     </TableContainer>
   );
 };

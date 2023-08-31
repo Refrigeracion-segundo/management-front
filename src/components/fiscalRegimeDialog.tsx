@@ -65,6 +65,7 @@ export const DialogFiscalRegime = (props: {
         onClose={() => {
           dispatch(closeFiscalRegime());
         }}
+        fullWidth
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
@@ -76,13 +77,13 @@ export const DialogFiscalRegime = (props: {
             container
             justifyContent="center"
             alignContent="center"
-            direction="column"
-            gap={2}
+            spacing={1}
           >
-            <Grid item xs={6}>
+            <Grid item xs={3}>
               <TextField
                 autoFocus
                 type="number"
+                fullWidth
                 placeholder="Clave"
                 {...register("key", {
                   required: {
@@ -95,7 +96,7 @@ export const DialogFiscalRegime = (props: {
                 error={!!errors.description}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={9}>
               <TextField
                 placeholder="Descripcion"
                 {...register("description", {
@@ -104,6 +105,7 @@ export const DialogFiscalRegime = (props: {
                     message: "La description es requerido",
                   },
                 })}
+                fullWidth
                 helperText={!!errors.description && errors.description.message}
                 error={!!errors.description}
               />

@@ -44,7 +44,7 @@ export const ListPermisions = (props: { role: string }) => {
     {
       text: "Ordenes",
       icon: <Checklist />,
-      redirect: "/home/contain",
+      redirect: "/order",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {

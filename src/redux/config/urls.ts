@@ -65,3 +65,10 @@ export const enum SPARE_URL {
   UPDATE = "/spare",
   DELETE = "/spare",
 }
+
+export const enum ORDER_URL {
+  REGISTER = "/order",
+  FIND_ALL = "/order",
+  UPDATE = "/order",
+  DELETE = "/order",
+}
