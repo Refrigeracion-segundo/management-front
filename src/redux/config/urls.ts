@@ -23,6 +23,7 @@ export const enum USER_URL {
   FIND_ALL = "/user",
   UPDATE = "/user",
   DELETE = "/user",
+  FIND_TECH = "/user/role",
 }
 
 export const enum EQUIPMENT_URL {

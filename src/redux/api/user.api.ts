@@ -11,6 +11,7 @@ import {
   IUserRegister,
   IUserResponse,
   IUserUpdate,
+  ROLES,
 } from "@/common";
 
 export const userApi = createApi({
@@ -32,6 +33,13 @@ export const userApi = createApi({
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllUsers"],
+    }),
+    findUserTechnicians: builder.query<Array<IUserResponse>, void>({
+      query: () => ({
+        url: USER_URL.FIND_TECH,
+        method: `${METHOD_TYPES.GET}/${ROLES.TECHNICAL}`,
+      }),
+      keepUnusedDataFor: 5,
     }),
     updateUser: builder.mutation<IUserResponse, IUserUpdate>({
       query: (data: IUserUpdate) => ({
@@ -55,6 +63,7 @@ export const userApi = createApi({
 export const {
   useRegisterUserMutation,
   useLazyFindAllUsersQuery,
+  useLazyFindUserTechniciansQuery,
   useFindAllUsersQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
