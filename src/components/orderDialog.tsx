@@ -1,57 +1,105 @@
 "use client";
-import { closeOrder, openOrder } from "@/redux/slices/order";
+import {
+  openOrder,
+  orderUsers,
+  saveOrderClient,
+  saveOrderGeneral,
+} from "@/redux/slices/order";
 import { RootState } from "@/redux/store";
-import { Add } from "@mui/icons-material";
+import {
+  Add,
+  Construction,
+  EditRoad,
+  HomeRepairService,
+} from "@mui/icons-material";
 import {
   Autocomplete,
+  BottomNavigation,
+  BottomNavigationAction,
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  FilledTextFieldProps,
   Grid,
   IconButton,
-  OutlinedTextFieldProps,
-  Paper,
-  Stack,
-  StandardTextFieldProps,
-  Table,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
-  TextFieldVariants,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import {
+  useLazyFindAllClientsQuery,
+  useLazyFindUserTechniciansQuery,
+  useRegisterOrderMutation,
+} from "@/redux/api";
+import { IOrderGeneral, IServiceResponse } from "@/common";
+
+import { Controller, useForm } from "react-hook-form";
+
+import { OrderEquipments } from "./orderEquipents";
+import { OrderDirection } from "./orderDirection";
+import { OrderServices } from "./orderServices";
+
+import { makeStyles } from "@mui/styles";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import dayjs, { Dayjs } from "dayjs";
-import { useLazyFindUserTechniciansQuery } from "@/redux/api";
-import { IUserResponse } from "@/common";
-// import { DesktopDatePicker } from "@mui/lab";
+
+const useStyles = makeStyles(() => ({
+  root: {
+    backgroundColor: "transparent",
+    "& .Mui-selected": {
+      color: "#1c1c1c",
+    },
+    "& .MuiBottomNavigationAction-label": {
+      color: "white",
+    },
+  },
+}));
+
 export const OrderDialog = () => {
   const {
     openDialog,
     isUpdate,
     data: dataOrder,
+    general,
+    client,
+    service,
+    direction,
+    users,
   } = useSelector((store: RootState) => store.order);
+  const {
+    formState: { errors },
+    handleSubmit,
+    control,
+  } = useForm<IOrderGeneral>();
   const dispatch = useDispatch();
-  const [value, setValue] = useState<Dayjs | null>(
-    dayjs("2014-08-18T21:11:54")
-  );
+  const [useDates, setUseDates] = useState<boolean>(false);
+  const [valueStep, setValueStep] = useState("direction");
+  const classes = useStyles();
+
+  const handleChangeStep = (event: React.SyntheticEvent, newValue: string) => {
+    setValueStep(newValue);
+  };
 
   const [
     getUsers,
     { data: dataUsers, isLoading: isLoadingUsers, isSuccess: IsSuccessUser },
   ] = useLazyFindUserTechniciansQuery();
 
-  const handleChange = (newValue: Dayjs | null) => {
-    setValue(newValue);
-  };
+  const [
+    getClients,
+    {
+      data: dataClients,
+      isLoading: isLoadingClients,
+      isSuccess: IsSuccessClients,
+    },
+  ] = useLazyFindAllClientsQuery();
+
+  const [registerOrder, { isSuccess: isSuccessRegisterOrder }] =
+    useRegisterOrderMutation();
 
   return (
     <div>
@@ -60,13 +108,14 @@ export const OrderDialog = () => {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => dispatch(closeOrder())}
         fullScreen
-        // maxWidth="xl"
+        // maxWidth="xl"handleAddDataEquip
       >
         <DialogTitle>
           <Typography align="center">Formulario de ordenes</Typography>
         </DialogTitle>
+        <br />
+
         <DialogContent>
           <Grid
             container
@@ -74,131 +123,200 @@ export const OrderDialog = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Grid item xs={12}>
-              <TextField placeholder="Report" size="small" fullWidth />
-            </Grid>
-            <Grid item xs={5}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack spacing={6}>
-                  <DesktopDatePicker
-                    label="Date desktop"
-                    inputFormat={"MM/DD/YYYY"}
-                    value={value}
-                    onChange={handleChange}
-                    renderInput={(params: any) => <TextField {...params} />}
-                  />
-                </Stack>
-              </LocalizationProvider>
-            </Grid>
             <Grid item xs={6}>
+              <Controller
+                name="report"
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Ingrese a la persona que reporto el servicio",
+                  },
+                }}
+                defaultValue={general.report}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      placeholder="Nombre de la persona que reporto el servicio"
+                      size="small"
+                      fullWidth
+                      value={field.value}
+                      onChange={(e) => field.onChange(e)}
+                      error={!!errors.report}
+                      helperText={!!errors.report && errors.report.message}
+                    />
+                  );
+                }}
+              />
+            </Grid>
+            <Grid item xs={3}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack spacing={3}>
-                  <DesktopDatePicker
-                    label="Date desktop"
-                    inputFormat={"MM/DD/YYYY" as any}
-                    value={value}
-                    onChange={handleChange}
-                    renderInput={(
-                      params: React.JSX.IntrinsicAttributes & {
-                        variant?: TextFieldVariants | undefined;
-                      } & Omit<
-                          | OutlinedTextFieldProps
-                          | FilledTextFieldProps
-                          | StandardTextFieldProps,
-                          "variant"
-                        >
-                    ) => <TextField {...params} />}
-                  />
-                </Stack>
+                <Controller
+                  name="startDate"
+                  control={control}
+                  rules={{
+                    required: {
+                      value: false,
+                      message: "Selecciona una fecha valida",
+                    },
+                  }}
+                  defaultValue={general.startDate}
+                  render={({ field }) => {
+                    return (
+                      <DesktopDatePicker
+                        label="Fecha de inicio"
+                        inputFormat={"MM/DD/YYYY"}
+                        value={field.value}
+                        onChange={(value: any) => {
+                          if (value) {
+                            field.onChange(value);
+                            setUseDates(true);
+                            dispatch(
+                              saveOrderGeneral({
+                                ...general,
+                                startDate: new Date(value),
+                              })
+                            );
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} fullWidth size="small" />
+                        )}
+                      />
+                    );
+                  }}
+                />
               </LocalizationProvider>
             </Grid>
+            <Grid item xs={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Controller
+                  name="endDate"
+                  control={control}
+                  rules={{
+                    required: {
+                      value: false,
+                      message: "Selecciona una fecha valida",
+                    },
+                  }}
+                  defaultValue={general.endDate}
+                  render={({ field }) => {
+                    return (
+                      <DesktopDatePicker
+                        label="Fecha de finalizacion"
+                        inputFormat={"MM/DD/YYYY"}
+                        value={field.value}
+                        onChange={(value: any) => {
+                          if (value) {
+                            field.onChange(value);
+                            setUseDates(true);
+                            dispatch(
+                              saveOrderGeneral({
+                                ...general,
+                                endDate: new Date(value),
+                              })
+                            );
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} fullWidth size="small" />
+                        )}
+                      />
+                    );
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+
             <Grid item xs={12}>
-              <Autocomplete
-                disablePortal
-                blurOnSelect
-                multiple
-                defaultValue={
-                  isUpdate
-                    ? (dataOrder.tech as Array<IUserResponse>)
-                    : ("" as any)
-                }
-                loading={isLoadingUsers}
-                onOpen={() => getUsers()}
-                id="fiscalRegime"
-                options={IsSuccessUser && dataUsers ? dataUsers : []}
-                getOptionLabel={(option: IUserResponse) => {
-                  return option?.name
-                    ? `${option.name} ${option.lastName}`
-                    : "";
+              <Controller
+                name="users"
+                control={control}
+                rules={{
+                  required: {
+                    value: false,
+                    message: "Seleccione tecnicos",
+                  },
                 }}
-                onChange={(value, newValue) => {
-                  if (newValue) {
-                    // dispatch(
-                    //   saveClient({
-                    //     ...dataClient,
-                    //     fiscalRegime: newValue?._id,
-                    //   })
-                    // );
-                    // clearErrors("fiscalRegime");
-                  }
-                }}
-                fullWidth
-                // sx={{ width: 300, marginTop: "-3px" }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    margin="dense"
-                    label="Tecnicos"
+                defaultValue={users}
+                render={({ field }) => (
+                  <Autocomplete
+                    disablePortal
+                    blurOnSelect
+                    multiple
+                    value={field.value}
+                    loading={isLoadingUsers}
+                    onOpen={() => getUsers()}
+                    options={IsSuccessUser && dataUsers ? dataUsers : []}
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    getOptionLabel={(option) => {
+                      return option.name;
+                    }}
+                    onChange={(value, newValue) => {
+                      if (newValue) {
+                        field.onChange(newValue);
+                        dispatch(orderUsers(newValue));
+                      }
+                    }}
                     fullWidth
-                    // {...register("fiscalRegime", { required: true })}
-                    // error={!!errors.fiscalRegime}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        margin="dense"
+                        label="Seleccione los tecnicos"
+                        error={!!errors.users}
+                        helperText={!!errors.users && errors.users.message}
+                      />
+                    )}
                   />
                 )}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <Autocomplete
-                disablePortal
-                blurOnSelect
-                multiple
-                defaultValue={
-                  isUpdate
-                    ? (dataOrder.tech as Array<IUserResponse>)
-                    : ("" as any)
-                }
-                loading={isLoadingUsers}
-                onOpen={() => getUsers()}
-                id="fiscalRegime"
-                options={IsSuccessUser && dataUsers ? dataUsers : []}
-                getOptionLabel={(option: IUserResponse) => {
-                  return option?.name
-                    ? `${option.name} ${option.lastName}`
-                    : "";
+              <Controller
+                name="client"
+                defaultValue={client}
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Seleccione un cliente",
+                  },
                 }}
-                onChange={(value, newValue) => {
-                  if (newValue) {
-                    // dispatch(
-                    //   saveClient({
-                    //     ...dataClient,
-                    //     fiscalRegime: newValue?._id,
-                    //   })
-                    // );
-                    // clearErrors("fiscalRegime");
-                  }
-                }}
-                fullWidth
-                // sx={{ width: 300, marginTop: "-3px" }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    margin="dense"
-                    label="Clientes"
+                render={({ field }) => (
+                  <Autocomplete
+                    loading={isLoadingClients}
+                    onOpen={() => getClients()}
+                    value={field.value}
+                    options={IsSuccessClients && dataClients ? dataClients : []}
+                    getOptionLabel={(option) => {
+                      return option?.name;
+                    }}
+                    onChange={(value, newValue) => {
+                      if (newValue) {
+                        field.onChange(newValue);
+                        dispatch(saveOrderClient(newValue));
+                      }
+                    }}
                     fullWidth
-                    // {...register("fiscalRegime", { required: true })}
-                    // error={!!errors.fiscalRegime}
+                    // sx={{ width: 300, marginTop: "-3px" }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        margin="dense"
+                        label="Clientes"
+                        fullWidth
+                        error={!!errors.client}
+                        helperText={
+                          !!errors.client && (errors.client.message as string)
+                        }
+                      />
+                    )}
                   />
                 )}
               />
@@ -212,369 +330,74 @@ export const OrderDialog = () => {
               justifyContent="space-between"
               xs={12}
             >
-              <Grid item xs={4}>
-                <TextField
-                  disabled
-                  value="México"
-                  variant="standard"
-                  margin="dense"
-                  id="pais"
-                  label="Pais"
-                  type="text"
-                  size="small"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Autocomplete
-                  disablePortal
-                  // defaultValue={
-                  //   isUpdate
-                  //     ? { id: 0, name: dataClient.state as string }
-                  //     : dataClient.state
-                  //     ? (dataClient.state as ICityState)
-                  //     : { id: 0, name: "" }
-                  // }
-                  options={[]}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  getOptionLabel={(option: { id: number; name: string }) =>
-                    option.name
-                  }
-                  onChange={(e, value) => {
-                    console.log(value);
-                    if (value) {
-                      // setStateName(value.name);
-                      // dispatch(saveClient({ ...dataClient, state: value }));
-                      // clearErrors("state");
-                    }
-                  }}
-                  // fullWidth
-                  sx={{ marginTop: "-3px" }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      margin="dense"
-                      label="Estado"
-
-                      // {...register("state", {
-                      //   required: {
-                      //     value: false,
-                      //     message: "Este campo es requerido",
-                      //   },
-                      // })}
-
-                      // error={!!errors.state}
-                      // helperText={!!errors.state && errors.state.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Autocomplete
-                  disablePortal
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  // defaultValue={
-                  //   // isUpdate
-                  //   //   ? { id: 0, name: dataClient.city as string }
-                  //   //   : { id: 0, name: "" }
-                  // }
-                  options={[]}
-                  getOptionLabel={(option: { id: number; name: string }) =>
-                    option.name
-                  }
-                  sx={{ marginTop: "-3px" }}
-                  // fullWidth
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      margin="dense"
-                      label="Ciudad"
-                      // {...register("city", {
-                      //   required: {
-                      //     value: false,
-                      //     message: "La ciudad es requerida",
-                      //   },
-                      // })}
-                      // onChange={(e) => {
-                      //   setCityName(e.target.value);
-                      // }}
-                      // error={!!errors.city}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="zipCode"
-                  label="*Código postal"
-                  type="number"
-                  size="small"
-                  fullWidth
-                  // {...register("zipCode", {
-                  //   required: {
-                  //     value: true,
-                  //     message: "Código postal invalido",
-                  //   },
-                  //   pattern: {
-                  //     value: /^\d{5}$/,
-                  //     message: "Código postal invalido",
-                  //   },
-                  //   minLength: {
-                  //     value: 5,
-                  //     message: "La minima longitud es de 5 caracteres.",
-                  //   },
-                  //   maxLength: {
-                  //     value: 5,
-                  //     message: "La maxima longitud es de 5 caracteres.",
-                  //   },
-                  // })}
-                  // error={!!errors.zipCode}
-                  // helperText={!!errors.zipCode && errors.zipCode.message}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="suburb"
-                  label="Colonia"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  // {...register("suburb", {
-                  //   required: {
-                  //     value: false,
-                  //     message: "La colonia es requerida",
-                  //   },
-                  // })}
-                  // error={!!errors.suburb}
-                  // helperText={!!errors.suburb && errors.suburb.message}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="streetNumber"
-                  label="Numero exterior"
-                  type="number"
-                  size="small"
-                  // {...register("streetNumber", {
-                  //   required: {
-                  //     value: false,
-                  //     message: "Numero exterior requerido",
-                  //   },
-                  // })}
-                  // error={!!errors.apartmentNumber}
-                  // helperText={
-                  //   !!errors.apartmentNumber && errors.apartmentNumber.message
-                  // }
-                />
-              </Grid>
-              <Grid item xs={10}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="street"
-                  label="Calle"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  // {...register("street", {
-                  //   required: {
-                  //     value: false,
-                  //     message: "La calle es requerida",
-                  //   },
-                  // })}
-                  // error={!!errors.street}
-                  // helperText={!!errors.street && errors.street.message}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="apartmentNumber"
-                  label="Numero interior"
-                  type="number"
-                  size="small"
-                  // {...register("apartmentNumber", {
-                  //   required: {
-                  //     value: false,
-                  //     message: "Numero interior requerido",
-                  //   },
-                  // })}
-                  // error={!!errors.streetNumber}
-                  // helperText={
-                  //   !!errors.streetNumber && errors.streetNumber.message
-                  // }
-                />
-              </Grid>
               <Grid item xs={12}>
-                <Typography align="center">Servicios</Typography>
-              </Grid>
-              <Grid
-                item
-                container
-                xs={12}
-                columnSpacing={2}
-                alignItems="end"
-                justifyContent="space-between"
-              >
-                <Grid item xs={8}>
-                  <Autocomplete
-                    disablePortal
-                    // defaultValue={
-                    //   isUpdate
-                    //     ? { id: 0, name: dataClient.state as string }
-                    //     : dataClient.state
-                    //     ? (dataClient.state as ICityState)
-                    //     : { id: 0, name: "" }
-                    // }
-                    options={[]}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    getOptionLabel={(option: { id: number; name: string }) =>
-                      option.name
-                    }
-                    onChange={(e, value) => {
-                      console.log(value);
-                      if (value) {
-                        // setStateName(value.name);
-                        // dispatch(saveClient({ ...dataClient, state: value }));
-                        // clearErrors("state");
-                      }
-                    }}
-                    // fullWidth
-                    sx={{ marginTop: "-3px" }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        margin="dense"
-                        label="Servicio"
-                        // sx={{ width: "115%" }}
-                        // {...register("state", {
-                        //   required: {
-                        //     value: false,
-                        //     message: "Este campo es requerido",
-                        //   },
-                        // })}
+                <BottomNavigation
+                  value={valueStep}
+                  onChange={handleChangeStep}
+                  className={classes.root}
+                >
+                  <BottomNavigationAction
+                    label="Direccion del cliente"
+                    value="direction"
+                    icon={<EditRoad style={{ color: "#fff" }} />}
+                  />
+                  <BottomNavigationAction
+                    label="Equipos a reparar"
+                    value="equipments"
+                    icon={<Construction style={{ color: "#fff" }} />}
+                  />
+                  <BottomNavigationAction
+                    label="Servicios"
+                    value="services"
+                    icon={<HomeRepairService style={{ color: "#fff" }} />}
+                  />
+                </BottomNavigation>
 
-                        // error={!!errors.state}
-                        // helperText={!!errors.state && errors.state.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField
-                    variant="standard"
-                    margin="dense"
-                    id="apartmentNumber"
-                    label="Equipo"
-                    fullWidth
-                    size="small"
-                    // {...register("apartmentNumber", {
-                    //   required: {
-                    //     value: false,
-                    //     message: "Numero interior requerido",
-                    //   },
-                    // })}
-                    // error={!!errors.streetNumber}
-                    // helperText={
-                    //   !!errors.streetNumber && errors.streetNumber.message
-                    // }
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    variant="standard"
-                    margin="dense"
-                    id="apartmentNumber"
-                    label="Marca"
-                    size="small"
-                    fullWidth
-                    // {...register("apartmentNumber", {
-                    //   required: {
-                    //     value: false,
-                    //     message: "Numero interior requerido",
-                    //   },
-                    // })}
-                    // error={!!errors.streetNumber}
-                    // helperText={
-                    //   !!errors.streetNumber && errors.streetNumber.message
-                    // }
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    variant="standard"
-                    margin="dense"
-                    id="apartmentNumber"
-                    label="Modelo"
-                    size="small"
-                    fullWidth
-                    // {...register("apartmentNumber", {
-                    //   required: {
-                    //     value: false,
-                    //     message: "Numero interior requerido",
-                    //   },
-                    // })}
-                    // error={!!errors.streetNumber}
-                    // helperText={
-                    //   !!errors.streetNumber && errors.streetNumber.message
-                    // }
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    variant="standard"
-                    margin="dense"
-                    id="apartmentNumber"
-                    label="Serie"
-                    size="small"
-                    fullWidth
-                    // {...register("apartmentNumber", {
-                    //   required: {
-                    //     value: false,
-                    //     message: "Numero interior requerido",
-                    //   },
-                    // })}
-                    // error={!!errors.streetNumber}
-                    // helperText={
-                    //   !!errors.streetNumber && errors.streetNumber.message
-                    // }
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Button>Añadir servicio</Button>
-                </Grid>
-              </Grid>
-
-              <Grid>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Nombre del servicio</TableCell>
-                      </TableRow>
-                    </TableHead>
-                  </Table>
-                </TableContainer>
+                {valueStep == "direction" ? (
+                  <OrderDirection />
+                ) : valueStep == "equipments" ? (
+                  <OrderEquipments />
+                ) : (
+                  <OrderServices />
+                )}
               </Grid>
             </Grid>
           </Grid>
         </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleSubmit((data) => {
+              {
+                const aux: any = {
+                  report: data.report,
+                  startDate: useDates ? general.startDate : undefined,
+                  endDate: useDates ? general.endDate : undefined,
+                  technicians: !!users.length ? users : undefined,
+                  customer: client._id,
+                  ...direction,
+                  description: "DESC 1",
+                  comments: "COMMENT 1",
+                  services: service.map((p) => {
+                    return {
+                      service: (p.service.service as IServiceResponse)._id,
+                      serviceDescription: p.service._id,
+                      equipment: p.equipment.equipment,
+                      brand: p.equipment.brand,
+                      model: p.equipment.model,
+                      price: (p.service.service as IServiceResponse)
+                        .suggestedPrice,
+                      serie: p.equipment.serie,
+                    };
+                  }),
+                };
+                console.log(aux);
+                registerOrder(aux);
+              }
+            })}
+          >
+            Guardar
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

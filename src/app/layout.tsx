@@ -19,7 +19,7 @@ const inter = Inter({ subsets: ["latin"] });
 //   title: "Refrigeración segundo",
 //   description: "Pagina administrativa",
 // };
-const darkTheme = createTheme({
+export const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },

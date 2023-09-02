@@ -30,5 +30,9 @@ export * from "./serviceDescriptionResponse";
 export * from "./orderRegister";
 export * from "./orderResponse";
 export * from "./orderUpdate";
+export * from "./orderEquip";
+export * from "./orderService";
+export * from "./orderDirection";
+export * from "./orderGeneral";
 // INTERFACES FORMS
 export * from "./formLogin";

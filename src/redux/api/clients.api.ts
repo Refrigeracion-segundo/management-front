@@ -54,6 +54,7 @@ export const clientsApi = createApi({
 export const {
   useRegisterClientMutation,
   useFindAllClientsQuery,
+  useLazyFindAllClientsQuery,
   useUpdateClientMutation,
   useDeleteClientMutation,
 } = clientsApi;

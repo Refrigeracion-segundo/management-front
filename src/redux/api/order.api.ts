@@ -25,7 +25,7 @@ export const orderApi = createApi({
       }),
       invalidatesTags: ["findAllOrder"],
     }),
-    findAllOrder: builder.query<Array<IOrderResponse>, void>({
+    findAllOrder: builder.query<IOrderResponse, void>({
       query: () => ({
         url: ORDER_URL.FIND_ALL,
         method: METHOD_TYPES.GET,

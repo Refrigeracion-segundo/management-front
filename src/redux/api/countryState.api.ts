@@ -38,6 +38,7 @@ export const countryStateApi = createApi({
         url: `${COUNTRY_URL.GET_CITIES}?country=142&state=${data.stateId}&name=${data.name}&page=1`,
         method: METHOD_TYPES.GET,
       }),
+      keepUnusedDataFor: 1,
     }),
   }),
 });

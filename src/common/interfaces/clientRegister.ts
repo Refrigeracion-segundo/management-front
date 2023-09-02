@@ -10,7 +10,9 @@ export interface IClientRegister {
   apartmentNumber: string;
   zipCode: string;
   state?: ICityState | string;
+  stateId?: number;
   city?: ICityState | string;
+  cityId?: number;
   suburb: string;
   fiscalRegime: string | IRegimeResponse;
 }

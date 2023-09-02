@@ -36,10 +36,9 @@ export const userApi = createApi({
     }),
     findUserTechnicians: builder.query<Array<IUserResponse>, void>({
       query: () => ({
-        url: USER_URL.FIND_TECH,
-        method: `${METHOD_TYPES.GET}/${ROLES.TECHNICAL}`,
+        url: `${USER_URL.FIND_TECH}/${ROLES.TECHNICAL}`,
+        method: METHOD_TYPES.GET,
       }),
-      keepUnusedDataFor: 5,
     }),
     updateUser: builder.mutation<IUserResponse, IUserUpdate>({
       query: (data: IUserUpdate) => ({

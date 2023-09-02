@@ -1,15 +1,27 @@
 import {
+  IClientResponse,
+  IOrderDirection,
+  IOrderEquipment,
+  IOrderGeneral,
   IOrderRegister,
+  IOrderService,
   IOrderUpdate,
-  IRegimeRegister,
-  IRegimeUpdate,
+  IServiceResponse,
+  IUserResponse,
 } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
+import { v4 } from "uuid";
 export interface Order {
   openDialog: boolean;
   isUpdate: boolean;
   data: IOrderUpdate | IOrderRegister;
+  equipment: Array<IOrderEquipment>;
+  service: Array<IOrderService>;
+  direction: IOrderDirection;
+  users: Array<IUserResponse>;
+  client: IClientResponse;
+  general: IOrderGeneral;
+  total: number;
 }
 
 const initialState: Order = {
@@ -23,6 +35,43 @@ const initialState: Order = {
     observation: "",
     tech: [],
   },
+  equipment: [],
+  service: [],
+  direction: {
+    street: "",
+    streetNumber: "",
+    apartmentNumber: "",
+    zipCode: "",
+    suburb: "",
+    city: "",
+    cityId: 0,
+    state: "",
+    stateId: 0,
+  },
+  users: [],
+  client: {
+    _id: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: "",
+    name: "",
+    contactPerson: "",
+    phone: "",
+    rfc: "",
+    street: "",
+    streetNumber: "",
+    apartmentNumber: "",
+    zipCode: "",
+    suburb: "",
+    fiscalRegime: "",
+  },
+  general: {
+    users: [],
+    report: "",
+    startDate: new Date(),
+    endDate: new Date(),
+  },
+  total: 0,
 };
 
 export const orderSlice = createSlice({
@@ -63,10 +112,92 @@ export const orderSlice = createSlice({
         ...initialState,
       };
     },
+    pushOrderEquipment: (state, value: PayloadAction<IOrderEquipment>) => {
+      state.equipment = [...state.equipment, { ...value.payload, _id: v4() }];
+    },
+    deleteOrderEquipment: (state, value: PayloadAction<number>) => {
+      state.equipment = state.equipment.splice(value.payload, 1);
+    },
+    pushOrderService: (state, value: PayloadAction<IOrderService>) => {
+      state.service = [...state.service, { ...value.payload }];
+      let aux = 0;
+      state.service.forEach((p) => {
+        aux += (p.service.service as IServiceResponse).suggestedPrice;
+      });
+      state.total = aux;
+    },
+    deleteOrderService: (state, value: PayloadAction<number>) => {
+      state.service = state.service.splice(value.payload, 1);
+      let aux = 0;
+      state.service.forEach((p) => {
+        aux += (p.service.service as IServiceResponse).suggestedPrice;
+      });
+      state.total = aux;
+    },
+    updateOrderService: (
+      state,
+      value: PayloadAction<{ index: number; price: number }>
+    ) => {
+      state.service = state.service.map((p, index) => {
+        if (index == value.payload.index)
+          return {
+            ...p,
+            service: {
+              ...p.service,
+              service: {
+                ...(p.service.service as IServiceResponse),
+                suggestedPrice: value.payload.price,
+              },
+            },
+          };
+        return {
+          ...p,
+        };
+      });
+      let aux = 0;
+      state.service.forEach((p) => {
+        aux += (p.service.service as IServiceResponse).suggestedPrice;
+      });
+      state.total = aux;
+    },
+    saveDirection: (state, value: PayloadAction<IOrderDirection>) => {
+      state.direction = value.payload;
+    },
+    orderUsers: (state, value: PayloadAction<Array<IUserResponse>>) => {
+      state.users = [...value.payload];
+    },
+    saveOrderClient: (state, value: PayloadAction<IClientResponse>) => {
+      state.client = value.payload;
+    },
+    saveOrderGeneral: (state, value: PayloadAction<IOrderGeneral>) => {
+      state.general = value.payload;
+    },
+    saveTechnician: (state, value: PayloadAction<Array<IUserResponse>>) => {
+      state.users = value.payload;
+    },
+    saveEquipment: (state, value: PayloadAction<Array<IOrderEquipment>>) => {
+      state.equipment = value.payload;
+    },
   },
 });
 
-export const { openOrder, closeOrder, isUpdatingOrder, saveOrder, clearOrder } =
-  orderSlice.actions;
+export const {
+  openOrder,
+  closeOrder,
+  isUpdatingOrder,
+  saveOrder,
+  clearOrder,
+  pushOrderEquipment,
+  deleteOrderEquipment,
+  pushOrderService,
+  deleteOrderService,
+  saveDirection,
+  orderUsers,
+  saveOrderClient,
+  saveOrderGeneral,
+  updateOrderService,
+  saveTechnician,
+  saveEquipment,
+} = orderSlice.actions;
 
 export default orderSlice.reducer;

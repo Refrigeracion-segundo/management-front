@@ -63,6 +63,7 @@ export const serviceDescriptionApi = createApi({
 export const {
   useRegisterServiceDescriptionMutation,
   useFindAllServiceDescriptionQuery,
+  useLazyFindAllServiceDescriptionQuery,
   useUpdateServiceDescriptionMutation,
   useDeleteServiceDescriptionMutation,
 } = serviceDescriptionApi;

@@ -82,6 +82,7 @@ export const ServiceTable = () => {
         <TableHead>
           <TableRow>
             <TableCell>Nombre</TableCell>
+            <TableCell>Descripcion</TableCell>
             <TableCell>Fecha creacion</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
             <TableCell>Estatus</TableCell>
@@ -99,6 +100,9 @@ export const ServiceTable = () => {
             >
               <TableCell component="th" scope="row">
                 {row.name}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.description}
               </TableCell>
 
               <TableCell align="left">
@@ -131,7 +135,7 @@ export const ServiceTable = () => {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              colSpan={5}
+              colSpan={6}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
