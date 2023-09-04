@@ -115,8 +115,11 @@ export const orderSlice = createSlice({
     pushOrderEquipment: (state, value: PayloadAction<IOrderEquipment>) => {
       state.equipment = [...state.equipment, { ...value.payload, _id: v4() }];
     },
-    deleteOrderEquipment: (state, value: PayloadAction<number>) => {
-      state.equipment = state.equipment.splice(value.payload, 1);
+    deleteOrderEquipment: (state, value: PayloadAction<string>) => {
+      const exist = state.service.findIndex(
+        (p) => p.equipment.serie == value.payload
+      );
+      if (exist == -1) state.equipment = state.equipment.splice(exist, 1);
     },
     pushOrderService: (state, value: PayloadAction<IOrderService>) => {
       state.service = [...state.service, { ...value.payload }];

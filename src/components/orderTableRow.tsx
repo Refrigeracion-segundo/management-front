@@ -7,7 +7,7 @@ import {
   IRegimeResponse,
   IServiceDescriptionResponse,
 } from "@/common";
-import { useDeleteClientMutation } from "@/redux/api";
+import { useDeleteClientMutation, useDeleteOrderMutation } from "@/redux/api";
 import { STATUS_DB } from "@/redux/constants";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
@@ -17,6 +17,7 @@ import {
 } from "@/redux/slices/dialogClient";
 
 import {
+  isUpdatingOrder,
   openOrder,
   pushOrderService,
   saveDirection,
@@ -45,6 +46,7 @@ import {
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import moment from "moment";
+import { enqueueSnackbar } from "notistack";
 import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -65,13 +67,18 @@ export const OrderTableRows = (props: {
   const [open, setOpen] = useState(false);
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const [deleteClient] = useDeleteClientMutation();
+  const [deleteOrderApi, { isLoading: isLoadingDelete }] =
+    useDeleteOrderMutation();
   const handleDelete = (name: number, id: string) => {
     confirm({
-      title: "Hey cuidado!!",
-      description: `Seguro que deseas dar de baja al usuario ${name}? `,
-    }).then(() => {
-      deleteClient({ id });
+      description: "Seguro que desea eliminar esta orden?",
+    }).then(async () => {
+      try {
+        await deleteOrderApi({ id }).unwrap();
+        enqueueSnackbar("Eliminación completada");
+      } catch {
+        enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
+      }
     });
   };
 
@@ -93,6 +100,7 @@ export const OrderTableRows = (props: {
     dispatch(saveOrderClient(data.customer));
     dispatch(
       saveOrderGeneral({
+        _id: data._id,
         report: data.report,
         startDate: data?.startDate,
         endDate: data?.endDate,
@@ -129,6 +137,7 @@ export const OrderTableRows = (props: {
         })
       );
     });
+    dispatch(isUpdatingOrder(true));
     dispatch(openOrder());
   };
 

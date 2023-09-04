@@ -34,6 +34,7 @@ import {
   useLazyFindAllClientsQuery,
   useLazyFindUserTechniciansQuery,
   useRegisterOrderMutation,
+  useUpdateOrderMutation,
 } from "@/redux/api";
 import { IOrderGeneral, IServiceResponse } from "@/common";
 
@@ -100,7 +101,10 @@ export const OrderDialog = () => {
 
   const [registerOrder, { isSuccess: isSuccessRegisterOrder }] =
     useRegisterOrderMutation();
-
+  const [
+    updateOrder,
+    { isSuccess: isSuccessUpdateOrder, isLoading: isLoadingUpdateOrder },
+  ] = useUpdateOrderMutation();
   return (
     <div>
       <IconButton onClick={() => dispatch(openOrder())}>
@@ -391,7 +395,9 @@ export const OrderDialog = () => {
                   }),
                 };
                 console.log(aux);
-                registerOrder(aux);
+                !isUpdate
+                  ? registerOrder(aux)
+                  : updateOrder({ ...aux, _id: general._id });
               }
             })}
           >

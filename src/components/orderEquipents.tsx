@@ -1,9 +1,10 @@
 import { IOrderEquipment } from "@/common";
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import {
   Button,
   Divider,
   Grid,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -20,10 +21,13 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "../app/order.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { pushOrderEquipment } from "@/redux/slices/order";
+import { deleteOrderEquipment, pushOrderEquipment } from "@/redux/slices/order";
+import { useConfirm } from "material-ui-confirm";
+
 export const OrderEquipments = () => {
   const { equipment } = useSelector((store: RootState) => store.order);
   const dispatch = useDispatch();
+  const confirm = useConfirm();
   const {
     register: registerEquipment,
     formState: { errors: errorsEquipment },
@@ -45,6 +49,15 @@ export const OrderEquipments = () => {
     } else
       enqueueSnackbar("Este numero de serie ya existe", { variant: "error" });
   };
+
+  const deleteEquipment = (serie: string) => {
+    confirm({
+      description: "Seguro que quieres eliminar el equipo?",
+    }).then(() => {
+      dispatch(deleteOrderEquipment(serie));
+    });
+  };
+
   return (
     <>
       <br />
@@ -162,6 +175,14 @@ export const OrderEquipments = () => {
                       <TableCell>{equip.brand}</TableCell>
                       <TableCell>{equip.model}</TableCell>
                       <TableCell>{equip.serie}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => deleteEquipment(equip.serie)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   </CSSTransition>
                 ))}

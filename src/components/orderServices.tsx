@@ -8,16 +8,19 @@ import { useLazyFindAllServiceDescriptionQuery } from "@/redux/api/serviceDescri
 import { useLazyFindAllServiceQuery } from "@/redux/api/services.api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
+  deleteOrderService,
   pushOrderEquipment,
   pushOrderService,
   updateOrderService,
 } from "@/redux/slices/order";
 import { RootState } from "@/redux/store";
+import { Delete } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
   Divider,
   Grid,
+  IconButton,
   InputAdornment,
   Paper,
   Table,
@@ -29,6 +32,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,6 +43,7 @@ export const OrderServices = () => {
     (store: RootState) => store.order
   );
   const dispatch = useDispatch();
+  const confirm = useConfirm();
   const {
     formState: { errors },
     handleSubmit,
@@ -56,6 +61,14 @@ export const OrderServices = () => {
   const [selectService, setSelectService] =
     useState<IServiceDescriptionResponse>();
   const [selectEquipment, setSelectEquipment] = useState<IOrderEquipment>();
+
+  const deleteService = (index: number) => {
+    confirm({
+      description: "Seguro que quiere eliminar el servicio?",
+    }).then(() => {
+      dispatch(deleteOrderService(index));
+    });
+  };
   return (
     <>
       <Grid
@@ -176,6 +189,7 @@ export const OrderServices = () => {
                   <TableCell>Marca</TableCell>
                   <TableCell>Serie</TableCell>
                   <TableCell>Precio sugerido</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -211,6 +225,11 @@ export const OrderServices = () => {
                           }
                         }}
                       />
+                    </TableCell>
+                    <TableCell onClick={() => deleteService(index)}>
+                      <IconButton color="secondary">
+                        <Delete />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
