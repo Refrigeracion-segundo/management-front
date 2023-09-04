@@ -11,7 +11,7 @@ import {
   IRoleRegister,
   IRoleResponse,
   IRoleUpdate,
-} from "@/app/common";
+} from "@/common";
 
 export const roleApi = createApi({
   reducerPath: ReducerPaths.ROLES,
