@@ -8,7 +8,7 @@ import React from "react";
 import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-export const Users = () => {
+const Users = () => {
   const { user } = useSelector((store: RootState) => store.dialogUser);
   const {
     formState,
