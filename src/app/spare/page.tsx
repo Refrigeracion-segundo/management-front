@@ -11,7 +11,7 @@ import { Box, Divider } from "@mui/material";
 import React from "react";
 import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";
 
-export const Spare = () => {
+const Spare = () => {
   const {
     formState,
     register,
