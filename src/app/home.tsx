@@ -1,6 +1,5 @@
 "use client";
 import { SlideOptions } from "@/components/slide";
-import Head from "next/head";
 import React from "react";
 import { NavBar } from "./navBar";
 
