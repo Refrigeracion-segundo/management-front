@@ -40,6 +40,7 @@ export default function RootLayout({
       <Head>
         <title>Refrigeración segundo</title>
         <meta property="og:title" content="My page title" key="title" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
       </Head>
       <body className={inter.className}>
         <Providers>
