@@ -4,8 +4,8 @@ import { DialogCustomer } from "@/components/customerDialog";
 import { CustomerTable } from "@/components/customerTable";
 import { RootState } from "@/redux/store";
 import { Box } from "@mui/material";
-import React, { Fragment } from "react";
-import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";
+import React from "react";
+import { UseFormGetValues, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 const Clients = () => {

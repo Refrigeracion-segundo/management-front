@@ -13,7 +13,6 @@ import {
   TableFooter,
   TablePagination,
 } from "@mui/material";
-import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
 import { IUserUpdate } from "@/common";
@@ -23,6 +22,7 @@ import { useDeleteUserMutation, useFindAllUsersQuery } from "@/redux/api";
 import { STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
+import moment from "moment";
 
 export const TableUser = (props: {
   setValue: UseFormSetValue<IUserUpdate>;
@@ -79,10 +79,11 @@ export const TableUser = (props: {
         <TableHead>
           <TableRow>
             <TableCell>Usuario</TableCell>
+            <TableCell>Email</TableCell>
             <TableCell align="right">Roles</TableCell>
-            <TableCell align="right">Estatus</TableCell>
             <TableCell align="right">Fecha de creación</TableCell>
             <TableCell align="right">Ultima actualización</TableCell>
+            <TableCell align="right">Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -96,14 +97,15 @@ export const TableUser = (props: {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {`${row.name} ${row.lastName}` }
               </TableCell>
-              <TableCell align="right">{row.email}</TableCell>
-              <TableCell align="right">{row.lastName}</TableCell>
+              <TableCell>{row.email}</TableCell>
               <TableCell align="right">{row.roles[0]}</TableCell>
               <TableCell align="right">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              {moment(row.createdAt).format("LLLL")}
               </TableCell>
+              <TableCell align="right" >{moment(row.updatedAt).format("LLLL")}</TableCell>
+              <TableCell align="right">{row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}</TableCell>
               <TableCell>
                 <IconButton
                   color="secondary"

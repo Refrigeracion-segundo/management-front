@@ -1,5 +1,5 @@
 "use client";
-import { ICities, ICityState, IOrderDirection } from "@/common";
+import { ICityState, IOrderDirection } from "@/common";
 import {
   useLazyFindCitiesQuery,
   useLazyFindStateQuery,

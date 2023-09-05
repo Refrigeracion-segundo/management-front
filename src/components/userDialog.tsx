@@ -1,6 +1,6 @@
 "use client";
 
-import { Add, Save } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
@@ -24,7 +24,6 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
   UseFormReset,
-  UseFormSetValue,
 } from "react-hook-form";
 import { IUserRegister, IUserUpdate, ROLES, RoleTranslate } from "@/common";
 import { useRegisterUserMutation, useUpdateUserMutation } from "@/redux/api";

@@ -22,9 +22,9 @@ export const OrderTable = () => {
             <TableCell>Persona que reporto el servicio</TableCell>
             <TableCell align="left">Cliente</TableCell>
             <TableCell align="left">Fecha de inicio</TableCell>
-            <TableCell align="left">Estatus</TableCell>
             <TableCell align="left">Fecha registro</TableCell>
             <TableCell align="left">Ultima actualizacion</TableCell>
+            <TableCell align="left">Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

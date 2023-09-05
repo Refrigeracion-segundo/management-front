@@ -68,13 +68,13 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
         <TableCell align="left">{row.phone}</TableCell>
         <TableCell align="left">{row.contactPerson}</TableCell>
         <TableCell align="left">
-          {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
-        </TableCell>
-        <TableCell align="left">
           {moment(row.createdAt).format("LLLL")}
         </TableCell>
         <TableCell align="left">
           {moment(row.updatedAt).format("LLLL")}
+        </TableCell>
+        <TableCell align="left">
+          {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
         </TableCell>
 
         <TableCell>

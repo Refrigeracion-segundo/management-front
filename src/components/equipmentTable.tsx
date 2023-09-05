@@ -84,9 +84,9 @@ export const EquipmentTable = () => {
         <TableHead>
           <TableRow>
             <TableCell>Nombre</TableCell>
-            <TableCell>Estatus</TableCell>
             <TableCell>Fecha creacion</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
+            <TableCell>Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -102,15 +102,14 @@ export const EquipmentTable = () => {
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-
-              <TableCell align="left">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
-              </TableCell>
               <TableCell align="left">
                 {moment(row.createdAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
                 {moment(row.updatedAt).format("LLLL")}
+              </TableCell>
+              <TableCell align="left">
+                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
               </TableCell>
 
               <TableCell>

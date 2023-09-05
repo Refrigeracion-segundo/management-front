@@ -7,10 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useConfirm } from "material-ui-confirm";
-import { UseFormSetValue } from "react-hook-form";
-import { IClientResponse, IClientUpdate } from "@/common";
-import { useDispatch } from "react-redux";
+import { IClientResponse } from "@/common";
 import { CustomerTableRows } from "./customerTableRows";
 import { useFindAllClientsQuery } from "@/redux/api";
 
@@ -25,15 +22,15 @@ export const CustomerTable = () => {
             <TableCell>Nombre completo</TableCell>
             <TableCell align="left">Celular</TableCell>
             <TableCell align="left">Persona de contacto</TableCell>
-            <TableCell align="left">Estatus</TableCell>
             <TableCell align="left">Fecha registro</TableCell>
             <TableCell align="left">Ultima actualizacion</TableCell>
+            <TableCell align="left">Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {isSuccess &&
-            rows?.map((row, index) => (
+            rows?.map((row) => (
               <CustomerTableRows
                 key={row._id}
                 row={row as unknown as IClientResponse}

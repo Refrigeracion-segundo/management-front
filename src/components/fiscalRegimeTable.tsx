@@ -67,9 +67,9 @@ export const FiscalRegimeTable = () => {
           <TableRow>
             <TableCell>Clave</TableCell>
             <TableCell>Descripcion</TableCell>
-            <TableCell>Estatus</TableCell>
             <TableCell>Fecha creacion</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
+            <TableCell>Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -86,13 +86,13 @@ export const FiscalRegimeTable = () => {
                 {row.description}
               </TableCell>
               <TableCell align="left">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
-              </TableCell>
-              <TableCell align="left">
                 {moment(row.createdAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
                 {moment(row.updatedAt).format("LLLL")}
+              </TableCell>
+              <TableCell align="left">
+                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
               </TableCell>
 
               <TableCell>

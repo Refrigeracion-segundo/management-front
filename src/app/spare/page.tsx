@@ -2,8 +2,6 @@
 import {
   ISpareRegister,
   ISpareUpdate,
-  IUserRegister,
-  IUserUpdate,
 } from "@/common";
 import { DialogSpare } from "@/components/spareDialog";
 import { TableSpare } from "@/components/tableSpare";

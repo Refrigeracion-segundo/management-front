@@ -15,7 +15,6 @@ import {
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-
 import { useForm } from "react-hook-form";
 import { IServiceRegister, IEquipmentResponse, IServiceUpdate } from "@/common";
 import {

@@ -77,9 +77,9 @@ export const ServiceDescriptionTable = () => {
           <TableRow>
             <TableCell>Descripcion</TableCell>
             <TableCell>Servicio</TableCell>
-            <TableCell>Estatus</TableCell>
             <TableCell>Fecha creacion</TableCell>
             <TableCell>Ultima actualizacion</TableCell>
+            <TableCell>Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -96,15 +96,14 @@ export const ServiceDescriptionTable = () => {
                 {(row.service as IServiceResponse).name}
               </TableCell>
               <TableCell align="left">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
-              </TableCell>
-              <TableCell align="left">
                 {moment(row.createdAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
-
+              <TableCell align="left">
+                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              </TableCell>
               <TableCell>
                 <IconButton
                   color="secondary"

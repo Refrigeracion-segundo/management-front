@@ -1,20 +1,9 @@
 "use client";
 import {
-  IClientResponse,
-  IClientUpdate,
   IOrderDataResponse,
-  IOrderUpdate,
-  IRegimeResponse,
-  IServiceDescriptionResponse,
 } from "@/common";
-import { useDeleteClientMutation, useDeleteOrderMutation } from "@/redux/api";
-import { STATUS_DB } from "@/redux/constants";
+import { useDeleteOrderMutation } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
-import {
-  isUpdatingClient,
-  openClient,
-  saveClient,
-} from "@/redux/slices/dialogClient";
 
 import {
   isUpdatingOrder,
@@ -26,7 +15,6 @@ import {
   saveOrderGeneral,
   saveTechnician,
 } from "@/redux/slices/order";
-import { RootState } from "@/redux/store";
 import {
   Delete,
   Edit,
@@ -48,7 +36,7 @@ import { useConfirm } from "material-ui-confirm";
 import moment from "moment";
 import { enqueueSnackbar } from "notistack";
 import React, { Fragment, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const STATUS = new Map<string, string>();
 
@@ -163,14 +151,13 @@ export const OrderTableRows = (props: {
             ? moment(row.startDate).format("LLLL")
             : "SIN FECHA DE INICIO"}
         </TableCell>
-        <TableCell align="left">{STATUS.get(row.status)}</TableCell>
         <TableCell align="left">
           {moment(row.createdAt).format("LLLL")}
         </TableCell>
         <TableCell align="left">
           {moment(row.updatedAt).format("LLLL")}
         </TableCell>
-
+        <TableCell align="left">{STATUS.get(row.status)}</TableCell>
         <TableCell>
           <IconButton
             color="secondary"

@@ -5,11 +5,9 @@ import {
   IServiceResponse,
 } from "@/common";
 import { useLazyFindAllServiceDescriptionQuery } from "@/redux/api/serviceDescription.api";
-import { useLazyFindAllServiceQuery } from "@/redux/api/services.api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
   deleteOrderService,
-  pushOrderEquipment,
   pushOrderService,
   updateOrderService,
 } from "@/redux/slices/order";
@@ -30,7 +28,6 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { enqueueSnackbar } from "notistack";

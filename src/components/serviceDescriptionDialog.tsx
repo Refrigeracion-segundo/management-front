@@ -15,7 +15,6 @@ import {
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-
 import {
   FormState,
   UseFormClearErrors,
@@ -27,7 +26,6 @@ import {
   IServiceDescriptionUpdate,
   IServiceResponse,
 } from "@/common";
-
 import { LoadingButton } from "@mui/lab";
 import {
   useRegisterServiceDescriptionMutation,
