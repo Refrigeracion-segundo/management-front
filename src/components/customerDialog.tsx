@@ -4,6 +4,7 @@ import { Add } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,6 +19,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import {
+  Control,
+  Controller,
   FormState,
   UseFormClearErrors,
   UseFormGetValues,
@@ -42,6 +45,7 @@ import {
   useRegisterClientMutation,
   useUpdateClientMutation,
 } from "@/redux/api";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogCustomer = (props: {
   register: UseFormRegister<IClientRegister>;
@@ -50,13 +54,14 @@ export const DialogCustomer = (props: {
   handleSubmit: UseFormHandleSubmit<IClientRegister>;
   getValues: UseFormGetValues<IClientRegister>;
   reset: UseFormReset<IClientRegister>;
+  control: Control<IClientRegister | IClientUpdate, any>;
 }) => {
   const {
     register,
     formState: { errors },
     clearErrors,
     handleSubmit,
-
+    control,
     reset,
   } = props;
   const { openDialog, dataClient, isUpdate } = useSelector(
@@ -87,14 +92,10 @@ export const DialogCustomer = (props: {
       isSuccess: isSuccessCountry,
     },
   ] = useLazyFindStateQuery();
-  const [
-    registerCustomer,
-    { isLoading: isLoadingCustomer, isSuccess: isSuccessCustomer },
-  ] = useRegisterClientMutation();
-  const [
-    updateCustomer,
-    { isLoading: isLoadingUpdateCustomer, isSuccess: isSuccessUpdateCustomer },
-  ] = useUpdateClientMutation();
+  const [registerCustomer, { isLoading: isLoadingRegisterCustomer }] =
+    useRegisterClientMutation();
+  const [updateCustomer, { isLoading: isLoadingUpdateCustomer }] =
+    useUpdateClientMutation();
   const debounceTime = 500;
   const [stateName, setStateName] = useState("");
   const [cityName, setCityName] = useState("");
@@ -111,32 +112,31 @@ export const DialogCustomer = (props: {
 
   useEffect(() => {
     getCities({
-      stateId: dataClient.state ? (dataClient.state as ICityState).id : 0,
+      stateId: dataClient.stateId as number,
       name: cityName,
     });
   }, [dataClient.state]);
 
   const dispatch = useDispatch();
 
-  const handleClickSave = (data: IClientRegister | IClientUpdate) => {
+  const handleClickSave = async (data: IClientRegister | IClientUpdate) => {
     console.log(data);
-    if (isUpdate) {
-      updateCustomer({
-        ...data,
-        fiscalRegime: (dataClient.fiscalRegime as IRegimeResponse)._id,
-        _id: (data as IClientUpdate)._id,
-      })
-        .unwrap()
-        .then(() => {
-          dispatch(closeClient());
+    try {
+      if (isUpdate) {
+        await updateCustomer({
+          ...dataClient,
+          fiscalRegime: (dataClient.fiscalRegime as IRegimeResponse)._id,
+          _id: (data as IClientUpdate)._id,
         });
-    } else {
-      registerCustomer({ ...data, fiscalRegime: dataClient.fiscalRegime })
-        .unwrap()
-        .then(() => {
-          dispatch(closeClient());
+      } else {
+        await registerCustomer({
+          ...dataClient,
+          fiscalRegime: (dataClient.fiscalRegime as IRegimeResponse)._id,
         });
-      // dispatch(openClient(data));
+      }
+      dispatch(closeClient());
+    } catch {
+      enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
     }
   };
 
@@ -175,16 +175,9 @@ export const DialogCustomer = (props: {
           >
             <Grid item container spacing={2} direction="row" xs={5}>
               <Grid item xs={11} container alignItems="center">
-                <TextField
-                  autoFocus
-                  variant="standard"
-                  margin="dense"
-                  id="companyName"
-                  label="Nombre"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  {...register("name", {
+                <Controller
+                  name="name"
+                  rules={{
                     required: {
                       value: true,
                       message: "El nombre es requerido",
@@ -193,46 +186,83 @@ export const DialogCustomer = (props: {
                       value: 80,
                       message: "La maxima longitud es de 80 caracteres.",
                     },
-                  })}
-                  error={!!errors.name}
-                  helperText={!!errors.name && errors.name.message}
+                  }}
+                  control={control}
+                  defaultValue={dataClient.name}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        autoFocus
+                        variant="standard"
+                        margin="dense"
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({ ...dataClient, name: e.target.value })
+                          );
+                        }}
+                        label="Nombre"
+                        type="text"
+                        size="small"
+                        fullWidth
+                        error={!!errors.name}
+                        helperText={!!errors.name && errors.name.message}
+                      />
+                    );
+                  }}
                 />
               </Grid>
+
               <Grid item xs={11} container alignItems="center">
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="companyName"
-                  label="Persona de contacto"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  {...register("contactPerson", {
+                <Controller
+                  control={control}
+                  name="contactPerson"
+                  rules={{
                     required: {
                       value: true,
-                      message: "Persona de contacto es requerida",
+                      message: "El nombre es requerido",
                     },
                     maxLength: {
                       value: 80,
                       message: "La maxima longitud es de 80 caracteres.",
                     },
-                  })}
-                  error={!!errors.contactPerson}
-                  helperText={
-                    !!errors.contactPerson && errors.contactPerson.message
-                  }
+                  }}
+                  defaultValue={dataClient.contactPerson}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        label="Persona de contacto"
+                        type="text"
+                        size="small"
+                        fullWidth
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              contactPerson: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.contactPerson}
+                        helperText={
+                          !!errors.contactPerson && errors.contactPerson.message
+                        }
+                      />
+                    );
+                  }}
                 />
               </Grid>
+
               <Grid item xs={11} container alignItems="center">
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="companyName"
-                  label="Celular"
-                  type="tel"
-                  size="small"
-                  fullWidth
-                  {...register("phone", {
+                <Controller
+                  control={control}
+                  name="phone"
+                  rules={{
                     required: {
                       value: true,
                       message: "El telefono es requerido",
@@ -245,68 +275,103 @@ export const DialogCustomer = (props: {
                       value: 10,
                       message: "Numero invalido",
                     },
-                  })}
-                  error={!!errors.phone}
-                  helperText={!!errors.phone && errors.phone.message}
+                  }}
+                  defaultValue={dataClient.phone}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="companyName"
+                        label="Celular"
+                        type="tel"
+                        size="small"
+                        fullWidth
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              phone: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.phone}
+                        helperText={!!errors.phone && errors.phone.message}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={11}>
-                <Autocomplete
-                  disablePortal
-                  blurOnSelect
-                  defaultValue={
-                    isUpdate
-                      ? (dataClient.fiscalRegime as IRegimeResponse)
-                      : ("" as any)
-                  }
-                  loading={isLoadingRegime}
-                  onOpen={() => getRegime()}
-                  id="fiscalRegime"
-                  options={isSuccessRegime && dataRegime ? dataRegime : []}
-                  getOptionLabel={(option: IRegimeResponse) => {
-                    return option?.key
-                      ? `${option.key} - ${option.description}`
-                      : "";
+                <Controller
+                  control={control}
+                  name="fiscalRegime"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Su regimen fiscal es requerido",
+                    },
                   }}
-                  onChange={(value, newValue) => {
-                    if (newValue) {
-                      dispatch(
-                        saveClient({
-                          ...dataClient,
-                          fiscalRegime: newValue?._id,
-                        })
-                      );
+                  defaultValue={dataClient.fiscalRegime as IRegimeResponse}
+                  render={({ field }) => {
+                    return (
+                      <Autocomplete
+                        disablePortal
+                        blurOnSelect
+                        value={field.value as IRegimeResponse}
+                        loading={isLoadingRegime}
+                        onOpen={() => getRegime()}
+                        id="fiscalRegime"
+                        options={
+                          isSuccessRegime && dataRegime ? dataRegime : []
+                        }
+                        getOptionLabel={(option: IRegimeResponse) => {
+                          return option?.key
+                            ? `${option.key} - ${option.description}`
+                            : "";
+                        }}
+                        onChange={(value, newValue) => {
+                          if (newValue) {
+                            field.onChange(newValue);
+                            dispatch(
+                              saveClient({
+                                ...dataClient,
+                                fiscalRegime: newValue,
+                              })
+                            );
 
-                      clearErrors("fiscalRegime");
-                    }
+                            // clearErrors("fiscalRegime");
+                          }
+                        }}
+                        fullWidth
+                        // sx={{ width: 300, marginTop: "-3px" }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            margin="dense"
+                            label="*Regimen fiscal"
+                            fullWidth
+                            error={!!errors.fiscalRegime}
+                            helperText={
+                              !!errors.fiscalRegime &&
+                              errors.fiscalRegime.message
+                            }
+                          />
+                        )}
+                      />
+                    );
                   }}
-                  fullWidth
-                  // sx={{ width: 300, marginTop: "-3px" }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      margin="dense"
-                      label="*Regimen fiscal"
-                      fullWidth
-                      {...register("fiscalRegime", { required: true })}
-                      error={!!errors.fiscalRegime}
-                    />
-                  )}
                 />
               </Grid>
 
               <Grid item xs={11}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="rfc"
-                  label="RFC"
-                  placeholder="Ejemplo XAXX010101000"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  {...register("rfc", {
+                <Controller
+                  control={control}
+                  name="rfc"
+                  rules={{
                     required: {
                       value: true,
                       message: "El rfc es requerido",
@@ -319,9 +384,31 @@ export const DialogCustomer = (props: {
                       value: 13,
                       message: "La maxima longitud es de 13 caracteres.",
                     },
-                  })}
-                  error={!!errors.rfc}
-                  helperText={!!errors.rfc && errors.rfc.message}
+                  }}
+                  defaultValue={dataClient.rfc}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="rfc"
+                        label="RFC"
+                        placeholder="Ejemplo XAXX010101000"
+                        type="text"
+                        size="small"
+                        fullWidth
+                        value={field.value}
+                        error={!!errors.rfc}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({ ...dataClient, rfc: e.target.value })
+                          );
+                        }}
+                        helperText={!!errors.rfc && errors.rfc.message}
+                      />
+                    );
+                  }}
                 />
               </Grid>
             </Grid>
@@ -343,104 +430,91 @@ export const DialogCustomer = (props: {
                 />
               </Grid>
               <Grid item xs={8}>
-                <Autocomplete
-                  disablePortal
-                  defaultValue={
-                    isUpdate
-                      ? { id: 0, name: dataClient.state as string }
-                      : dataClient.state
-                      ? (dataClient.state as ICityState)
-                      : { id: 0, name: "" }
-                  }
-                  options={dataState?.items ? dataState.items : []}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  getOptionLabel={(option: { id: number; name: string }) =>
-                    option.name
-                  }
-                  onChange={(e, value) => {
-                    console.log(value);
-                    if (value) {
-                      // setStateName(value.name);
-                      dispatch(saveClient({ ...dataClient, state: value }));
-                      clearErrors("state");
-                    }
+                <Controller
+                  name="state"
+                  control={control}
+                  rules={{
+                    required: true,
                   }}
-                  sx={{ width: 300, marginTop: "-3px" }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      margin="dense"
-                      label="Estado"
-                      sx={{ width: "115%" }}
-                      {...register("state", {
-                        required: {
-                          value: false,
-                          message: "Este campo es requerido",
-                        },
-                      })}
-                      onChange={(e) => {
-                        setStateName(e.target.value);
+                  defaultValue={{
+                    id: dataClient.stateId as number,
+                    name: dataClient.state as string,
+                  }}
+                  render={({ field }) => (
+                    <Autocomplete
+                      value={field.value}
+                      // loading={isLoadingState}
+                      options={dataState?.items ? dataState.items : ([] as any)}
+                      onChange={(_, newValue) => {
+                        field.onChange(newValue);
+                        dispatch(
+                          saveClient({
+                            ...dataClient,
+                            state: (newValue as ICityState).name,
+                            stateId: (newValue as ICityState).id,
+                          })
+                        );
                       }}
-                      error={!!errors.state}
-                      helperText={!!errors.state && errors.state.message}
+                      getOptionLabel={(option) => {
+                        return typeof option == "string" ? option : option.name;
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Ciudad"
+                          variant="standard"
+                          margin="dense"
+                          onChange={(e) => {
+                            setStateName(e.target.value);
+                          }}
+                        />
+                      )}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={8}>
-                <Autocomplete
-                  disablePortal
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  defaultValue={
-                    isUpdate
-                      ? { id: 0, name: dataClient.city as string }
-                      : { id: 0, name: "" }
-                  }
-                  options={dataCities?.items ? dataCities.items : []}
-                  getOptionLabel={(option: { id: number; name: string }) =>
-                    option.name
-                  }
-                  onChange={(e, value) => {
-                    if (value) {
-                      clearErrors("city");
-                    }
+                <Controller
+                  name="city"
+                  control={control}
+                  rules={{
+                    required: true,
                   }}
-                  sx={{ width: 300, marginTop: "-3px" }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      margin="dense"
-                      label="Ciudad"
-                      {...register("city", {
-                        required: {
-                          value: false,
-                          message: "La ciudad es requerida",
-                        },
-                      })}
-                      onChange={(e) => {
-                        setCityName(e.target.value);
+                  defaultValue={{
+                    id: dataClient.cityId as number,
+                    name: dataClient.city as string,
+                  }}
+                  render={({ field }) => (
+                    <Autocomplete
+                      value={field.value}
+                      loading={isLoadingCities}
+                      options={dataCities?.items ? dataCities.items : []}
+                      onChange={(_, newValue) => {
+                        field.onChange(newValue);
                       }}
-                      error={!!errors.city}
+                      getOptionLabel={(option) => {
+                        return typeof option == "string" ? option : option.name;
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Ciudad"
+                          variant="standard"
+                          margin="dense"
+                          onChange={(e) => {
+                            setCityName(e.target.value);
+                          }}
+                        />
+                      )}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="zipCode"
-                  label="*Código postal"
-                  type="number"
-                  size="small"
-                  sx={{ width: "128%" }}
-                  {...register("zipCode", {
+                <Controller
+                  control={control}
+                  name="zipCode"
+                  rules={{
                     required: {
                       value: true,
                       message: "Código postal invalido",
@@ -457,94 +531,204 @@ export const DialogCustomer = (props: {
                       value: 5,
                       message: "La maxima longitud es de 5 caracteres.",
                     },
-                  })}
-                  error={!!errors.zipCode}
-                  helperText={!!errors.zipCode && errors.zipCode.message}
+                  }}
+                  defaultValue={dataClient.zipCode}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="zipCode"
+                        label="*Código postal"
+                        type="number"
+                        size="small"
+                        sx={{ width: "128%" }}
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              zipCode: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.zipCode}
+                        helperText={!!errors.zipCode && errors.zipCode.message}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={6}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="suburb"
-                  label="Colonia"
-                  type="text"
-                  size="small"
-                  fullWidth
-                  {...register("suburb", {
+                <Controller
+                  control={control}
+                  name="suburb"
+                  rules={{
                     required: {
                       value: false,
                       message: "La colonia es requerida",
                     },
-                  })}
-                  error={!!errors.suburb}
-                  helperText={!!errors.suburb && errors.suburb.message}
+                  }}
+                  defaultValue={dataClient.suburb}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="suburb"
+                        label="Colonia"
+                        type="text"
+                        size="small"
+                        fullWidth
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              suburb: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.suburb}
+                        helperText={!!errors.suburb && errors.suburb.message}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={6}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="street"
-                  label="Calle"
-                  type="text"
-                  size="small"
-                  sx={{ width: "118%" }}
-                  {...register("street", {
+                <Controller
+                  control={control}
+                  name="street"
+                  rules={{
                     required: {
-                      value: false,
+                      value: true,
                       message: "La calle es requerida",
                     },
-                  })}
-                  error={!!errors.street}
-                  helperText={!!errors.street && errors.street.message}
+                  }}
+                  defaultValue={dataClient.street}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="street"
+                        label="Calle"
+                        type="text"
+                        size="small"
+                        sx={{ width: "118%" }}
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              street: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.street}
+                        helperText={!!errors.street && errors.street.message}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="apartmentNumber"
-                  label="Numero interior"
-                  type="number"
-                  size="small"
-                  {...register("apartmentNumber", {
+                <Controller
+                  control={control}
+                  name="apartmentNumber"
+                  rules={{
                     required: {
                       value: false,
                       message: "Numero interior requerido",
                     },
-                  })}
-                  error={!!errors.streetNumber}
-                  helperText={
-                    !!errors.streetNumber && errors.streetNumber.message
-                  }
+                  }}
+                  defaultValue={dataClient.apartmentNumber}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="apartmentNumber"
+                        label="Numero interior"
+                        type="number"
+                        size="small"
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              apartmentNumber: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.apartmentNumber}
+                        helperText={
+                          !!errors.apartmentNumber &&
+                          errors.apartmentNumber.message
+                        }
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  variant="standard"
-                  margin="dense"
-                  id="streetNumber"
-                  label="Numero exterior"
-                  type="number"
-                  size="small"
-                  {...register("streetNumber", {
+                <Controller
+                  control={control}
+                  name="streetNumber"
+                  rules={{
                     required: {
                       value: false,
                       message: "Numero exterior requerido",
                     },
-                  })}
-                  error={!!errors.apartmentNumber}
-                  helperText={
-                    !!errors.apartmentNumber && errors.apartmentNumber.message
-                  }
+                  }}
+                  defaultValue={dataClient.streetNumber}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        variant="standard"
+                        margin="dense"
+                        id="streetNumber"
+                        label="Numero exterior"
+                        type="number"
+                        size="small"
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              streetNumber: e.target.value,
+                            })
+                          );
+                        }}
+                        error={!!errors.streetNumber}
+                        helperText={
+                          !!errors.streetNumber && errors.streetNumber.message
+                        }
+                      />
+                    );
+                  }}
                 />
               </Grid>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => dispatch(closeClient())}>
+          <Button
+            color="secondary"
+            disabled={isLoadingUpdateCustomer || isLoadingRegisterCustomer}
+            endIcon={
+              (isLoadingUpdateCustomer || isLoadingRegisterCustomer) && (
+                <CircularProgress size={15} />
+              )
+            }
+            onClick={() => dispatch(closeClient())}
+          >
             Cancelar
           </Button>
           <Button onClick={handleSubmit(handleClickSave)}>Guardar</Button>

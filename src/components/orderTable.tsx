@@ -19,9 +19,9 @@ export const OrderTable = () => {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell>Nombre completo</TableCell>
-            <TableCell align="left">Celular</TableCell>
-            <TableCell align="left">Persona de contacto</TableCell>
+            <TableCell>Persona que reporto el servicio</TableCell>
+            <TableCell align="left">Cliente</TableCell>
+            <TableCell align="left">Fecha de inicio</TableCell>
             <TableCell align="left">Estatus</TableCell>
             <TableCell align="left">Fecha registro</TableCell>
             <TableCell align="left">Ultima actualizacion</TableCell>

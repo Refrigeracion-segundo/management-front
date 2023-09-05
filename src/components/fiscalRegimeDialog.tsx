@@ -30,6 +30,7 @@ import {
   useUpdateRegimeMutation,
 } from "@/redux/api/fiscalRegime";
 import { LoadingButton } from "@mui/lab";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogFiscalRegime = (props: {
   register: UseFormRegister<IRegimeRegister>;
@@ -122,10 +123,20 @@ export const DialogFiscalRegime = (props: {
           <LoadingButton
             loading={isLoading || isLoadingUpdate}
             loadingPosition="end"
-            onClick={handleSubmit((newData) => {
-              isUpdate
-                ? updateRegime({ ...newData, _id: (data as IRegimeUpdate)._id })
-                : registerRegime({ ...newData });
+            onClick={handleSubmit(async (newData) => {
+              try {
+                isUpdate
+                  ? await updateRegime({
+                      ...newData,
+                      _id: (data as IRegimeUpdate)._id,
+                    }).unwrap()
+                  : await registerRegime({ ...newData }).unwrap();
+                dispatch(closeFiscalRegime());
+              } catch {
+                enqueueSnackbar("Intente de nuevo mas tarde", {
+                  variant: "error",
+                });
+              }
             })}
             style={{ width: "20%" }}
           >

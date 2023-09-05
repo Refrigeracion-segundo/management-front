@@ -1,4 +1,4 @@
-import { IClientRegister } from "@/common";
+import { IClientRegister, IRegimeResponse } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface DialogUser {
@@ -22,7 +22,16 @@ const initialState: DialogUser = {
     state: "",
     city: "",
     suburb: "",
-    fiscalRegime: "",
+    stateId: 0,
+
+    fiscalRegime: {
+      _id: "",
+      status: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      description: "",
+      key: 0,
+    },
   },
 };
 

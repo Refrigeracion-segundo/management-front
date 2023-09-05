@@ -1,7 +1,9 @@
 "use client";
 import {
+  closeOrder,
   openOrder,
   orderUsers,
+  saveDirection,
   saveOrderClient,
   saveOrderGeneral,
 } from "@/redux/slices/order";
@@ -36,7 +38,12 @@ import {
   useRegisterOrderMutation,
   useUpdateOrderMutation,
 } from "@/redux/api";
-import { IOrderGeneral, IServiceResponse } from "@/common";
+import {
+  IClientResponse,
+  IOrderDirection,
+  IOrderGeneral,
+  IServiceResponse,
+} from "@/common";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -300,10 +307,24 @@ export const OrderDialog = () => {
                     getOptionLabel={(option) => {
                       return option?.name;
                     }}
-                    onChange={(value, newValue) => {
+                    onChange={(value, newValue: IClientResponse) => {
                       if (newValue) {
                         field.onChange(newValue);
                         dispatch(saveOrderClient(newValue));
+
+                        dispatch(
+                          saveDirection({
+                            street: newValue.street,
+                            streetNumber: newValue.streetNumber,
+                            apartmentNumber: newValue.apartmentNumber,
+                            zipCode: newValue.zipCode,
+                            suburb: newValue.suburb,
+                            city: newValue.city,
+                            cityId: newValue.cityId,
+                            state: newValue.state,
+                            stateId: newValue.stateId,
+                          })
+                        );
                       }
                     }}
                     fullWidth
@@ -369,6 +390,9 @@ export const OrderDialog = () => {
           </Grid>
         </DialogContent>
         <DialogActions>
+          <Button color="secondary" onClick={() => dispatch(closeOrder())}>
+            Cerrar
+          </Button>
           <Button
             onClick={handleSubmit((data) => {
               {

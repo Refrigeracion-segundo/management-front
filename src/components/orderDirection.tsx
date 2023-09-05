@@ -286,7 +286,7 @@ export const OrderDirection = () => {
       </Grid>
       <Grid item xs={2}>
         <Controller
-          name="apartmentNumber"
+          name="streetNumber"
           control={control}
           rules={{
             required: {

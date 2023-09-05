@@ -18,6 +18,7 @@ const Clients = () => {
     setValue,
     getValues,
     reset,
+    control,
   } = useForm<IClientRegister | IClientUpdate>({ values: dataClient });
   return (
     <Box sx={{ p: 5 }}>
@@ -28,6 +29,7 @@ const Clients = () => {
         handleSubmit={handleSubmit}
         getValues={getValues as UseFormGetValues<IClientRegister>}
         reset={reset}
+        control={control}
       />
       <CustomerTable />
     </Box>

@@ -1,5 +1,6 @@
 "use client";
 import { ROLES } from "@/common";
+import { closeSlider } from "@/redux/slices/slider";
 import {
   AccountBalance,
   Build,
@@ -19,9 +20,11 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import React from "react";
+import { useDispatch } from "react-redux";
 
 export const ListPermisions = (props: { role: string }) => {
   const { role } = props;
+  const dispatch = useDispatch();
   const options = [
     {
       text: "Servicios",
@@ -79,7 +82,13 @@ export const ListPermisions = (props: { role: string }) => {
           .filter((item) => item.allowedRol?.includes(role as any))
           .map((option) => (
             <ListItem key={option.text} disablePadding>
-              <Link href={option.redirect} style={{ width: "100%" }}>
+              <Link
+                href={option.redirect}
+                style={{ width: "100%" }}
+                onClick={() => {
+                  dispatch(closeSlider());
+                }}
+              >
                 <ListItemButton>
                   <ListItemIcon>{option.icon}</ListItemIcon>
                   <ListItemText primary={option.text} />

@@ -26,9 +26,10 @@ import {
   UseFormReset,
   UseFormSetValue,
 } from "react-hook-form";
-import { IUserRegister, IUserUpdate, ROLES } from "@/common";
+import { IUserRegister, IUserUpdate, ROLES, RoleTranslate } from "@/common";
 import { useRegisterUserMutation, useUpdateUserMutation } from "@/redux/api";
 import { LoadingButton } from "@mui/lab";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogUser = (props: {
   register: UseFormRegister<IUserRegister>;
@@ -43,7 +44,7 @@ export const DialogUser = (props: {
     formState: { errors },
     clearErrors,
     handleSubmit,
-    getValues,
+
     reset,
   } = props;
   const { openDialog, isUpdate, user } = useSelector(
@@ -55,14 +56,20 @@ export const DialogUser = (props: {
     { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate },
   ] = useUpdateUserMutation();
   const createUser = async (data: IUserRegister) => {
-    if (!isUpdate) {
-      registerUser({ ...data, roles: [data.roles] } as any);
-    } else {
-      updateUser({ id: (user as IUserUpdate)._id as string, ...data });
-      dispatch(close());
-    }
+    try {
+      if (!isUpdate) {
+        await registerUser({ ...data, roles: [data.roles] } as any).unwrap();
+      } else {
+        await updateUser({
+          id: (user as IUserUpdate)._id as string,
+          ...data,
+        }).unwrap();
+      }
 
-    (isSuccess || isSuccessUpdate) && dispatch(close());
+      dispatch(close());
+    } catch {
+      enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
+    }
   };
   const dispatch = useDispatch();
   return (
@@ -169,13 +176,18 @@ export const DialogUser = (props: {
 
             <Grid item xs={6}>
               <Autocomplete
-                defaultValue={isUpdate ? (user.roles[0] as string) : ""}
+                defaultValue={
+                  isUpdate
+                    ? RoleTranslate.get(user.roles[0] as any as string)
+                    : RoleTranslate.get(ROLES.USER)
+                }
                 disablePortal
                 // multiple
-                options={Object.values(ROLES)}
+                options={Array.from(RoleTranslate.values())}
                 onChange={(value, newValue) => {
                   clearErrors("roles");
                 }}
+                getOptionLabel={(option) => option.translate}
                 renderInput={(params) => (
                   <TextField
                     {...params}

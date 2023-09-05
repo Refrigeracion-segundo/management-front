@@ -129,12 +129,7 @@ export const TableUser = (props: {
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
-              SelectProps={{
-                inputProps: {
-                  "aria-label": "Elementos por pagina",
-                },
-                native: true,
-              }}
+              labelRowsPerPage="Elementos por pagina"
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}

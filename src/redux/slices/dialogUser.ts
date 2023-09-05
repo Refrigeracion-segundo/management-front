@@ -11,7 +11,6 @@ const initialState: DialogUser = {
   openDialog: false,
   isUpdate: false,
   user: {
-    id: "",
     name: "",
     lastName: "",
     email: "",

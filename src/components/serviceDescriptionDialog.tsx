@@ -39,6 +39,7 @@ import {
   saveServiceDescription,
 } from "@/redux/slices/serviceDescription";
 import { useLazyFindAllServiceQuery } from "@/redux/api/services.api";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogServiceDescription = (props: {
   register: UseFormRegister<IServiceDescriptionRegister>;
@@ -176,17 +177,25 @@ export const DialogServiceDescription = (props: {
           <LoadingButton
             loading={isLoading || isLoadingUpdate}
             loadingPosition="end"
-            onClick={handleSubmit((newData) => {
-              isUpdate
-                ? updateServiceDescription({
-                    ...newData,
-                    _id: (data as IServiceDescriptionUpdate)._id,
-                    service: (data.service as IServiceResponse)._id,
-                  })
-                : registerServiceDescription({
-                    ...newData,
-                    service: (data.service as IServiceResponse)._id,
-                  });
+            onClick={handleSubmit(async (newData) => {
+              try {
+                isUpdate
+                  ? await updateServiceDescription({
+                      ...newData,
+                      _id: (data as IServiceDescriptionUpdate)._id,
+                      service: (data.service as IServiceResponse)._id,
+                    }).unwrap()
+                  : await registerServiceDescription({
+                      ...newData,
+                      service: (data.service as IServiceResponse)._id,
+                    }).unwrap();
+
+                dispatch(closeServiceDescription());
+              } catch {
+                enqueueSnackbar("Intente de nuevo mas tarde", {
+                  variant: "error",
+                });
+              }
             })}
             style={{ width: "20%" }}
           >
