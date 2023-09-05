@@ -27,9 +27,21 @@ export const ListPermisions = (props: { role: string }) => {
   const dispatch = useDispatch();
   const options = [
     {
+      text: "Ordenes",
+      icon: <Checklist />,
+      redirect: "/order",
+      allowedRol: [ROLES.ADMIN, ROLES.USER],
+    },
+    {
       text: "Servicios",
       icon: <HomeRepairService />,
       redirect: "/services",
+      allowedRol: [ROLES.ADMIN, ROLES.USER],
+    },
+    {
+      text: "Descripcion de servicios",
+      icon: <Build />,
+      redirect: "/serviceDescription",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
@@ -43,12 +55,6 @@ export const ListPermisions = (props: { role: string }) => {
       icon: <Person />,
       redirect: "/users",
       allowedRol: [ROLES.ADMIN],
-    },
-    {
-      text: "Ordenes",
-      icon: <Checklist />,
-      redirect: "/order",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
       text: "Repuestos",
@@ -66,12 +72,6 @@ export const ListPermisions = (props: { role: string }) => {
       text: "Equipamiento",
       icon: <Build />,
       redirect: "/equipment",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
-    },
-    {
-      text: "Descripcion de servicios",
-      icon: <Build />,
-      redirect: "/serviceDescription",
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
   ];
