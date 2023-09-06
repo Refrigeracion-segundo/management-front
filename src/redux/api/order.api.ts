@@ -25,10 +25,14 @@ export const orderApi = createApi({
       }),
       invalidatesTags: ["findAllOrder"],
     }),
-    findAllOrder: builder.query<IOrderResponse, void>({
-      query: () => ({
-        url: ORDER_URL.FIND_ALL,
+    findAllOrder: builder.query<
+      IOrderResponse,
+      { perPage: number; page: number }
+    >({
+      query: (params) => ({
+        url: `${ORDER_URL.FIND_ALL}?perPage=${params.perPage}&page=${params.page}`,
         method: METHOD_TYPES.GET,
+        // params,
       }),
       providesTags: ["findAllOrder"],
     }),
@@ -49,11 +53,12 @@ export const orderApi = createApi({
       invalidatesTags: ["findAllOrder"],
     }),
     updateStatus: builder.mutation<void, { _id: string; status: string }>({
-      query: (params: { _id: string; status: string }) => ({
+      query: (data: { _id: string; status: string }) => ({
         url: ORDER_URL.UPDATE_STATUS,
         method: METHOD_TYPES.PATCH,
-        params,
+        data,
       }),
+      invalidatesTags: ["findAllOrder"],
     }),
   }),
 });

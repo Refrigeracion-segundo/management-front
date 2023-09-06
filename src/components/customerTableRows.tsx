@@ -108,7 +108,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
                     <TableCell>Estado</TableCell>
                     <TableCell>Ciudad</TableCell>
                     <TableCell>Calle</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>Codigo postal</TableCell>
                     <TableCell>Numero interior</TableCell>
                     <TableCell>Numero exterior</TableCell>
                   </TableRow>

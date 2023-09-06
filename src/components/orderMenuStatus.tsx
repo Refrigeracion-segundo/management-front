@@ -1,3 +1,4 @@
+import { useUpdateStatusMutation } from "@/redux/api";
 import {
   Button,
   ClickAwayListener,
@@ -24,18 +25,21 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
   const { status, _id } = props;
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
-
+  const [updateStatus, { isSuccess, isLoading }] = useUpdateStatusMutation();
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClose = (event: Event | React.SyntheticEvent) => {
+  const handleClose = (event: Event | React.SyntheticEvent, value: string) => {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
     ) {
       return;
     }
+    console.log(_id);
+    const status = STATUS.get(value);
+    status && updateStatus({ _id, status: value });
 
     setOpen(false);
   };
@@ -92,16 +96,39 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
             }}
           >
             <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
+              <ClickAwayListener onClickAway={(e) => handleClose(e, "")}>
                 <MenuList
                   autoFocusItem={open}
                   id="composition-menu"
                   aria-labelledby="composition-button"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                  <MenuItem onClick={(e) => handleClose(e, "paid")}>
+                    Pagado Pagado y facturado
+                  </MenuItem>
+                  <MenuItem onClick={(e) => handleClose(e, "invoiced")}>
+                    Facturado{" "}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, "paid and invoiced")}
+                  >
+                    Pagado y facturado
+                  </MenuItem>
+                  <MenuItem
+                    onClick={(e) => handleClose(e, "paid and invoiced")}
+                  >
+                    Pagado y facturado
+                  </MenuItem>
+                  <MenuItem onClick={(e) => handleClose(e, "pending")}>
+                    Pendiente
+                  </MenuItem>
+
+                  <MenuItem onClick={(e) => handleClose(e, "in progress")}>
+                    En progreso
+                  </MenuItem>
+                  <MenuItem onClick={(e) => handleClose(e, "canceled")}>
+                    Cancelado
+                  </MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

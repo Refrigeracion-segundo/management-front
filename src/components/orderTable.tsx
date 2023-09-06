@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,11 +8,34 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-import { useFindAllOrderQuery } from "@/redux/api";
+import { useFindAllOrderQuery, useLazyFindAllOrderQuery } from "@/redux/api";
 import { OrderTableRows } from "./orderTableRow";
+import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
+import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 export const OrderTable = () => {
-  const { data: rows, isSuccess } = useFindAllOrderQuery();
+  const [getOrders, { data: rows, isSuccess, isLoading, isFetching }] =
+    useLazyFindAllOrderQuery();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    getOrders({ perPage: rowsPerPage, page: page + 1 });
+  }, [rowsPerPage, page]);
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
@@ -34,7 +57,32 @@ export const OrderTable = () => {
               <OrderTableRows key={index} row={row} total={row.total} />
             ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              colSpan={8}
+              count={rows?.total as number}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              labelRowsPerPage="Elementos por pagina"
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+        }}
+      >
+        {(isLoading || isFetching) && <CircularProgress />}
+      </div>
     </TableContainer>
   );
 };

@@ -135,6 +135,7 @@ export const DialogCustomer = (props: {
         });
       }
       dispatch(closeClient());
+      enqueueSnackbar("Cliente registrado", { variant: "success" });
     } catch {
       enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
     }
