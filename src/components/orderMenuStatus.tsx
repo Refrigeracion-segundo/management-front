@@ -104,21 +104,17 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
                   onKeyDown={handleListKeyDown}
                 >
                   <MenuItem onClick={(e) => handleClose(e, "paid")}>
-                    Pagado Pagado y facturado
+                    Pagado
                   </MenuItem>
                   <MenuItem onClick={(e) => handleClose(e, "invoiced")}>
-                    Facturado{" "}
+                    Facturado
                   </MenuItem>
                   <MenuItem
                     onClick={(e) => handleClose(e, "paid and invoiced")}
                   >
                     Pagado y facturado
                   </MenuItem>
-                  <MenuItem
-                    onClick={(e) => handleClose(e, "paid and invoiced")}
-                  >
-                    Pagado y facturado
-                  </MenuItem>
+
                   <MenuItem onClick={(e) => handleClose(e, "pending")}>
                     Pendiente
                   </MenuItem>
