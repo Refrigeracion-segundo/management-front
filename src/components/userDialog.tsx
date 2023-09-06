@@ -74,7 +74,7 @@ export const DialogUser = (props: {
   };
 
   useEffect(() => {
-    if (isUpdate) setRole(user.roles[0]);
+    isUpdate && setRole(user.roles[0]);
   }, [isUpdate]);
 
   const dispatch = useDispatch();
@@ -192,6 +192,7 @@ export const DialogUser = (props: {
                 options={Array.from(RoleTranslate.values())}
                 onChange={(value, newValue) => {
                   clearErrors("roles");
+                  newValue && setRole(newValue?.key);
                 }}
                 getOptionLabel={(option) => option.translate}
                 renderInput={(params) => (
