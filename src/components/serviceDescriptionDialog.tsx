@@ -16,6 +16,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import {
+  Control,
+  Controller,
   FormState,
   UseFormClearErrors,
   UseFormHandleSubmit,
@@ -44,12 +46,14 @@ export const DialogServiceDescription = (props: {
   formState: FormState<IServiceDescriptionRegister>;
   handleSubmit: UseFormHandleSubmit<IServiceDescriptionRegister>;
   clearErrors: UseFormClearErrors<IServiceDescriptionRegister>;
+  control: Control<IServiceDescriptionRegister, any>;
 }) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
     clearErrors,
+    control,
   } = props;
   const { openDialog, data, isUpdate } = useSelector(
     (store: RootState) => store.serviceDescription
@@ -98,69 +102,101 @@ export const DialogServiceDescription = (props: {
             spacing={1}
           >
             <Grid item xs={9}>
-              <TextField
-                autoFocus
-                type="text"
-                fullWidth
-                placeholder="Descripcion"
-                {...register("description", {
+              <Controller
+                name="description"
+                control={control}
+                defaultValue={data.description}
+                rules={{
                   required: {
                     value: true,
                     message: "La descripcion es requerida",
                   },
-                })}
-                helperText={!!errors.description && errors.description.message}
-                error={!!errors.description}
+                }}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      autoFocus
+                      type="text"
+                      fullWidth
+                      placeholder="Descripcion"
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        dispatch(
+                          saveServiceDescription({
+                            ...data,
+                            description: e.target.value,
+                          })
+                        );
+                      }}
+                      helperText={
+                        !!errors.description && errors.description.message
+                      }
+                      error={!!errors.description}
+                    />
+                  );
+                }}
               />
             </Grid>
             <Grid item xs={9}>
-              <Autocomplete
-                disablePortal
-                blurOnSelect
-                defaultValue={
-                  isUpdate ? (data.service as IServiceResponse) : ("" as any)
-                }
-                loading={isLoadingService}
-                onOpen={() => getServices()}
-                id="serviceDescription"
-                options={IsSuccessService && dataServices ? dataServices : []}
-                isOptionEqualToValue={(option, value) =>
-                  option._id === value._id
-                }
-                getOptionLabel={(option: IServiceResponse) => {
-                  return option.name;
+              <Controller
+                name="service"
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Seleccione un servicio valido",
+                  },
                 }}
-                onChange={(value, newValue) => {
-                  if (newValue) {
-                    dispatch(
-                      saveServiceDescription({
-                        ...data,
-                        service: newValue,
-                      })
-                    );
+                defaultValue={data.service as IServiceResponse}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Autocomplete
+                      disablePortal
+                      blurOnSelect
+                      value={field.value as IServiceResponse}
+                      loading={isLoadingService}
+                      onOpen={() => getServices()}
+                      id="serviceDescription"
+                      options={
+                        IsSuccessService && dataServices ? dataServices : []
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option._id === value._id
+                      }
+                      getOptionLabel={(option: IServiceResponse) => {
+                        return option.name;
+                      }}
+                      onChange={(value, newValue) => {
+                        if (newValue) {
+                          field.onChange(newValue);
+                          dispatch(
+                            saveServiceDescription({
+                              ...data,
+                              service: newValue,
+                            })
+                          );
 
-                    clearErrors("service");
-                  }
+                          clearErrors("service");
+                        }
+                      }}
+                      fullWidth
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          margin="dense"
+                          label="Servicio"
+                          fullWidth
+                          error={!!errors.service}
+                          helperText={
+                            !!errors.service && errors.service.message
+                          }
+                        />
+                      )}
+                    />
+                  );
                 }}
-                fullWidth
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    margin="dense"
-                    label="Servicio"
-                    fullWidth
-                    {...register("service", {
-                      required: {
-                        value: true,
-                        message: "El servicio es requerido",
-                      },
-                      value: (data.service as IServiceResponse).name,
-                    })}
-                    error={!!errors.service}
-                    helperText={!!errors.service && errors.service.message}
-                  />
-                )}
               />
             </Grid>
           </Grid>
@@ -189,6 +225,9 @@ export const DialogServiceDescription = (props: {
                     }).unwrap();
 
                 dispatch(closeServiceDescription());
+                enqueueSnackbar("Registrado correctamente", {
+                  variant: "success",
+                });
               } catch {
                 enqueueSnackbar("Intente de nuevo mas tarde", {
                   variant: "error",

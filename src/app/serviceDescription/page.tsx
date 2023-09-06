@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 
 const ServiceDescription = () => {
   const { data } = useSelector((store: RootState) => store.serviceDescription);
-  const { formState, register, handleSubmit, clearErrors } =
+  const { formState, register, handleSubmit, clearErrors, control } =
     useForm<IServiceDescriptionRegister>({
       values: data,
     });
@@ -21,6 +21,7 @@ const ServiceDescription = () => {
         formState={formState}
         handleSubmit={handleSubmit}
         clearErrors={clearErrors}
+        control={control}
       />
       <ServiceDescriptionTable />
     </Box>
