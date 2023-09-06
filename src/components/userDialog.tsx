@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { open, close, isUpdatingUser } from "../redux/slices/dialogUser";
@@ -54,14 +54,16 @@ export const DialogUser = (props: {
     updateUser,
     { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate },
   ] = useUpdateUserMutation();
+  const [rol, setRole] = useState("");
   const createUser = async (data: IUserRegister) => {
     try {
       if (!isUpdate) {
-        await registerUser({ ...data, roles: [data.roles] } as any).unwrap();
+        await registerUser({ ...data, roles: [rol] } as any).unwrap();
       } else {
         await updateUser({
-          id: (user as IUserUpdate)._id as string,
           ...data,
+          _id: (user as IUserUpdate)._id as string,
+          roles: [rol],
         }).unwrap();
       }
 
@@ -70,6 +72,11 @@ export const DialogUser = (props: {
       enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
     }
   };
+
+  useEffect(() => {
+    if (isUpdate) setRole(user.roles[0]);
+  }, [isUpdate]);
+
   const dispatch = useDispatch();
   return (
     <div>

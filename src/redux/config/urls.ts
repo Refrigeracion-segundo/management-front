@@ -72,4 +72,5 @@ export const enum ORDER_URL {
   FIND_ALL = "/order",
   UPDATE = "/order",
   DELETE = "/order",
+  UPDATE_STATUS = "/order/status",
 }

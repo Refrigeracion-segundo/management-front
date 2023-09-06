@@ -48,6 +48,13 @@ export const orderApi = createApi({
       }),
       invalidatesTags: ["findAllOrder"],
     }),
+    updateStatus: builder.mutation<void, { _id: string; status: string }>({
+      query: (params: { _id: string; status: string }) => ({
+        url: ORDER_URL.UPDATE_STATUS,
+        method: METHOD_TYPES.PATCH,
+        params,
+      }),
+    }),
   }),
 });
 
@@ -57,4 +64,5 @@ export const {
   useFindAllOrderQuery,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
+  useUpdateStatusMutation,
 } = orderApi;

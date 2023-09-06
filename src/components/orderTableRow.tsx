@@ -1,7 +1,5 @@
 "use client";
-import {
-  IOrderDataResponse,
-} from "@/common";
+import { IOrderDataResponse } from "@/common";
 import { useDeleteOrderMutation } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 
@@ -23,8 +21,11 @@ import {
 } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Collapse,
   IconButton,
+  Menu,
+  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -37,15 +38,7 @@ import moment from "moment";
 import { enqueueSnackbar } from "notistack";
 import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
-
-const STATUS = new Map<string, string>();
-
-STATUS.set("paid", "PAGADO");
-STATUS.set("invoiced", "FACTURADO");
-STATUS.set("paid and invoiced", "PAGADO Y FACTURADO");
-STATUS.set("pending", "PENDIENTE");
-STATUS.set("in progress", "EN PROGRESO");
-STATUS.set("canceled", "CANCELADA");
+import { OrderMenuStatus } from "./orderMenuStatus";
 
 export const OrderTableRows = (props: {
   row: IOrderDataResponse;
@@ -128,7 +121,14 @@ export const OrderTableRows = (props: {
     dispatch(isUpdatingOrder(true));
     dispatch(openOrder());
   };
-
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openAnchor = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <Fragment key={row._id}>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -157,7 +157,9 @@ export const OrderTableRows = (props: {
         <TableCell align="left">
           {moment(row.updatedAt).format("LLLL")}
         </TableCell>
-        <TableCell align="left">{STATUS.get(row.status)}</TableCell>
+        <TableCell align="left">
+          <OrderMenuStatus status={row.status as string} _id={row._id} />
+        </TableCell>
         <TableCell>
           <IconButton
             color="secondary"
