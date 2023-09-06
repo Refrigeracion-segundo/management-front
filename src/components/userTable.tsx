@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
-import { IUserUpdate } from "@/common";
+import { IUserUpdate, RoleTranslate } from "@/common";
 import { useDispatch } from "react-redux";
 import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
 import { useDeleteUserMutation, useFindAllUsersQuery } from "@/redux/api";
@@ -97,15 +97,21 @@ export const TableUser = (props: {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {`${row.name} ${row.lastName}` }
+                {`${row.name} ${row.lastName}`}
               </TableCell>
               <TableCell>{row.email}</TableCell>
-              <TableCell align="right">{row.roles[0]}</TableCell>
               <TableCell align="right">
-              {moment(row.createdAt).format("LLLL")}
+                {RoleTranslate.get(row.roles[0])?.translate}
               </TableCell>
-              <TableCell align="right" >{moment(row.updatedAt).format("LLLL")}</TableCell>
-              <TableCell align="right">{row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}</TableCell>
+              <TableCell align="right">
+                {moment(row.createdAt).format("LLLL")}
+              </TableCell>
+              <TableCell align="right">
+                {moment(row.updatedAt).format("LLLL")}
+              </TableCell>
+              <TableCell align="right">
+                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              </TableCell>
               <TableCell>
                 <IconButton
                   color="secondary"
