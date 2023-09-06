@@ -23,7 +23,7 @@ export const CustomerTable = () => {
             <TableCell align="left">Celular</TableCell>
             <TableCell align="left">Persona de contacto</TableCell>
             <TableCell align="left">Fecha registro</TableCell>
-            <TableCell align="left">Ultima actualizacion</TableCell>
+            <TableCell align="left">Ultima actualización</TableCell>
             <TableCell align="left">Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>

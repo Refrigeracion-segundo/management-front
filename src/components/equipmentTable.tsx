@@ -84,8 +84,8 @@ export const EquipmentTable = () => {
         <TableHead>
           <TableRow>
             <TableCell>Nombre</TableCell>
-            <TableCell>Fecha creacion</TableCell>
-            <TableCell>Ultima actualizacion</TableCell>
+            <TableCell>Fecha creación</TableCell>
+            <TableCell>Ultima actualización</TableCell>
             <TableCell>Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>

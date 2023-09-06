@@ -75,10 +75,10 @@ export const ServiceDescriptionTable = () => {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Descripcion</TableCell>
+            <TableCell>Descripción</TableCell>
             <TableCell>Servicio</TableCell>
-            <TableCell>Fecha creacion</TableCell>
-            <TableCell>Ultima actualizacion</TableCell>
+            <TableCell>Fecha creación</TableCell>
+            <TableCell>Ultima actualización</TableCell>
             <TableCell>Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>

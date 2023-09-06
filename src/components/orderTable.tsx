@@ -23,7 +23,7 @@ export const OrderTable = () => {
             <TableCell align="left">Cliente</TableCell>
             <TableCell align="left">Fecha de inicio</TableCell>
             <TableCell align="left">Fecha registro</TableCell>
-            <TableCell align="left">Ultima actualizacion</TableCell>
+            <TableCell align="left">Ultima actualización</TableCell>
             <TableCell align="left">Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>

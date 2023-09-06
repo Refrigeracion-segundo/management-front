@@ -55,6 +55,7 @@ export const DialogUser = (props: {
     { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate },
   ] = useUpdateUserMutation();
   const [rol, setRole] = useState("");
+  
   const createUser = async (data: IUserRegister) => {
     try {
       if (!isUpdate) {

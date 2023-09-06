@@ -28,6 +28,7 @@ import {
   useRegisterServiceMutation,
   useUpdateServiceMutation,
 } from "@/redux/api/services.api";
+import { APPLICACTION_TYPE, ApplicationTypeTranslate } from "@/common/constants/equipmentApplication";
 
 export const DialogService = () => {
   const {
@@ -235,21 +236,21 @@ export const DialogService = () => {
               <Autocomplete
                 disablePortal
                 defaultValue={
-                  isUpdate ? dataService.equipmentApplication : ("" as any)
+                  isUpdate ? ApplicationTypeTranslate.get(dataService.equipmentApplication) : ApplicationTypeTranslate.get(APPLICACTION_TYPE.AIR_CONDITIONING)
                 }
                 // multiple
-                options={["COOL_ROOM", "AIR_CONDITIONING"] as Array<string>}
+                options={Array.from(ApplicationTypeTranslate.values())}
                 onChange={(value, newValue) => {
                   if (newValue)
                     dispatch(
                       saveService({
                         ...dataService,
-                        equipmentApplication: newValue,
+                        equipmentApplication: newValue.key,
                       })
                     );
                   clearErrors("equipmentApplication");
                 }}
-                getOptionLabel={(option) => option}
+                getOptionLabel={(option) => option.translate}
                 renderInput={(params) => (
                   <TextField
                     {...params}

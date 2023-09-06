@@ -30,6 +30,8 @@ import {
 import { STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
+import { currencyMx } from "@/redux/constants/formatCurrency";
+import { ApplicationTypeTranslate } from "@/common/constants/equipmentApplication";
 
 export const ServiceTable = () => {
   const confirm = useConfirm();
@@ -82,8 +84,11 @@ export const ServiceTable = () => {
           <TableRow>
             <TableCell>Nombre</TableCell>
             <TableCell>Descripcion</TableCell>
-            <TableCell>Fecha creacion</TableCell>
-            <TableCell>Ultima actualizacion</TableCell>
+            <TableCell>Precio sugerido</TableCell>
+            <TableCell>Capacidad de equipo</TableCell>
+            <TableCell>Aplicación de equipo</TableCell>
+            <TableCell>Fecha creación</TableCell>
+            <TableCell>Ultima actualización</TableCell>
             <TableCell>Estatus</TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -102,6 +107,15 @@ export const ServiceTable = () => {
               </TableCell>
               <TableCell component="th" scope="row">
                 {row.description}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {currencyMx.format(row.suggestedPrice)}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.equipmentCapacity}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {ApplicationTypeTranslate.get(row.equipmentApplication)?.translate}
               </TableCell>
 
               <TableCell align="left">
@@ -134,7 +148,7 @@ export const ServiceTable = () => {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              colSpan={6}
+              colSpan={9}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
