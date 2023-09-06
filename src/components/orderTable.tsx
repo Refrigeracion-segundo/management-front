@@ -12,16 +12,28 @@ import { useFindAllOrderQuery, useLazyFindAllOrderQuery } from "@/redux/api";
 import { OrderTableRows } from "./orderTableRow";
 import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export const OrderTable = () => {
   const [getOrders, { data: rows, isSuccess, isLoading, isFetching }] =
     useLazyFindAllOrderQuery();
+  const {
+    filters: { orderId, description, fromDate, toDate },
+  } = useSelector((store: RootState) => store.order);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    getOrders({ perPage: rowsPerPage, page: page + 1 });
-  }, [rowsPerPage, page]);
+    getOrders({
+      perPage: rowsPerPage,
+      page: page + 1,
+      orderId,
+      description,
+      fromDate,
+      toDate,
+    });
+  }, [rowsPerPage, page, orderId, description, fromDate, toDate]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -62,7 +74,7 @@ export const OrderTable = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
               colSpan={8}
-              count={rows?.total as number}
+              count={isSuccess ? (rows?.total as number) : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               labelRowsPerPage="Elementos por pagina"

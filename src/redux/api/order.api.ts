@@ -11,6 +11,7 @@ import {
   IOrderResponse,
   IOrderUpdate,
 } from "@/common";
+import moment from "moment";
 
 export const orderApi = createApi({
   reducerPath: ReducerPaths.ORDER,
@@ -27,10 +28,23 @@ export const orderApi = createApi({
     }),
     findAllOrder: builder.query<
       IOrderResponse,
-      { perPage: number; page: number }
+      {
+        perPage: number;
+        page: number;
+        fromDate: Date;
+        toDate: Date;
+        description: string;
+        orderId: number;
+      }
     >({
       query: (params) => ({
-        url: `${ORDER_URL.FIND_ALL}?perPage=${params.perPage}&page=${params.page}`,
+        url: `${ORDER_URL.FIND_ALL}?perPage=${params.perPage}&page=${
+          params.page
+        }&fromDate=${moment(params.fromDate).format(
+          "YYYY-MM-DD"
+        )}&toDate=${moment(params.toDate).format("YYYY-MM-DD")}&orderId=${
+          params.orderId
+        }&description=${params.description}`,
         method: METHOD_TYPES.GET,
         // params,
       }),

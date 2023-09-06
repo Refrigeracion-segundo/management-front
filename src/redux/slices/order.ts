@@ -2,6 +2,7 @@ import {
   IClientResponse,
   IOrderDirection,
   IOrderEquipment,
+  IOrderFilters,
   IOrderGeneral,
   IOrderRegister,
   IOrderService,
@@ -22,6 +23,7 @@ export interface Order {
   client: IClientResponse;
   general: IOrderGeneral;
   total: number;
+  filters: IOrderFilters;
 }
 
 const initialState: Order = {
@@ -72,6 +74,12 @@ const initialState: Order = {
     endDate: new Date(),
   },
   total: 0,
+  filters: {
+    orderId: 0,
+    description: "",
+    fromDate: new Date(),
+    toDate: new Date(),
+  },
 };
 
 export const orderSlice = createSlice({
@@ -181,6 +189,9 @@ export const orderSlice = createSlice({
     saveEquipment: (state, value: PayloadAction<Array<IOrderEquipment>>) => {
       state.equipment = value.payload;
     },
+    saveFilters: (state, value: PayloadAction<IOrderFilters>) => {
+      state.filters = value.payload;
+    },
   },
 });
 
@@ -201,6 +212,7 @@ export const {
   updateOrderService,
   saveTechnician,
   saveEquipment,
+  saveFilters,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
