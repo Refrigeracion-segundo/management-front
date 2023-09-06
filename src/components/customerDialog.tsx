@@ -491,6 +491,13 @@ export const DialogCustomer = (props: {
                       options={dataCities?.items ? dataCities.items : []}
                       onChange={(_, newValue) => {
                         field.onChange(newValue);
+                        dispatch(
+                          saveClient({
+                            ...dataClient,
+                            city: (newValue as ICityState).name,
+                            cityId: (newValue as ICityState).id,
+                          })
+                        );
                       }}
                       getOptionLabel={(option) => {
                         return typeof option == "string" ? option : option.name;
