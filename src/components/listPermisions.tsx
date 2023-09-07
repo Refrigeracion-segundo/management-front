@@ -9,6 +9,7 @@ import {
   Diversity3,
   HomeRepairService,
   Person,
+  Dashboard
 } from "@mui/icons-material";
 import {
   Box,
@@ -26,6 +27,12 @@ export const ListPermisions = (props: { role: string }) => {
   const { role } = props;
   const dispatch = useDispatch();
   const options = [
+    {
+      text: "Dashboard",
+      icon: <Dashboard />,
+      redirect: "/",
+      allowedRol: [ROLES.ADMIN],
+    },
     {
       text: "Ordenes",
       icon: <Checklist />,

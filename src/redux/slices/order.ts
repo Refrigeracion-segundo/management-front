@@ -11,6 +11,7 @@ import {
   IUserResponse,
 } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import moment from "moment";
 import { v4 } from "uuid";
 export interface Order {
   openDialog: boolean;
@@ -70,15 +71,15 @@ const initialState: Order = {
   general: {
     users: [],
     report: "",
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: new Date(moment().startOf("month").format()),
+    endDate: new Date(moment().endOf("month").format()),
   },
   total: 0,
   filters: {
     orderId: 0,
     description: "",
-    fromDate: new Date(),
-    toDate: new Date(),
+    fromDate: new Date(moment().startOf("month").format()),
+    toDate: new Date(moment().endOf("month").format()),
   },
 };
 

@@ -42,9 +42,7 @@ export const orderApi = createApi({
           params.page
         }&fromDate=${moment(params.fromDate).format(
           "YYYY-MM-DD"
-        )}&toDate=${moment(params.toDate).format("YYYY-MM-DD")}&orderId=${
-          params.orderId
-        }&description=${params.description}`,
+        )}&toDate=${moment(params.toDate).format("YYYY-MM-DD")}`,
         method: METHOD_TYPES.GET,
         // params,
       }),

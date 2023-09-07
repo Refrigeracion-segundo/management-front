@@ -358,7 +358,7 @@ export const OrderDialog = () => {
                   className={classes.root}
                 >
                   <BottomNavigationAction
-                    label="Direccion del cliente"
+                    label="Direccion del trabajo"
                     value="direction"
                     icon={<EditRoad style={{ color: "#fff" }} />}
                   />
