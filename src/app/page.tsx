@@ -4,14 +4,15 @@ import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
   Autocomplete,
   Box,
+  CircularProgress,
   Grid,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  // Table,
+  // TableBody,
+  // TableCell,
+  // TableContainer,
+  // TableHead,
+  // TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,7 +20,32 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Chart from "react-google-charts";
 import { Controller, useForm } from "react-hook-form";
-
+import {
+  AreaChart,
+  Card,
+  DonutChart,
+  LineChart,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Title,
+} from "@tremor/react";
+import {
+  useFindOrdersQuery,
+  useFindTotalQuery,
+  useLazyFindOrdersQuery,
+  useLazyFindTotalQuery,
+} from "@/redux/api/dashboard.api";
+import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useEffect } from "react";
+import { saveFiltersDashboard } from "@/redux/slices/dashboard";
+import { useLazyFindAllOrderQuery } from "@/redux/api";
+import { STATUS_ORIGINAL } from "@/redux/constants";
 const data = [
   ["Year", "Sales", "Expenses", "Profit"],
   ["2014", 1000, 400, 600],
@@ -72,8 +98,131 @@ const optionsLine = {
   colors: ["#2196F3", "#F44336"], // Colores de las líneas
 };
 
+const chartdata = [
+  {
+    date: "Jan 22",
+    SemiAnalysis: 2890,
+    "The Pragmatic Engineer": 2338,
+  },
+  {
+    date: "Feb 22",
+    SemiAnalysis: 2756,
+    "The Pragmatic Engineer": 2103,
+  },
+  {
+    date: "Mar 22",
+    SemiAnalysis: 3322,
+    "The Pragmatic Engineer": 2194,
+  },
+  {
+    date: "Apr 22",
+    SemiAnalysis: 3470,
+    "The Pragmatic Engineer": 2108,
+  },
+  {
+    date: "May 22",
+    SemiAnalysis: 3475,
+    "The Pragmatic Engineer": 1812,
+  },
+  {
+    date: "Jun 22",
+    SemiAnalysis: 3129,
+    "The Pragmatic Engineer": 1726,
+  },
+];
+
+const cities = [
+  {
+    name: "New York",
+    sales: 9800,
+  },
+  {
+    name: "London",
+    sales: 4567,
+  },
+  {
+    name: "Hong Kong",
+    sales: 3908,
+  },
+  {
+    name: "San Francisco",
+    sales: 2400,
+  },
+  {
+    name: "Singapore",
+    sales: 1908,
+  },
+  {
+    name: "Zurich",
+    sales: 1398,
+  },
+];
+
+const chartdataNew = [
+  {
+    year: 1970,
+    "Export Growth Rate": 2.04,
+    "Import Growth Rate": 1.53,
+  },
+  {
+    year: 1971,
+    "Export Growth Rate": 1.96,
+    "Import Growth Rate": 1.58,
+  },
+  {
+    year: 1972,
+    "Export Growth Rate": 1.96,
+    "Import Growth Rate": 1.61,
+  },
+  {
+    year: 1973,
+    "Export Growth Rate": 1.93,
+    "Import Growth Rate": 1.61,
+  },
+  {
+    year: 1974,
+    "Export Growth Rate": 1.88,
+    "Import Growth Rate": 1.67,
+  },
+  //...
+];
+const dataFormatter = (number: number) => {
+  return "$ " + Intl.NumberFormat("mx").format(number).toString();
+};
 export default function Home() {
   const { control } = useForm();
+  const dispatch = useDispatch();
+  const { filters } = useSelector((store: RootState) => store.dashboard);
+  const [
+    getTotals,
+    { data: dataTotal, isLoading: isLoadingTotal, isFetching: isFetchingTotal },
+  ] = useLazyFindTotalQuery();
+  const [getOrders, { data: dataOrder1 }] = useLazyFindAllOrderQuery();
+  const [getOrdersNoPaid, { data: dataOrder2 }] = useLazyFindAllOrderQuery();
+
+  useEffect(() => {
+    getTotals({
+      fromDate: filters.fromDate,
+      toDate: filters.toDate,
+      status: filters.status as string,
+    });
+    getOrders({
+      perPage: 30,
+      page: 1,
+      fromDate: filters.fromDate,
+      toDate: filters.toDate,
+      orderId: 0,
+      status: STATUS_ORIGINAL.PAID_INVOICED,
+    });
+    getOrdersNoPaid({
+      perPage: 30,
+      page: 1,
+      fromDate: filters.fromDate,
+      toDate: filters.toDate,
+      orderId: 0,
+      status: STATUS_ORIGINAL.INVOICED,
+    });
+  }, [filters.fromDate, filters.toDate, filters.status]);
   return (
     <Box sx={{ p: 15 }}>
       <Grid container spacing={5}>
@@ -100,11 +249,19 @@ export default function Home() {
               },
             }}
           >
-            <Typography align="center">12</Typography>
-            <Typography align="center">Ordenes Totales</Typography>
-            <Typography align="center">
-              Total: {currencyMx.format(12312)}
-            </Typography>
+            {isLoadingTotal || isFetchingTotal ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={30} />
+              </div>
+            ) : (
+              <>
+                <Typography align="center">{dataTotal?.total.total}</Typography>
+                <Typography align="center">Ordenes Totales</Typography>
+                <Typography align="center">
+                  Total: {currencyMx.format(dataTotal?.total.amount as number)}
+                </Typography>
+              </>
+            )}
           </Grid>
           <Grid
             item
@@ -122,11 +279,24 @@ export default function Home() {
               },
             }}
           >
-            <Typography align="center">12</Typography>
-            <Typography align="center">Pagadas y facturadas</Typography>
-            <Typography align="center">
-              Total: {currencyMx.format(12312)}
-            </Typography>
+            {isLoadingTotal || isFetchingTotal ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={30} />
+              </div>
+            ) : (
+              <>
+                <Typography align="center">
+                  {dataTotal?.["paid and invoiced"].total}
+                </Typography>
+                <Typography align="center">Pagadas y facturadas</Typography>
+                <Typography align="center">
+                  Total:
+                  {currencyMx.format(
+                    dataTotal?.["paid and invoiced"].amount as number
+                  )}
+                </Typography>
+              </>
+            )}
           </Grid>
           <Grid
             item
@@ -144,11 +314,22 @@ export default function Home() {
               },
             }}
           >
-            <Typography align="center">12</Typography>
-            <Typography align="center">Facturadas y no pagadas</Typography>
-            <Typography align="center">
-              Total: {currencyMx.format(12312)}
-            </Typography>
+            {isLoadingTotal || isFetchingTotal ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={30} />
+              </div>
+            ) : (
+              <>
+                <Typography align="center">
+                  {dataTotal?.invoiced.total}
+                </Typography>
+                <Typography align="center">Facturadas y no pagadas</Typography>
+                <Typography align="center">
+                  Total:{" "}
+                  {currencyMx.format(dataTotal?.invoiced.amount as number)}
+                </Typography>
+              </>
+            )}
           </Grid>
           <Grid
             item
@@ -166,11 +347,22 @@ export default function Home() {
               },
             }}
           >
-            <Typography align="center">12</Typography>
-            <Typography align="center">Pendientes de iniciar</Typography>
-            <Typography align="center">
-              Total: {currencyMx.format(12312)}
-            </Typography>
+            {isLoadingTotal || isFetchingTotal ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={30} />
+              </div>
+            ) : (
+              <div>
+                <Typography align="center">
+                  {dataTotal?.pending.total as number}
+                </Typography>
+                <Typography align="center">Pendientes de iniciar</Typography>
+                <Typography align="center">
+                  Total:{" "}
+                  {currencyMx.format(dataTotal?.pending.amount as number)}
+                </Typography>
+              </div>
+            )}
           </Grid>
           <Grid
             item
@@ -188,18 +380,38 @@ export default function Home() {
               },
             }}
           >
-            <Typography align="center">12</Typography>
-            <Typography align="center">sin iniciar</Typography>
-            <Typography align="center">
-              Total: {currencyMx.format(12312)}
-            </Typography>
+            {isLoadingTotal || isFetchingTotal ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress size={30} />
+              </div>
+            ) : (
+              <>
+                <Typography align="center">
+                  {dataTotal?.["in progress"].total}
+                </Typography>
+                <Typography align="center">sin iniciar</Typography>
+                <Typography align="center">
+                  Total:{" "}
+                  {currencyMx.format(
+                    dataTotal?.["in progress"].amount as number
+                  )}
+                </Typography>
+              </>
+            )}
           </Grid>
         </Grid>
 
         <Grid item container xs={12} spacing={2} justifyContent="space-between">
           <Grid item container xs={2.22} sx={{ p: 2 }} height="315px">
             {/* <Paper> */}
-            <Grid item container component={Paper} rowGap={4} sx={{ p: 2 }}>
+            <Grid
+              item
+              container
+              component={Paper}
+              rowGap={4}
+              sx={{ p: 2 }}
+              style={{ backgroundColor: "#080d1f" }}
+            >
               <Grid item xs={12}>
                 <Controller
                   name="city"
@@ -242,7 +454,7 @@ export default function Home() {
                         message: "Selecciona una fecha valida",
                       },
                     }}
-                    // defaultValue={general.startDate}
+                    defaultValue={new Date(moment().startOf("month").format())}
                     render={({ field }) => {
                       return (
                         <DesktopDatePicker
@@ -252,6 +464,12 @@ export default function Home() {
                           onChange={(value: any) => {
                             if (value) {
                               field.onChange(value);
+                              dispatch(
+                                saveFiltersDashboard({
+                                  ...filters,
+                                  fromDate: new Date(value),
+                                })
+                              );
                               // setUseDates(true);
                               // dispatch(
                               //   saveOrderGeneral({
@@ -274,7 +492,7 @@ export default function Home() {
               <Grid item xs={12}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <Controller
-                    name="startDate"
+                    name="endDate"
                     control={control}
                     rules={{
                       required: {
@@ -282,7 +500,7 @@ export default function Home() {
                         message: "Selecciona una fecha valida",
                       },
                     }}
-                    // defaultValue={general.startDate}
+                    defaultValue={new Date(moment().endOf("month").format())}
                     render={({ field }) => {
                       return (
                         <DesktopDatePicker
@@ -292,6 +510,12 @@ export default function Home() {
                           onChange={(value: any) => {
                             if (value) {
                               field.onChange(value);
+                              dispatch(
+                                saveFiltersDashboard({
+                                  ...filters,
+                                  toDate: new Date(value),
+                                })
+                              );
                               // setUseDates(true);
                               // dispatch(
                               //   saveOrderGeneral({
@@ -314,112 +538,102 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={4}>
-            <TableContainer
-              component={Paper}
-              sx={{
-                maxHeight: "285px",
-                height: "285px",
-              }}
+            <Card
+              style={{ height: "280px", maxHeight: "280px", overflowY: "auto" }}
             >
-              <Table size="small" stickyHeader>
+              <Title>Facturas pagadas y facturadas</Title>
+              <Table className="mt-5">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" colSpan={3}>
-                      <Typography align="center">
-                        Ordenes Facturadas y pagadas
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Servicio</TableCell>
-                    <TableCell>Cliente</TableCell>
-                    <TableCell>Total</TableCell>
+                    <TableHeaderCell># Orden</TableHeaderCell>
+                    <TableHeaderCell>Nombre cliente</TableHeaderCell>
+                    <TableHeaderCell>Total</TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow hover role="checkbox" tabIndex={-1}>
-                    <TableCell>skjdfdkls</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>skjdfdkls</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>skjdfdkls</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>skjdfdkls</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>skjdfdkls</TableCell>
-                  </TableRow>
+                  {dataOrder1?.data.map((order, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{order.orderId}</TableCell>
+                      <TableCell>{order.customer.name}</TableCell>
+                      <TableCell>{currencyMx.format(order.total)}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
-            </TableContainer>
+            </Card>
           </Grid>
 
           <Grid item xs={5.5}>
-            <TableContainer
-              component={Paper}
-              sx={{
-                maxHeight: "285px",
-                height: "285px",
-              }}
+            <Card
+              style={{ height: "280px", maxHeight: "280px", overflowY: "auto" }}
             >
-              <Table size="small" stickyHeader>
+              <Title>Facturas no pagadas y facturadas</Title>
+              <Table className="mt-5">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" colSpan={4}>
-                      <Typography align="center">
-                        Ordenes facturadas y no pagadas
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Servicio</TableCell>
-                    <TableCell>Cliente</TableCell>
-                    <TableCell>Total</TableCell>
-                    <TableCell>Teléfono</TableCell>
+                    <TableHeaderCell># Orden</TableHeaderCell>
+                    <TableHeaderCell>Nombre cliente</TableHeaderCell>
+                    <TableHeaderCell># Cliente</TableHeaderCell>
+                    <TableHeaderCell>Total</TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow hover role="checkbox" tabIndex={-1}>
-                    <TableCell>skjdfdkls</TableCell>
-                  </TableRow>
+                  {dataOrder2?.data.map((order, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{order.orderId}</TableCell>
+                      <TableCell>{order.customer.name}</TableCell>
+                      <TableCell>{order.customer.phone}</TableCell>
+                      <TableCell>{currencyMx.format(order.total)}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
-            </TableContainer>
+            </Card>
           </Grid>
 
           <Grid item xs={4}>
-            <Chart
-              chartType="BarChart"
-              width="100%"
-              height="300px"
-              data={data}
-              options={optionsBar}
-              rootProps={{ "data-testid": "1" }}
-            />
+            <Card>
+              <AreaChart
+                className="h-72 mt-4"
+                data={chartdata}
+                index="date"
+                style={{ height: "240px" }}
+                categories={["SemiAnalysis", "The Pragmatic Engineer"]}
+                colors={["indigo", "cyan"]}
+                valueFormatter={dataFormatter}
+              />
+            </Card>
           </Grid>
 
           <Grid item xs={4}>
-            <Chart
-              chartType="PieChart"
-              width="100%"
-              height="400px"
-              data={dataPie}
-              options={optionsPie}
-              rootProps={{ "data-testid": "1" }}
-            />
+            <Card className="max-w-lg">
+              <Title>Sales</Title>
+              <DonutChart
+                className="mt-6"
+                data={cities}
+                category="sales"
+                index="name"
+                valueFormatter={dataFormatter}
+                colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
+              />
+              <Title>Usuario</Title>
+            </Card>
           </Grid>
 
           <Grid item xs={4}>
-            <Chart
-              chartType="LineChart"
-              width="100%"
-              height="400px"
-              data={dataLine}
-              options={optionsLine}
-            />
+            <Card>
+              <Title>Export/Import Growth Rates (1970 to 2021)</Title>
+              <LineChart
+                className="mt-5"
+                data={chartdataNew}
+                style={{ height: "210px" }}
+                index="year"
+                categories={["Export Growth Rate", "Import Growth Rate"]}
+                colors={["emerald", "gray"]}
+                valueFormatter={dataFormatter}
+                yAxisWidth={50}
+              />
+            </Card>
           </Grid>
         </Grid>
       </Grid>

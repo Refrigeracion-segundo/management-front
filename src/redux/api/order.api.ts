@@ -33,8 +33,9 @@ export const orderApi = createApi({
         page: number;
         fromDate: Date;
         toDate: Date;
-        description: string;
-        orderId: number;
+        description?: string;
+        orderId?: number;
+        status?: string;
       }
     >({
       query: (params) => ({
@@ -42,7 +43,9 @@ export const orderApi = createApi({
           params.page
         }&fromDate=${moment(params.fromDate).format(
           "YYYY-MM-DD"
-        )}&toDate=${moment(params.toDate).format("YYYY-MM-DD")}`,
+        )}&toDate=${moment(params.toDate).format("YYYY-MM-DD")}&orderId=${
+          params.orderId
+        }&description=${params.description}&status=${params.status}`,
         method: METHOD_TYPES.GET,
         // params,
       }),

@@ -74,3 +74,9 @@ export const enum ORDER_URL {
   DELETE = "/order",
   UPDATE_STATUS = "/order/status",
 }
+
+export const enum DASHBOARD_URL {
+  TOTAL = "/dashboard/totals",
+  ORDERS = "/dashboard/orders",
+  TECHNICIANS = "/dashboard/technicians",
+}

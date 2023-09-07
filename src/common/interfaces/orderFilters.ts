@@ -3,4 +3,5 @@ export interface IOrderFilters {
   description: string;
   fromDate: Date;
   toDate: Date;
+  status?: string;
 }

@@ -1,4 +1,5 @@
 import { useUpdateStatusMutation } from "@/redux/api";
+import { STATUS } from "@/redux/constants";
 import {
   Button,
   ClickAwayListener,
@@ -9,17 +10,6 @@ import {
   Popper,
 } from "@mui/material";
 import React from "react";
-const STATUS = new Map<string, { color: string; translate: string }>();
-
-STATUS.set("paid", { color: "#a7414a", translate: "PAGADO" });
-STATUS.set("invoiced", { color: "#282726", translate: "FACTURADO" });
-STATUS.set("paid and invoiced", {
-  color: "#6a8a82",
-  translate: "PAGADO Y FACTURADO",
-});
-STATUS.set("pending", { color: "#a37c27", translate: "PENDIENTE" });
-STATUS.set("in progress", { color: "#282726", translate: "EN PROGRESO" });
-STATUS.set("canceled", { color: "red", translate: "CANCELADA" });
 
 export const OrderMenuStatus = (props: { _id: string; status: string }) => {
   const { status, _id } = props;
