@@ -26,6 +26,7 @@ import {
 } from "react-hook-form";
 import { ISpareRegister, ISpareUpdate } from "@/common";
 import {
+  cleanReduxSpare,
   closeSpare,
   isUpdatingSpare,
   openSpare,
@@ -71,6 +72,7 @@ export const DialogSpare = (props: {
           }).unwrap();
       enqueueSnackbar("Se guardo con exito", { variant: "success" });
       dispatch(closeSpare());
+      dispatch(cleanReduxSpare());
     } catch {
       enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
     }

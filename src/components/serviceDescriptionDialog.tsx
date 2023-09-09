@@ -34,6 +34,7 @@ import {
   useUpdateServiceDescriptionMutation,
 } from "@/redux/api/serviceDescription.api";
 import {
+  clearServiceDescription,
   closeServiceDescription,
   openServiceDescription,
   saveServiceDescription,
@@ -225,6 +226,7 @@ export const DialogServiceDescription = (props: {
                     }).unwrap();
 
                 dispatch(closeServiceDescription());
+                dispatch(clearServiceDescription());
                 enqueueSnackbar("Registrado correctamente", {
                   variant: "success",
                 });

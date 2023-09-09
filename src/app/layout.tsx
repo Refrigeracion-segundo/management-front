@@ -5,14 +5,12 @@ import { Inter } from "next/font/google";
 import { Providers } from "./provider";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Home from "./home";
-
 import useUser from "./lib/hooks/useUser";
-
-import { useEffect, useState } from "react";
 import { SnackbarProvider } from "notistack";
 import Login from "./login";
 import { ConfirmProvider } from "material-ui-confirm";
 import "moment/locale/es";
+import { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
@@ -29,11 +27,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
   const home = useUser({ redirectTo: "/login" });
-  useEffect(() => {
-    setIsPageLoaded(true);
-  }, []);
 
   return (
     <html lang="en">

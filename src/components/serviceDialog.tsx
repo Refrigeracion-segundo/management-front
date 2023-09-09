@@ -28,7 +28,11 @@ import {
   useRegisterServiceMutation,
   useUpdateServiceMutation,
 } from "@/redux/api/services.api";
-import { APPLICACTION_TYPE, ApplicationTypeTranslate } from "@/common/constants/equipmentApplication";
+import {
+  APPLICACTION_TYPE,
+  ApplicationTypeTranslate,
+} from "@/common/constants/equipmentApplication";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogService = () => {
   const {
@@ -236,7 +240,13 @@ export const DialogService = () => {
               <Autocomplete
                 disablePortal
                 defaultValue={
-                  isUpdate ? ApplicationTypeTranslate.get(dataService.equipmentApplication) : ApplicationTypeTranslate.get(APPLICACTION_TYPE.AIR_CONDITIONING)
+                  isUpdate
+                    ? ApplicationTypeTranslate.get(
+                        dataService.equipmentApplication
+                      )
+                    : ApplicationTypeTranslate.get(
+                        APPLICACTION_TYPE.AIR_CONDITIONING
+                      )
                 }
                 // multiple
                 options={Array.from(ApplicationTypeTranslate.values())}
@@ -312,37 +322,36 @@ export const DialogService = () => {
             Cancelar
           </Button>
           <Button
-            onClick={handleSubmit((data) => {
-              console.log({
-                ...data,
-                equipmentType: dataService.equipmentType,
-              });
-              !isUpdate
-                ? registerService({
-                    ...data,
-                    equipmentType: (
-                      dataService.equipmentType as IEquipmentResponse
-                    )._id,
-                  })
-                    .unwrap()
-                    .then(() => {
-                      dispatch(closeService());
-                      dispatch(clearService());
-                      reset(undefined);
-                    })
-                : updateService({
-                    ...data,
-                    _id: (dataService as IServiceUpdate)._id as string,
-                    equipmentType: (
-                      dataService.equipmentType as IEquipmentResponse
-                    )._id,
-                  })
-                    .unwrap()
-                    .then(() => {
-                      dispatch(closeService());
-                      dispatch(clearService());
-                      reset(null as any);
-                    });
+            onClick={handleSubmit(async (data) => {
+              try {
+                !isUpdate
+                  ? await registerService({
+                      ...data,
+                      equipmentType: (
+                        dataService.equipmentType as IEquipmentResponse
+                      )._id,
+                    }).unwrap()
+                  : await updateService({
+                      ...data,
+                      _id: (dataService as IServiceUpdate)._id as string,
+                      equipmentType: (
+                        dataService.equipmentType as IEquipmentResponse
+                      )._id,
+                    }).unwrap();
+                // .then(() => {
+                //   dispatch(closeService());
+                //   dispatch(clearService());
+                //   reset(null as any);
+                // });
+
+                dispatch(closeService());
+                dispatch(clearService());
+                reset(undefined);
+              } catch {
+                enqueueSnackbar("Intente de nuevo mas tarde", {
+                  variant: "error",
+                });
+              }
             })}
           >
             Guardar

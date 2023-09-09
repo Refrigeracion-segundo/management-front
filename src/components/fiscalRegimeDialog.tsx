@@ -31,6 +31,7 @@ import {
 } from "@/redux/api/fiscalRegime";
 import { LoadingButton } from "@mui/lab";
 import { enqueueSnackbar } from "notistack";
+import { clearEquipment } from "@/redux/slices/dialogEquipment";
 
 export const DialogFiscalRegime = (props: {
   register: UseFormRegister<IRegimeRegister>;
@@ -132,6 +133,8 @@ export const DialogFiscalRegime = (props: {
                     }).unwrap()
                   : await registerRegime({ ...newData }).unwrap();
                 dispatch(closeFiscalRegime());
+                dispatch(clearEquipment());
+                enqueueSnackbar("Registrado correctamente");
               } catch {
                 enqueueSnackbar("Intente de nuevo mas tarde", {
                   variant: "error",

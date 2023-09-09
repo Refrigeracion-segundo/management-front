@@ -40,6 +40,9 @@ export const dialogUserSlice = createSlice({
     isUpdating: (state, value: PayloadAction<boolean>) => {
       state.isUpdate = value.payload;
     },
+    cleanReduxUser: (state) => {
+      state = { ...initialState };
+    },
   },
 });
 
@@ -48,6 +51,7 @@ export const {
   close,
   isUpdating: isUpdatingUser,
   saveUser,
+  cleanReduxUser,
 } = dialogUserSlice.actions;
 
 export default dialogUserSlice.reducer;

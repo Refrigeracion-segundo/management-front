@@ -1,5 +1,6 @@
 "use client";
 import {
+  cleanReduxOrder,
   closeOrder,
   openOrder,
   orderUsers,
@@ -38,11 +39,7 @@ import {
   useRegisterOrderMutation,
   useUpdateOrderMutation,
 } from "@/redux/api";
-import {
-  IClientResponse,
-  IOrderGeneral,
-  IServiceResponse,
-} from "@/common";
+import { IClientResponse, IOrderGeneral, IServiceResponse } from "@/common";
 import { Controller, useForm } from "react-hook-form";
 import { OrderEquipments } from "./orderEquipents";
 import { OrderDirection } from "./orderDirection";
@@ -50,6 +47,7 @@ import { OrderServices } from "./orderServices";
 import { makeStyles } from "@mui/styles";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { enqueueSnackbar } from "notistack";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -390,7 +388,7 @@ export const OrderDialog = () => {
             Cerrar
           </Button>
           <Button
-            onClick={handleSubmit((data) => {
+            onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
                   report: data.report,
@@ -415,9 +413,19 @@ export const OrderDialog = () => {
                   }),
                 };
                 console.log(aux);
-                !isUpdate
-                  ? registerOrder(aux)
-                  : updateOrder({ ...aux, _id: general._id });
+                try {
+                  !isUpdate
+                    ? await registerOrder(aux).unwrap()
+                    : await updateOrder({ ...aux, _id: general._id }).unwrap();
+                  enqueueSnackbar("Orden registrada correctamente", {
+                    variant: "success",
+                  });
+                  dispatch(cleanReduxOrder());
+                } catch {
+                  enqueueSnackbar("Intente de nuevo mas tarde", {
+                    variant: "error",
+                  });
+                }
               }
             })}
           >

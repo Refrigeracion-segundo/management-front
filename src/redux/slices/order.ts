@@ -193,6 +193,9 @@ export const orderSlice = createSlice({
     saveFilters: (state, value: PayloadAction<IOrderFilters>) => {
       state.filters = value.payload;
     },
+    cleanReduxOrder: (state) => {
+      state = { ...initialState };
+    },
   },
 });
 
@@ -214,6 +217,7 @@ export const {
   saveTechnician,
   saveEquipment,
   saveFilters,
+  cleanReduxOrder,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

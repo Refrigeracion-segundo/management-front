@@ -16,7 +16,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { open, close, isUpdatingUser } from "../redux/slices/dialogUser";
+import {
+  open,
+  close,
+  isUpdatingUser,
+  cleanReduxUser,
+} from "../redux/slices/dialogUser";
 import {
   FormState,
   UseFormClearErrors,
@@ -55,7 +60,7 @@ export const DialogUser = (props: {
     { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate },
   ] = useUpdateUserMutation();
   const [rol, setRole] = useState("");
-  
+
   const createUser = async (data: IUserRegister) => {
     try {
       if (!isUpdate) {
@@ -69,6 +74,8 @@ export const DialogUser = (props: {
       }
 
       dispatch(close());
+      dispatch(cleanReduxUser());
+      enqueueSnackbar("Registrado correctamente", { variant: "success" });
     } catch {
       enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
     }

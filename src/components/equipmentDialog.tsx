@@ -22,7 +22,11 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { IEquipmentRegister, IEquipmentUpdate } from "@/common";
-import { closeEquipment, openEquipment } from "@/redux/slices/dialogEquipment";
+import {
+  clearEquipment,
+  closeEquipment,
+  openEquipment,
+} from "@/redux/slices/dialogEquipment";
 import {
   useRegisterEquipmentMutation,
   useUpdateEquipmentMutation,
@@ -59,6 +63,7 @@ export const DialogEquipment = (props: {
             ...data,
             id: (data as IEquipmentUpdate)._id as string,
           }).unwrap();
+      dispatch(clearEquipment());
       enqueueSnackbar("Se guardo con exito", { variant: "success" });
       dispatch(closeEquipment());
     } catch {

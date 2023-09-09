@@ -52,10 +52,18 @@ export const dialogClientSlice = createSlice({
     saveClient: (state, value: PayloadAction<IClientRegister>) => {
       state.dataClient = value.payload;
     },
+    cleanReduxClient: (state) => {
+      state = { ...initialState };
+    },
   },
 });
 
-export const { openClient, closeClient, isUpdatingClient, saveClient } =
-  dialogClientSlice.actions;
+export const {
+  openClient,
+  closeClient,
+  isUpdatingClient,
+  saveClient,
+  cleanReduxClient,
+} = dialogClientSlice.actions;
 
 export default dialogClientSlice.reducer;

@@ -31,6 +31,7 @@ import {
 import { ICityState, IClientRegister, IClientUpdate } from "@/common";
 import { IRegimeResponse } from "@/common/interfaces/regimeResponse";
 import {
+  cleanReduxClient,
   closeClient,
   isUpdatingClient,
   openClient,
@@ -134,6 +135,7 @@ export const DialogCustomer = (props: {
           fiscalRegime: (dataClient.fiscalRegime as IRegimeResponse)._id,
         });
       }
+      dispatch(cleanReduxClient());
       dispatch(closeClient());
       enqueueSnackbar("Cliente registrado", { variant: "success" });
     } catch {

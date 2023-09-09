@@ -37,10 +37,18 @@ export const dialogSpareSlice = createSlice({
     isUpdatingSpare: (state, value: PayloadAction<boolean>) => {
       state.isUpdate = value.payload;
     },
+    cleanReduxSpare: (state) => {
+      state = { ...initialState };
+    },
   },
 });
 
-export const { openSpare, closeSpare, isUpdatingSpare, saveSpare } =
-  dialogSpareSlice.actions;
+export const {
+  openSpare,
+  closeSpare,
+  isUpdatingSpare,
+  saveSpare,
+  cleanReduxSpare,
+} = dialogSpareSlice.actions;
 
 export default dialogSpareSlice.reducer;
