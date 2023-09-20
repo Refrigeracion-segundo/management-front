@@ -7,6 +7,7 @@ import {
 import { useLazyFindAllServiceDescriptionQuery } from "@/redux/api/serviceDescription.api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
+  deleteAllServices,
   deleteOrderService,
   pushOrderService,
   updateOrderService,
@@ -66,6 +67,14 @@ export const OrderServices = () => {
       dispatch(deleteOrderService(index));
     });
   };
+
+  const deleteAll = () => {
+    confirm({
+      description: "Seguro que quiere eliminar el servicio?",
+    }).then(() => {
+      dispatch(deleteAllServices());
+    });
+  };
   return (
     <>
       <Grid
@@ -75,14 +84,13 @@ export const OrderServices = () => {
         columnSpacing={2}
         rowSpacing={2}
         alignItems="end"
-        justifyContent="space-between"
       >
         <br />
         <br />
         <Grid item xs={12}>
           <Divider variant="middle" />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Autocomplete
             disablePortal
             loading={isLoadingService}
@@ -119,7 +127,7 @@ export const OrderServices = () => {
             )}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Autocomplete
             disablePortal
             options={equipment}
@@ -151,7 +159,7 @@ export const OrderServices = () => {
             )}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={1}>
           <Button
             onClick={handleSubmit(() => {
               if (
@@ -174,6 +182,16 @@ export const OrderServices = () => {
             })}
           >
             Añadir servicio
+          </Button>
+        </Grid>
+        <Grid item xs={2}>
+          <Button
+            endIcon={<Delete />}
+            color="secondary"
+            onClick={deleteAll}
+            style={{ float: "left" }}
+          >
+            Eliminar Todo
           </Button>
         </Grid>
         <Grid item xs={12}>

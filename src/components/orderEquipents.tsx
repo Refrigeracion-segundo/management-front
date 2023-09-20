@@ -21,7 +21,11 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "../app/order.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { deleteOrderEquipment, pushOrderEquipment } from "@/redux/slices/order";
+import {
+  deleteAllEquipment,
+  deleteOrderEquipment,
+  pushOrderEquipment,
+} from "@/redux/slices/order";
 import { useConfirm } from "material-ui-confirm";
 
 export const OrderEquipments = () => {
@@ -37,7 +41,7 @@ export const OrderEquipments = () => {
   } = useForm<IOrderEquipment>();
 
   const handleAddDataEquip = (data: IOrderEquipment) => {
-    if (!equipment.find((p) => p.serie == data.serie)) {
+    if (!equipment.find((p) => p.serie == data.serie) || data.serie == "") {
       dispatch(pushOrderEquipment(data));
       setFocusEquipment("equipment");
       resetEquipment({
@@ -50,11 +54,19 @@ export const OrderEquipments = () => {
       enqueueSnackbar("Este numero de serie ya existe", { variant: "error" });
   };
 
-  const deleteEquipment = (serie: string) => {
+  const deleteEquipment = (index: number) => {
     confirm({
       description: "Seguro que quieres eliminar el equipo?",
     }).then(() => {
-      dispatch(deleteOrderEquipment(serie));
+      dispatch(deleteOrderEquipment(index));
+    });
+  };
+
+  const deleteAll = () => {
+    confirm({
+      description: "Seguro que desea eliminar todos los equipamientos?",
+    }).then(() => {
+      dispatch(deleteAllEquipment());
     });
   };
 
@@ -105,7 +117,7 @@ export const OrderEquipments = () => {
             }
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <TextField
             variant="standard"
             margin="dense"
@@ -114,7 +126,7 @@ export const OrderEquipments = () => {
             size="small"
             {...registerEquipment("model", {
               required: {
-                value: true,
+                value: false,
                 message: "El modelo es requerido",
               },
             })}
@@ -124,7 +136,7 @@ export const OrderEquipments = () => {
             }
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <TextField
             variant="standard"
             margin="dense"
@@ -134,7 +146,7 @@ export const OrderEquipments = () => {
             size="small"
             {...registerEquipment("serie", {
               required: {
-                value: true,
+                value: false,
                 message: "La serie es requerida",
               },
             })}
@@ -150,6 +162,11 @@ export const OrderEquipments = () => {
             onClick={handleSubmitEquipment(handleAddDataEquip)}
           >
             Agregar
+          </Button>
+        </Grid>
+        <Grid item xs={2}>
+          <Button endIcon={<Delete />} onClick={deleteAll} color="secondary">
+            Eliminar Todo
           </Button>
         </Grid>
       </Grid>
@@ -178,7 +195,7 @@ export const OrderEquipments = () => {
                       <TableCell>
                         <IconButton
                           color="secondary"
-                          onClick={() => deleteEquipment(equip.serie)}
+                          onClick={() => deleteEquipment(index)}
                         >
                           <Delete />
                         </IconButton>

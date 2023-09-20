@@ -124,11 +124,10 @@ export const orderSlice = createSlice({
     pushOrderEquipment: (state, value: PayloadAction<IOrderEquipment>) => {
       state.equipment = [...state.equipment, { ...value.payload, _id: v4() }];
     },
-    deleteOrderEquipment: (state, value: PayloadAction<string>) => {
-      const exist = state.service.findIndex(
-        (p) => p.equipment.serie == value.payload
+    deleteOrderEquipment: (state, value: PayloadAction<number>) => {
+      state.equipment = state.equipment.filter(
+        (p, index) => index !== value.payload
       );
-      if (exist == -1) state.equipment = state.equipment.splice(exist, 1);
     },
     pushOrderService: (state, value: PayloadAction<IOrderService>) => {
       state.service = [...state.service, { ...value.payload }];
@@ -139,7 +138,9 @@ export const orderSlice = createSlice({
       state.total = aux;
     },
     deleteOrderService: (state, value: PayloadAction<number>) => {
-      state.service = state.service.splice(value.payload, 1);
+      state.service = state.service.filter(
+        (_, index) => index !== value.payload
+      );
       let aux = 0;
       state.service.forEach((p) => {
         aux += (p.service.service as IServiceResponse).suggestedPrice;
@@ -196,6 +197,13 @@ export const orderSlice = createSlice({
     cleanReduxOrder: (state) => {
       state = { ...initialState };
     },
+    deleteAllEquipment: (state) => {
+      state.equipment = [];
+    },
+    deleteAllServices: (state) => {
+      state.service = [];
+      state.total = 0;
+    },
   },
 });
 
@@ -218,6 +226,8 @@ export const {
   saveEquipment,
   saveFilters,
   cleanReduxOrder,
+  deleteAllEquipment,
+  deleteAllServices,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

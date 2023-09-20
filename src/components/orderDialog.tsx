@@ -130,30 +130,64 @@ export const OrderDialog = () => {
           >
             <Grid item xs={6}>
               <Controller
-                name="report"
+                name="client"
+                defaultValue={client}
+                control={control}
                 rules={{
                   required: {
                     value: true,
-                    message: "Ingrese a la persona que reporto el servicio",
+                    message: "Seleccione un cliente",
                   },
                 }}
-                defaultValue={general.report}
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <TextField
-                      placeholder="Nombre de la persona que reporto el servicio"
-                      size="small"
-                      fullWidth
-                      value={field.value}
-                      onChange={(e) => field.onChange(e)}
-                      error={!!errors.report}
-                      helperText={!!errors.report && errors.report.message}
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <Autocomplete
+                    loading={isLoadingClients}
+                    onOpen={() => getClients()}
+                    value={field.value}
+                    options={IsSuccessClients && dataClients ? dataClients : []}
+                    getOptionLabel={(option) => {
+                      return option?.name;
+                    }}
+                    onChange={(value, newValue: IClientResponse) => {
+                      if (newValue) {
+                        field.onChange(newValue);
+                        dispatch(saveOrderClient(newValue));
+
+                        dispatch(
+                          saveDirection({
+                            street: newValue.street,
+                            streetNumber: newValue.streetNumber,
+                            apartmentNumber: newValue.apartmentNumber,
+                            zipCode: newValue.zipCode,
+                            suburb: newValue.suburb,
+                            city: newValue.city,
+                            cityId: newValue.cityId,
+                            state: newValue.state,
+                            stateId: newValue.stateId,
+                          })
+                        );
+                      }
+                    }}
+                    fullWidth
+                    // sx={{ width: 300, marginTop: "-3px" }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        margin="dense"
+                        label="Clientes"
+                        fullWidth
+                        error={!!errors.client}
+                        helperText={
+                          !!errors.client && (errors.client.message as string)
+                        }
+                      />
+                    )}
+                  />
+                )}
               />
             </Grid>
+
             <Grid item xs={3}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
@@ -283,61 +317,28 @@ export const OrderDialog = () => {
 
             <Grid item xs={12}>
               <Controller
-                name="client"
-                defaultValue={client}
-                control={control}
+                name="report"
                 rules={{
                   required: {
                     value: true,
-                    message: "Seleccione un cliente",
+                    message: "Ingrese a la persona que reporto el servicio",
                   },
                 }}
-                render={({ field }) => (
-                  <Autocomplete
-                    loading={isLoadingClients}
-                    onOpen={() => getClients()}
-                    value={field.value}
-                    options={IsSuccessClients && dataClients ? dataClients : []}
-                    getOptionLabel={(option) => {
-                      return option?.name;
-                    }}
-                    onChange={(value, newValue: IClientResponse) => {
-                      if (newValue) {
-                        field.onChange(newValue);
-                        dispatch(saveOrderClient(newValue));
-
-                        dispatch(
-                          saveDirection({
-                            street: newValue.street,
-                            streetNumber: newValue.streetNumber,
-                            apartmentNumber: newValue.apartmentNumber,
-                            zipCode: newValue.zipCode,
-                            suburb: newValue.suburb,
-                            city: newValue.city,
-                            cityId: newValue.cityId,
-                            state: newValue.state,
-                            stateId: newValue.stateId,
-                          })
-                        );
-                      }
-                    }}
-                    fullWidth
-                    // sx={{ width: 300, marginTop: "-3px" }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        margin="dense"
-                        label="Clientes"
-                        fullWidth
-                        error={!!errors.client}
-                        helperText={
-                          !!errors.client && (errors.client.message as string)
-                        }
-                      />
-                    )}
-                  />
-                )}
+                defaultValue={general.report}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      placeholder="Nombre de la persona que reporto el servicio"
+                      size="small"
+                      fullWidth
+                      value={field.value}
+                      onChange={(e) => field.onChange(e)}
+                      error={!!errors.report}
+                      helperText={!!errors.report && errors.report.message}
+                    />
+                  );
+                }}
               />
             </Grid>
 
@@ -371,7 +372,9 @@ export const OrderDialog = () => {
                     icon={<HomeRepairService style={{ color: "#fff" }} />}
                   />
                 </BottomNavigation>
+              </Grid>
 
+              <Grid item xs={12}>
                 {valueStep == "direction" ? (
                   <OrderDirection />
                 ) : valueStep == "equipments" ? (
