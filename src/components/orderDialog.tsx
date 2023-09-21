@@ -41,7 +41,7 @@ import {
 } from "@/redux/api";
 import { IClientResponse, IOrderGeneral, IServiceResponse } from "@/common";
 import { Controller, useForm } from "react-hook-form";
-import { OrderEquipments } from "./orderEquipents";
+import { OrderEquipments } from "./orderEquipments";
 import { OrderDirection } from "./orderDirection";
 import { OrderServices } from "./orderServices";
 import { makeStyles } from "@mui/styles";
@@ -400,8 +400,8 @@ export const OrderDialog = () => {
                   technicians: !!users.length ? users : undefined,
                   customer: client._id,
                   ...direction,
-                  description: "DESC 1",
-                  comments: "COMMENT 1",
+                  description: "DESC 1", //TODO: remove harcode
+                  comments: "COMMENT 1", //TODO: remove harcode
                   services: service.map((p) => {
                     return {
                       service: (p.service.service as IServiceResponse)._id,

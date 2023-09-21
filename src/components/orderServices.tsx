@@ -102,7 +102,6 @@ export const OrderServices = () => {
               }`
             }
             onChange={(e, value) => {
-              console.log(value);
               if (value) {
                 setSelectService(value);
               }
@@ -132,7 +131,7 @@ export const OrderServices = () => {
             disablePortal
             options={equipment}
             getOptionLabel={(option) =>
-              `${option.equipment} - ${option.serie} `
+              `${option.equipment}`
             }
             onChange={(e, value) => {
               console.log(value);

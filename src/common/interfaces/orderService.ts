@@ -1,8 +1,4 @@
-import {
-  IOrderEquipment,
-  IServiceDescriptionResponse,
-  IServiceResponse,
-} from ".";
+import { IOrderEquipment, IServiceDescriptionResponse } from ".";
 
 export interface IOrderService {
   service: IServiceDescriptionResponse;

@@ -154,6 +154,7 @@ export const DialogCustomer = (props: {
         <Add />
       </IconButton>
       <Dialog
+        disableEscapeKeyDown={true}
         open={openDialog}
         onClose={() => {
           dispatch(closeClient());

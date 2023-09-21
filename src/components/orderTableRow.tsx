@@ -139,10 +139,12 @@ export const OrderTableRows = (props: {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
+          {row.orderId}
+        </TableCell>
+        <TableCell component="th" scope="row">
           {row.report}
         </TableCell>
         <TableCell align="left">{row.customer.name}</TableCell>
-
         <TableCell align="left">
           {row?.startDate
             ? moment(row.startDate).format("LLLL")

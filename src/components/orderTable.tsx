@@ -7,8 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
-import { useFindAllOrderQuery, useLazyFindAllOrderQuery } from "@/redux/api";
+import { useLazyFindAllOrderQuery } from "@/redux/api";
 import { OrderTableRows } from "./orderTableRow";
 import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
@@ -55,6 +54,7 @@ export const OrderTable = () => {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
+            <TableCell># Orden</TableCell>
             <TableCell>Persona que reporto el servicio</TableCell>
             <TableCell align="left">Cliente</TableCell>
             <TableCell align="left">Fecha de inicio</TableCell>

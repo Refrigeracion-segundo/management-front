@@ -27,7 +27,6 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
     ) {
       return;
     }
-    console.log(_id);
     const status = STATUS.get(value);
     status && updateStatus({ _id, status: value });
 
@@ -100,9 +99,9 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
                     Facturado
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleClose(e, "paid and invoiced")}
+                    onClick={(e) => handleClose(e, "finished")}
                   >
-                    Pagado y facturado
+                    Terminado
                   </MenuItem>
 
                   <MenuItem onClick={(e) => handleClose(e, "pending")}>

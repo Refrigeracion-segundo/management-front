@@ -88,7 +88,6 @@ export const orderSlice = createSlice({
   initialState,
   reducers: {
     openOrder: (state) => {
-      console.log(state);
       return {
         ...state,
         openDialog: true,

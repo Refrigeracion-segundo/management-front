@@ -226,6 +226,7 @@ export default function Home() {
       status: STATUS_ORIGINAL.INVOICED,
     });
   }, [filters.fromDate, filters.toDate, filters.status]);
+  
   return (
     home.user && (
       <Box sx={{ p: 15 }}>
@@ -243,11 +244,11 @@ export default function Home() {
               component={Paper}
               sx={{
                 p: 2,
-                backgroundColor: " #a7414a",
+                backgroundColor: "#6a8a82",
                 userSelect: "none",
                 transition: "background-color 0.3s, transform 0.3s",
                 "&:hover": {
-                  backgroundColor: "#933942",
+                  backgroundColor: "#617e77",
                   transform: "scale(1.05)",
                   cursor: "pointer",
                 },
@@ -276,11 +277,11 @@ export default function Home() {
               component={Paper}
               sx={{
                 p: 2,
-                backgroundColor: "#282726",
+                backgroundColor: "#0f1945",
                 userSelect: "none",
                 transition: "background-color 0.3s, transform 0.3s",
                 "&:hover": {
-                  backgroundColor: "#262524",
+                  backgroundColor: "#080f2e",
                   transform: "scale(1.05)",
                   cursor: "pointer",
                 },
@@ -293,13 +294,13 @@ export default function Home() {
               ) : (
                 <>
                   <Typography align="center">
-                    {dataTotal?.["paid and invoiced"].total}
+                    {dataTotal?.["paid"].total}
                   </Typography>
                   <Typography align="center">Pagadas y facturadas</Typography>
                   <Typography align="center">
                     Total:
                     {currencyMx.format(
-                      dataTotal?.["paid and invoiced"].amount as number
+                      dataTotal?.["paid"].amount as number
                     )}
                   </Typography>
                 </>
@@ -311,11 +312,11 @@ export default function Home() {
               component={Paper}
               sx={{
                 p: 2,
-                backgroundColor: "#6a8a82",
+                backgroundColor: "#a7414a",
                 userSelect: "none",
                 transition: "background-color 0.3s, transform 0.3s",
                 "&:hover": {
-                  backgroundColor: "#617e77",
+                  backgroundColor: "#933942",
                   transform: "scale(1.05)",
                   cursor: "pointer",
                 },
@@ -398,7 +399,7 @@ export default function Home() {
                   <Typography align="center">
                     {dataTotal?.["in progress"].total}
                   </Typography>
-                  <Typography align="center">sin iniciar</Typography>
+                  <Typography align="center">En progreso</Typography>
                   <Typography align="center">
                     Total:{" "}
                     {currencyMx.format(

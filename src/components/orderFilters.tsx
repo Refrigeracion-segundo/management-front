@@ -31,10 +31,12 @@ export const OrderFilters = () => {
           size="small"
           fullWidth
           label="Numero de orden"
-          onChange={(e) =>
+          onChange={(e) => {
+            const value = e.target.value ? e.target.value : '0'
             dispatch(
-              saveFilters({ ...filters, orderId: parseInt(e.target.value) })
+              saveFilters({ ...filters, orderId: parseInt(value) })
             )
+          }
           }
         />
       </Grid>
