@@ -96,7 +96,7 @@ export const DialogSpare = (props: {
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
-            Formulario de Repuestos
+            Formulario de Refacciones
           </Typography>
         </DialogTitle>
         <DialogContent>

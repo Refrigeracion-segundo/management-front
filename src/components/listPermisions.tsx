@@ -58,7 +58,7 @@ export const ListPermisions = (props: { role: string }) => {
       allowedRol: [ROLES.ADMIN],
     },
     {
-      text: "Repuestos",
+      text: "Refacciones",
       icon: <Construction />,
       redirect: "/spare",
       allowedRol: [ROLES.ADMIN, ROLES.USER],

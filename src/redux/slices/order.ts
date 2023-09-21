@@ -99,14 +99,14 @@ export const orderSlice = createSlice({
       return {
         ...state,
         openDialog: false,
-        isUpdate: false,
-        data: initialState.data,
-        general: initialState.general,
-        client: initialState.client,
-        direction: initialState.direction,
-        equipment: initialState.equipment,
-        service: initialState.service,
-        users: initialState.users
+        // isUpdate: false,
+        // data: initialState.data,
+        // general: initialState.general,
+        // client: initialState.client,
+        // direction: initialState.direction,
+        // equipment: initialState.equipment,
+        // service: initialState.service,
+        // users: initialState.users
       };
     },
     isUpdatingOrder: (state, value: PayloadAction<boolean>) => {

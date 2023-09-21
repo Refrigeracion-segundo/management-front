@@ -416,7 +416,10 @@ export const OrderDialog = () => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => dispatch(closeOrder())}>
+          <Button color="secondary" onClick={() => {
+            dispatch(closeOrder())
+            dispatch(cleanReduxOrder());
+            }}>
             Cerrar
           </Button>
           <Button
