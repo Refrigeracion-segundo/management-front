@@ -17,7 +17,7 @@ const initialState: Dashboard = {
     description: "",
     fromDate: new Date(moment().startOf("month").format()),
     toDate: new Date(moment().endOf("month").format()),
-    status: STATUS_ORIGINAL.PAID_INVOICED,
+    status: STATUS_ORIGINAL.PAID,
   },
 };
 
