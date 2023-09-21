@@ -62,7 +62,9 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
         aria-haspopup="true"
         onClick={handleToggle}
         fullWidth
-        sx={{ backgroundColor: STATUS.get(status)?.color, color: "#fff" }}
+        style={
+          { backgroundColor: STATUS.get(status)?.color, color: 'white'}
+        }
       >
         {STATUS.get(status)?.translate}
       </Button>

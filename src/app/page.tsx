@@ -215,7 +215,7 @@ export default function Home() {
       fromDate: filters.fromDate,
       toDate: filters.toDate,
       orderId: 0,
-      status: STATUS_ORIGINAL.FINISHED,
+      status: STATUS_ORIGINAL.PAID,
     });
     getOrdersNoPaid({
       perPage: 30,

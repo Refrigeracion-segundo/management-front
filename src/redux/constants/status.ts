@@ -12,9 +12,9 @@ export enum STATUS_ORIGINAL {
 }
 export const STATUS = new Map<string, { color: string; translate: string }>();
 
-STATUS.set(STATUS_ORIGINAL.PAID, { color: "#a7414a", translate: "PAGADO" });
+STATUS.set(STATUS_ORIGINAL.PAID, { color: "#0f1945", translate: "PAGADO" });
 STATUS.set(STATUS_ORIGINAL.INVOICED, {
-  color: "#282726",
+  color: "#a7414a",
   translate: "FACTURADO",
 });
 STATUS.set(STATUS_ORIGINAL.FINISHED, {
@@ -26,7 +26,7 @@ STATUS.set(STATUS_ORIGINAL.PENDING, {
   translate: "PENDIENTE",
 });
 STATUS.set(STATUS_ORIGINAL.IN_PROGRESS, {
-  color: "#282726",
+  color: "#563838",
   translate: "EN PROGRESO",
 });
 STATUS.set(STATUS_ORIGINAL.CANCELED, { color: "red", translate: "CANCELADA" });
