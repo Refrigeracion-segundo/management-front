@@ -3,11 +3,11 @@ export const STATUS_DB = {
   ELIMINATED: "eliminated",
 };
 export enum STATUS_ORIGINAL {
-  PAID = "paid",
-  INVOICED = "invoiced",
-  PAID_INVOICED = "paid and invoiced",
   PENDING = "pending",
   IN_PROGRESS = "in progress",
+  INVOICED = "invoiced",
+  PAID = "paid",
+  FINISHED = "finished",
   CANCELED = "canceled",
 }
 export const STATUS = new Map<string, { color: string; translate: string }>();
@@ -17,9 +17,9 @@ STATUS.set(STATUS_ORIGINAL.INVOICED, {
   color: "#282726",
   translate: "FACTURADO",
 });
-STATUS.set(STATUS_ORIGINAL.PAID_INVOICED, {
+STATUS.set(STATUS_ORIGINAL.FINISHED, {
   color: "#6a8a82",
-  translate: "PAGADO Y FACTURADO",
+  translate: "TERMINADO",
 });
 STATUS.set(STATUS_ORIGINAL.PENDING, {
   color: "#a37c27",

@@ -215,7 +215,7 @@ export default function Home() {
       fromDate: filters.fromDate,
       toDate: filters.toDate,
       orderId: 0,
-      status: STATUS_ORIGINAL.PAID_INVOICED,
+      status: STATUS_ORIGINAL.FINISHED,
     });
     getOrdersNoPaid({
       perPage: 30,
@@ -564,7 +564,7 @@ export default function Home() {
                   overflowY: "auto",
                 }}
               >
-                <Title>Facturas pagadas y facturadas</Title>
+                <Title>Ordenes facturadas y pagadas</Title>
                 <Table className="mt-5">
                   <TableHead>
                     <TableRow>
@@ -594,7 +594,7 @@ export default function Home() {
                   overflowY: "auto",
                 }}
               >
-                <Title>Facturas no pagadas y facturadas</Title>
+                <Title>Ordenes facturadas no pagadas</Title>
                 <Table className="mt-5">
                   <TableHead>
                     <TableRow>

@@ -5,7 +5,7 @@ export interface IDashboardHeaderResponse {
 }
 export interface IDashboardHeader extends IDashboardHeaderResponse {
   [STATUS_ORIGINAL.PAID]: { total: number; amount: number };
-  [STATUS_ORIGINAL.PAID_INVOICED]: { total: number; amount: number };
+  [STATUS_ORIGINAL.FINISHED]: { total: number; amount: number };
   [STATUS_ORIGINAL.PENDING]: { total: number; amount: number };
   [STATUS_ORIGINAL.CANCELED]: { total: number; amount: number };
   [STATUS_ORIGINAL.INVOICED]: { total: number; amount: number };
