@@ -73,7 +73,6 @@ export const TableSpare = (props: {
   };
 
   const handleEdit = (data: ISpareUpdate) => {
-    console.log(data);
     dispatch(openSpare());
     dispatch(isUpdatingSpare(true));
     dispatch(saveSpare({ ...data }));

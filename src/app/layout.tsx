@@ -4,6 +4,7 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import { Providers } from "./provider";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { esES } from '@mui/material/locale';
 import Home from "./home";
 import useUser from "./lib/hooks/useUser";
 import { SnackbarProvider } from "notistack";
@@ -21,7 +22,7 @@ export const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
-});
+}, esES);
 export default function RootLayout({
   children,
 }: {

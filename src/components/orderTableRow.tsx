@@ -82,6 +82,7 @@ export const OrderTableRows = (props: {
         report: data.report,
         startDate: data?.startDate,
         endDate: data?.endDate,
+        description: data?.description,
       })
     );
 
@@ -151,6 +152,11 @@ export const OrderTableRows = (props: {
             : "SIN FECHA DE INICIO"}
         </TableCell>
         <TableCell align="left">
+          {row?.endDate
+            ? moment(row.endDate).format("LLLL")
+            : "SIN FECHA DE FINALIZACIÓN"}
+        </TableCell>
+        <TableCell align="left">
           {moment(row.createdAt).format("LLLL")}
         </TableCell>
         <TableCell align="left">
@@ -173,9 +179,15 @@ export const OrderTableRows = (props: {
       </TableRow>
 
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
+            <Typography variant="h6" gutterBottom component="div">
+                Descripción
+              </Typography>
+            <Typography variant="body1" gutterBottom component="div">
+                {row.description}
+              </Typography>
               <Typography variant="h6" gutterBottom component="div">
                 Datos de la orden
               </Typography>

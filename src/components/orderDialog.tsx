@@ -106,6 +106,7 @@ export const OrderDialog = () => {
     updateOrder,
     { isSuccess: isSuccessUpdateOrder, isLoading: isLoadingUpdateOrder },
   ] = useUpdateOrderMutation();
+
   return (
     <div>
       <IconButton onClick={() => dispatch(openOrder())}>
@@ -342,6 +343,34 @@ export const OrderDialog = () => {
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <Controller
+                name="description"
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Ingrese una descripción de la orden",
+                  },
+                }}
+                defaultValue={general.description}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      placeholder="Descripción de la orden"
+                      multiline
+                      size="small"
+                      fullWidth
+                      value={field.value}
+                      onChange={(e) => field.onChange(e)}
+                      error={!!errors.description}
+                      helperText={!!errors.description && errors.description.message}
+                    />
+                  );
+                }}
+              />
+            </Grid>
+
             <Grid
               item
               container
@@ -400,8 +429,7 @@ export const OrderDialog = () => {
                   technicians: !!users.length ? users : undefined,
                   customer: client._id,
                   ...direction,
-                  description: "DESC 1", //TODO: remove harcode
-                  comments: "COMMENT 1", //TODO: remove harcode
+                  description: data.description,
                   services: service.map((p) => {
                     return {
                       service: (p.service.service as IServiceResponse)._id,
@@ -415,11 +443,11 @@ export const OrderDialog = () => {
                     };
                   }),
                 };
-                console.log(aux);
                 try {
                   !isUpdate
                     ? await registerOrder(aux).unwrap()
                     : await updateOrder({ ...aux, _id: general._id }).unwrap();
+                  dispatch(closeOrder());
                   enqueueSnackbar("Orden registrada correctamente", {
                     variant: "success",
                   });

@@ -58,7 +58,6 @@ export const OrderFilters = () => {
             value={filters.fromDate}
             onChange={(value: any) => {
               if (value) {
-                console.log(value);
                 dispatch(
                   saveFilters({ ...filters, fromDate: new Date(value) })
                 );

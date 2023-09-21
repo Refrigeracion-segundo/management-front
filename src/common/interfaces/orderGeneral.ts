@@ -1,4 +1,4 @@
-import { IClientResponse, IUserResponse } from ".";
+import { IUserResponse } from ".";
 
 export interface IOrderGeneral {
   _id?: string;
@@ -7,4 +7,5 @@ export interface IOrderGeneral {
   startDate?: Date;
   endDate?: Date;
   client?: any;
+  description: string;
 }

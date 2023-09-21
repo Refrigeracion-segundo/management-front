@@ -134,7 +134,6 @@ export const OrderServices = () => {
               `${option.equipment}`
             }
             onChange={(e, value) => {
-              console.log(value);
               if (value) {
                 setSelectEquipment(value);
               }

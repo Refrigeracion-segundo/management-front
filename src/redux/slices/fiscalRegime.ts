@@ -21,7 +21,6 @@ export const fiscalRegimeSlice = createSlice({
   initialState,
   reducers: {
     openFiscalRegime: (state) => {
-      console.log(state);
       return {
         ...state,
         openDialog: true,

@@ -35,7 +35,7 @@ const initialState: Order = {
     dateFinish: new Date(),
     client: "",
     description: "",
-    observation: "",
+    comments: "",
     tech: [],
   },
   equipment: [],
@@ -71,8 +71,10 @@ const initialState: Order = {
   general: {
     users: [],
     report: "",
+    client: "",
     startDate: new Date(moment().startOf("month").format()),
     endDate: new Date(moment().endOf("month").format()),
+    description: ""
   },
   total: 0,
   filters: {
@@ -99,6 +101,12 @@ export const orderSlice = createSlice({
         openDialog: false,
         isUpdate: false,
         data: initialState.data,
+        general: initialState.general,
+        client: initialState.client,
+        direction: initialState.direction,
+        equipment: initialState.equipment,
+        service: initialState.service,
+        users: initialState.users
       };
     },
     isUpdatingOrder: (state, value: PayloadAction<boolean>) => {

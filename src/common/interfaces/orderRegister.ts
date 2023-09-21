@@ -14,6 +14,6 @@ export interface IOrderRegister {
   };
   client: IClientResponse | string;
   description: string;
-  observation: string;
+  comments: string;
   tech: Array<string | IUserResponse>;
 }

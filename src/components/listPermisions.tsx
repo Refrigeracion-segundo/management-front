@@ -46,12 +46,6 @@ export const ListPermisions = (props: { role: string }) => {
       allowedRol: [ROLES.ADMIN, ROLES.USER],
     },
     {
-      text: "Descripcion de servicios",
-      icon: <Build />,
-      redirect: "/serviceDescription",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
-    },
-    {
       text: "Clientes",
       icon: <Diversity3 />,
       redirect: "/customer",

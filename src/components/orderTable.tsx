@@ -58,6 +58,7 @@ export const OrderTable = () => {
             <TableCell>Persona que reporto el servicio</TableCell>
             <TableCell align="left">Cliente</TableCell>
             <TableCell align="left">Fecha de inicio</TableCell>
+            <TableCell align="left">Fecha de finalización</TableCell>
             <TableCell align="left">Fecha registro</TableCell>
             <TableCell align="left">Ultima actualización</TableCell>
             <TableCell align="left">Estatus</TableCell>
@@ -74,7 +75,7 @@ export const OrderTable = () => {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              colSpan={8}
+              colSpan={10}
               count={isSuccess ? (rows?.total as number) : 0}
               rowsPerPage={rowsPerPage}
               page={page}

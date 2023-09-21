@@ -121,7 +121,6 @@ export const DialogCustomer = (props: {
   const dispatch = useDispatch();
 
   const handleClickSave = async (data: IClientRegister | IClientUpdate) => {
-    console.log(data);
     try {
       if (isUpdate) {
         await updateCustomer({
@@ -738,7 +737,10 @@ export const DialogCustomer = (props: {
                 <CircularProgress size={15} />
               )
             }
-            onClick={() => dispatch(closeClient())}
+            onClick={() => {
+              dispatch(closeClient());
+              dispatch(isUpdatingClient(false));
+            }}
           >
             Cancelar
           </Button>
