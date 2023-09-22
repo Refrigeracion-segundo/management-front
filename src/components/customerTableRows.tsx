@@ -38,7 +38,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   const handleDelete = (name: string, id: string) => {
     confirm({
       title: "Hey cuidado!!",
-      description: `Seguro que deseas dar de baja al usuario ${name}? `,
+      description: `Seguro que deseas dar de baja al cliente ${name}? `,
     }).then(() => {
       deleteClient({ id });
     });

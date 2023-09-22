@@ -19,7 +19,6 @@ export const dashboardApi = createApi({
       query: (params) => ({
         url: `${DASHBOARD_URL.TOTAL}?fromDate=${params.fromDate}&toDate=${params.toDate}&status=${params.status}`,
         method: METHOD_TYPES.GET,
-        // query: { name: params, page: 1, countryKey: 142 },
       }),
     }),
     findOrders: builder.query<IAddressResponse, void>({

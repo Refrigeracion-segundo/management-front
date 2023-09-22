@@ -13,7 +13,6 @@ import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import moment from "moment";
 
 export const OrderTable = () => {
   const [getOrders, { data: rows, isSuccess, isLoading, isFetching }] =
@@ -30,8 +29,8 @@ export const OrderTable = () => {
       page: page + 1,
       orderId,
       description,
-      fromDate: new Date(moment().startOf('month').format()),
-      toDate: new Date(moment().endOf('month').format()),
+      fromDate,
+      toDate,
     });
   }, [rowsPerPage, page, orderId, description, fromDate, toDate]);
 
@@ -74,7 +73,7 @@ export const OrderTable = () => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.total.toString() : '0') }]}
               colSpan={10}
               count={isSuccess ? (rows?.total as number) : 0}
               rowsPerPage={rowsPerPage}

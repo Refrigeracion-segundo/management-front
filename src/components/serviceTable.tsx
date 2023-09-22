@@ -48,7 +48,7 @@ export const ServiceTable = () => {
     }).then(async () => {
       try {
         await deleteService({ id }).unwrap();
-        enqueueSnackbar("Se elimino el usuario con exito", {
+        enqueueSnackbar("Se elimino el servicio con exito", {
           variant: "success",
         });
       } catch {

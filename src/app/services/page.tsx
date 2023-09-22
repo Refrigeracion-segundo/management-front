@@ -24,22 +24,22 @@ const Services = () => {
       case 1:
         return (
           <Fragment>
-            <DialogService />
-            <ServiceTable />
-          </Fragment>
+          <DialogServiceDescription
+            register={register}
+            formState={formState}
+            handleSubmit={handleSubmit}
+            clearErrors={clearErrors}
+            control={control}
+          />
+          <ServiceDescriptionTable />
+        </Fragment>
         );
       case 0:
         return (
           <Fragment>
-            <DialogServiceDescription
-              register={register}
-              formState={formState}
-              handleSubmit={handleSubmit}
-              clearErrors={clearErrors}
-              control={control}
-            />
-            <ServiceDescriptionTable />
-          </Fragment>
+          <DialogService />
+          <ServiceTable />
+        </Fragment>
         );
     }
   };

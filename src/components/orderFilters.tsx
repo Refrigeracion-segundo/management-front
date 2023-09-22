@@ -5,7 +5,7 @@ import { Grid, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const OrderFilters = () => {
@@ -53,7 +53,7 @@ export const OrderFilters = () => {
       <Grid item xs={3}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker
-            label="Fecha de inicio"
+            label="Desde"
             inputFormat={"MM/DD/YYYY"}
             value={filters.fromDate}
             onChange={(value: any) => {
@@ -72,7 +72,7 @@ export const OrderFilters = () => {
       <Grid item xs={3}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker
-            label="Fecha de inicio"
+            label="Hasta"
             inputFormat={"MM/DD/YYYY"}
             value={filters.toDate}
             onChange={(value: any) => {

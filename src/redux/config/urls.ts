@@ -1,4 +1,3 @@
-const URL_DEFAULT = "http://localhost:3333/v1";
 
 export const enum LOGIN_URL {
   LOGIN = "/auth/login",
