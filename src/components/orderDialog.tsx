@@ -30,7 +30,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -76,7 +76,11 @@ export const OrderDialog = () => {
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm<IOrderGeneral>();
+  } = useForm<IOrderGeneral>({
+    values: {
+      ...general,
+    },
+  });
   const dispatch = useDispatch();
   const [useDates, setUseDates] = useState<boolean>(false);
   const [valueStep, setValueStep] = useState("direction");
@@ -147,7 +151,7 @@ export const OrderDialog = () => {
                     value={field.value}
                     options={IsSuccessClients && dataClients ? dataClients : []}
                     getOptionLabel={(option) => {
-                      return option?.name;
+                      return option && option?.name;
                     }}
                     onChange={(value, newValue: IClientResponse) => {
                       if (newValue) {
@@ -364,7 +368,9 @@ export const OrderDialog = () => {
                       value={field.value}
                       onChange={(e) => field.onChange(e)}
                       error={!!errors.description}
-                      helperText={!!errors.description && errors.description.message}
+                      helperText={
+                        !!errors.description && errors.description.message
+                      }
                     />
                   );
                 }}
@@ -416,10 +422,13 @@ export const OrderDialog = () => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => {
-            dispatch(closeOrder())
-            dispatch(cleanReduxOrder());
-            }}>
+          <Button
+            color="secondary"
+            onClick={() => {
+              dispatch(closeOrder());
+              dispatch(cleanReduxOrder());
+            }}
+          >
             Cerrar
           </Button>
           <Button

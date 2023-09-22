@@ -74,7 +74,7 @@ const initialState: Order = {
     client: "",
     startDate: new Date(moment().startOf("month").format()),
     endDate: new Date(moment().endOf("month").format()),
-    description: ""
+    description: "",
   },
   total: 0,
   filters: {
@@ -96,18 +96,13 @@ export const orderSlice = createSlice({
       };
     },
     closeOrder: (state) => {
-      return {
-        ...state,
-        openDialog: false,
-        // isUpdate: false,
-        // data: initialState.data,
-        // general: initialState.general,
-        // client: initialState.client,
-        // direction: initialState.direction,
-        // equipment: initialState.equipment,
-        // service: initialState.service,
-        // users: initialState.users
-      };
+      console.log(state.isUpdate);
+      if (state.isUpdate) {
+        return {
+          ...state,
+          ...initialState,
+        };
+      } else state.openDialog = false;
     },
     isUpdatingOrder: (state, value: PayloadAction<boolean>) => {
       return {
