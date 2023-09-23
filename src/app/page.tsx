@@ -2,7 +2,6 @@
 
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
-  Autocomplete,
   Box,
   CircularProgress,
   Grid,
@@ -18,7 +17,6 @@ import {
 } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Chart from "react-google-charts";
 import { Controller, useForm } from "react-hook-form";
 import {
   AreaChart,
@@ -34,9 +32,6 @@ import {
   Title,
 } from "@tremor/react";
 import {
-  useFindOrdersQuery,
-  useFindTotalQuery,
-  useLazyFindOrdersQuery,
   useLazyFindTotalQuery,
 } from "@/redux/api/dashboard.api";
 import moment from "moment";
@@ -187,6 +182,7 @@ const chartdataNew = [
   },
   //...
 ];
+
 const dataFormatter = (number: number) => {
   return "$ " + Intl.NumberFormat("mx").format(number).toString();
 };
@@ -423,43 +419,12 @@ export default function Home() {
               <Grid
                 item
                 container
+                alignItems="center"
                 component={Paper}
                 rowGap={4}
                 sx={{ p: 2 }}
                 style={{ backgroundColor: "#080d1f" }}
               >
-                <Grid item xs={12}>
-                  <Controller
-                    name="city"
-                    control={control}
-                    rules={{
-                      required: true,
-                    }}
-                    render={({ field }) => (
-                      <Autocomplete
-                        value={field.value}
-                        // loading={isLoadingCities}
-                        options={[]}
-                        onChange={(_, newValue) => {
-                          field.onChange(newValue);
-                        }}
-                        getOptionLabel={(option) => {
-                          return typeof option == "string"
-                            ? option
-                            : option.name;
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Usuarios"
-                            variant="standard"
-                            margin="dense"
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </Grid>
 
                 <Grid item xs={12}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -49,6 +49,7 @@ export const OrderTableRows = (props: {
     useDeleteOrderMutation();
   const handleDelete = (name: number, id: string) => {
     confirm({
+      title: "Hey cuidado!!",
       description: "Seguro que desea eliminar esta orden?",
     }).then(async () => {
       try {
