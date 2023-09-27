@@ -9,10 +9,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useLazyFindAllOrderQuery } from "@/redux/api";
 import { OrderTableRows } from "./orderTableRow";
-import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
+import { Box, CircularProgress, TableFooter, TablePagination, TableSortLabel } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { visuallyHidden } from '@mui/utils';
 
 export const OrderTable = () => {
   const [getOrders, { data: rows, isSuccess, isLoading, isFetching }] =
@@ -22,6 +23,8 @@ export const OrderTable = () => {
   } = useSelector((store: RootState) => store.order);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState('orderId')
 
   useEffect(() => {
     getOrders({
@@ -33,6 +36,82 @@ export const OrderTable = () => {
       toDate,
     });
   }, [rowsPerPage, page, orderId, description, fromDate, toDate]);
+
+  interface HeadCell {
+    id: string;
+    disablePadding: boolean;
+    label: string;
+    numeric: boolean;
+  }
+
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'expand',
+      numeric: true,
+      disablePadding: false,
+      label: '',
+    },
+    {
+      id: 'orderId',
+      numeric: true,
+      disablePadding: false,
+      label: '# Orden',
+    },
+    {
+      id: "report",
+      numeric: false,
+      disablePadding: false,
+      label: 'Persona que reporto el servicio',
+    },
+    {
+      id: "customer",
+      numeric: false,
+      disablePadding: false,
+      label: 'Cliente',
+    },
+    {
+      id: "startDate",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha de inicio',
+    },
+    {
+      id: "endDate",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha de finalización',
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha registro',
+    },
+    {
+      id: "updatedAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Ultima actualización',
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: false,
+      label: 'Estatus',
+    },
+    {
+      id: 'edit',
+      numeric: true,
+      disablePadding: true,
+      label: '',
+    },
+  ];
+
+  const handleRequestSort = (event: any, property: any) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -47,26 +126,88 @@ export const OrderTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+  
+  type Order = 'asc' | 'desc';
+  
+  function getComparator<Key extends keyof any>(
+    order: Order,
+    orderBy: Key,
+  ): (
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string },
+  ) => number {
+    return order === 'desc'
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  function stableSort(array: any, comparator: any) {
+    const stabilizedThis = array.map((el: any, index: any) => [el, index])
+    stabilizedThis.sort((a: any, b: any) => {
+      const order = comparator(a[0], b[0])
+      if (order !== 0) return order
+      return a[1] - b[1]
+    })
+    return stabilizedThis.map((el: any) => el[0])
+  }
+
+  function EnhancedTableHead(props: any) {
+    const {  order, orderBy, onRequestSort } =
+      props;
+    const createSortHandler =
+      (property: any) => (event: React.MouseEvent<unknown>) => {
+        onRequestSort(event, property);
+      };
+  
+    return (
+      <TableHead>
+        <TableRow>
+          {headCells.map((headCell) => (
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'right' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell># Orden</TableCell>
-            <TableCell>Persona que reporto el servicio</TableCell>
-            <TableCell align="left">Cliente</TableCell>
-            <TableCell align="left">Fecha de inicio</TableCell>
-            <TableCell align="left">Fecha de finalización</TableCell>
-            <TableCell align="left">Fecha registro</TableCell>
-            <TableCell align="left">Ultima actualización</TableCell>
-            <TableCell align="left">Estatus</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+      <EnhancedTableHead
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
         <TableBody>
-          {isSuccess &&
-            rows?.data.map((row, index) => (
+          {stableSort(rows ? rows.data : [], getComparator(order, orderBy)).map((row: any, index: any) => (
               <OrderTableRows key={index} row={row} total={row.total} />
             ))}
         </TableBody>

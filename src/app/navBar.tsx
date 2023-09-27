@@ -9,7 +9,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
+import { blue } from "@mui/material/colors";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -20,6 +20,7 @@ export const NavBar = () => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const user = JSON.parse(localStorage.getItem('user') || '{}').user
   const handleClose = () => {
     setAnchorEl(null);
     localStorage.removeItem("user");
@@ -47,10 +48,10 @@ export const NavBar = () => {
         alignItems="center"
       >
         <Grid item>
-          <Avatar sx={{ bgcolor: deepOrange[500] }}>N</Avatar>
+          <Avatar sx={{ bgcolor: blue['A400'] }}>{user.name[0].toUpperCase()}{user.lastName[0].toUpperCase()}</Avatar>
         </Grid>
         <Grid item>
-          <Typography>Admin admin</Typography>
+          <Typography>{user.name.toUpperCase()} {user.lastName.toUpperCase()}</Typography>
         </Grid>
         <Grid item>
           <IconButton onClick={handleClick}>
