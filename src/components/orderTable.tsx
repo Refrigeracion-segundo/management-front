@@ -2,18 +2,16 @@
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useLazyFindAllOrderQuery } from "@/redux/api";
 import { OrderTableRows } from "./orderTableRow";
-import { Box, CircularProgress, TableFooter, TablePagination, TableSortLabel } from "@mui/material";
+import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { visuallyHidden } from '@mui/utils';
+import { EnhancedTableHead, HeadCell, Order, getComparator, stableSort } from "@/common";
 
 export const OrderTable = () => {
   const [getOrders, { data: rows, isSuccess, isLoading, isFetching }] =
@@ -23,7 +21,7 @@ export const OrderTable = () => {
   } = useSelector((store: RootState) => store.order);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [order, setOrder] = useState<Order>('asc');
+  const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState('orderId')
 
   useEffect(() => {
@@ -36,13 +34,6 @@ export const OrderTable = () => {
       toDate,
     });
   }, [rowsPerPage, page, orderId, description, fromDate, toDate]);
-
-  interface HeadCell {
-    id: string;
-    disablePadding: boolean;
-    label: string;
-    numeric: boolean;
-  }
 
   const headCells: readonly HeadCell[] = [
     {
@@ -127,81 +118,11 @@ export const OrderTable = () => {
     setPage(0);
   };
 
-  function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  }
-  
-  type Order = 'asc' | 'desc';
-  
-  function getComparator<Key extends keyof any>(
-    order: Order,
-    orderBy: Key,
-  ): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string },
-  ) => number {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function stableSort(array: any, comparator: any) {
-    const stabilizedThis = array.map((el: any, index: any) => [el, index])
-    stabilizedThis.sort((a: any, b: any) => {
-      const order = comparator(a[0], b[0])
-      if (order !== 0) return order
-      return a[1] - b[1]
-    })
-    return stabilizedThis.map((el: any) => el[0])
-  }
-
-  function EnhancedTableHead(props: any) {
-    const {  order, orderBy, onRequestSort } =
-      props;
-    const createSortHandler =
-      (property: any) => (event: React.MouseEvent<unknown>) => {
-        onRequestSort(event, property);
-      };
-  
-    return (
-      <TableHead>
-        <TableRow>
-          {headCells.map((headCell) => (
-            <TableCell
-              key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
-              padding={headCell.disablePadding ? 'none' : 'normal'}
-              sortDirection={orderBy === headCell.id ? order : false}
-            >
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
-              >
-                {headCell.label}
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-    );
-  }
-
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
       <EnhancedTableHead
+              headCells={headCells}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}

@@ -4,7 +4,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
@@ -17,7 +16,7 @@ import {
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
-import { ISpareUpdate } from "@/common";
+import { EnhancedTableHead, HeadCell, ISpareUpdate, Order, getComparator, stableSort } from "@/common";
 import { useDispatch } from "react-redux";
 import {
   closeSpare,
@@ -40,6 +39,8 @@ export const TableSpare = (props: {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [deleteSpare] = useDeleteSpareMutation();
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState('description')
   const confirm = useConfirm();
   const dispatch = useDispatch();
 
@@ -57,6 +58,51 @@ export const TableSpare = (props: {
       }
     });
   };
+
+  const handleRequestSort = (event: any, property: any) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
+
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'description',
+      numeric: false,
+      disablePadding: false,
+      label: 'Descripción',
+    },
+    {
+      id: 'suggestedPrice',
+      numeric: false,
+      disablePadding: false,
+      label: 'Precio sugerido',
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha creación',
+    },
+    {
+      id: "updatedAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Ultima actualización',
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: false,
+      label: 'Estatus',
+    },
+    {
+      id: 'edit',
+      numeric: true,
+      disablePadding: true,
+      label: '',
+    },
+  ];
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -84,21 +130,17 @@ export const TableSpare = (props: {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Descripcion</TableCell>
-            <TableCell>Precio sugerido</TableCell>
-            <TableCell>Fecha creación</TableCell>
-            <TableCell>Ultima actualización</TableCell>
-            <TableCell>Estatus</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+      <EnhancedTableHead
+              headCells={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
         <TableBody>
           {(rowsPerPage > 0
-            ? rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            ? stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
-          )?.map((row) => (
+          )?.map((row: any) => (
             <TableRow
               key={row.description}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

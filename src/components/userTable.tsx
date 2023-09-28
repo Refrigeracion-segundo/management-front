@@ -3,7 +3,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
@@ -15,7 +14,7 @@ import {
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
-import { IUserUpdate, RoleTranslate } from "@/common";
+import { EnhancedTableHead, HeadCell, IUserUpdate, Order, RoleTranslate, getComparator, stableSort } from "@/common";
 import { useDispatch } from "react-redux";
 import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
 import { useDeleteUserMutation, useFindAllUsersQuery } from "@/redux/api";
@@ -33,6 +32,8 @@ export const TableUser = (props: {
   const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState('name')
 
   const handleDelete = async (name: string, id: string) => {
     confirm({
@@ -51,6 +52,57 @@ export const TableUser = (props: {
       }
     });
   };
+
+  const handleRequestSort = (event: any, property: any) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
+
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Usuario',
+    },
+    {
+      id: 'email',
+      numeric: false,
+      disablePadding: false,
+      label: 'Email',
+    },
+    {
+      id: 'roles',
+      numeric: false,
+      disablePadding: false,
+      label: 'Roles',
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha creación',
+    },
+    {
+      id: "updatedAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Ultima actualización',
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: false,
+      label: 'Estatus',
+    },
+    {
+      id: 'edit',
+      numeric: true,
+      disablePadding: true,
+      label: '',
+    },
+  ];
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -76,22 +128,17 @@ export const TableUser = (props: {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Usuario</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell align="right">Roles</TableCell>
-            <TableCell align="right">Fecha de creación</TableCell>
-            <TableCell align="right">Ultima actualización</TableCell>
-            <TableCell align="right">Estatus</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+      <EnhancedTableHead
+              headCells={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
         <TableBody>
           {(rowsPerPage > 0
-            ? rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            ? stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
-          )?.map((row) => (
+          )?.map((row: any) => (
             <TableRow
               key={row._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

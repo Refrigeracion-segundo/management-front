@@ -4,7 +4,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Delete, Edit } from "@mui/icons-material";
@@ -16,7 +15,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
-import { IServiceDescriptionUpdate, IServiceResponse } from "@/common";
+import { EnhancedTableHead, HeadCell, IServiceDescriptionUpdate, IServiceResponse, Order, getComparator, stableSort } from "@/common";
 import { useDispatch } from "react-redux";
 import {
   useDeleteServiceDescriptionMutation,
@@ -35,6 +34,9 @@ export const ServiceDescriptionTable = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState('description')
+  
   const {
     data: rows,
     isLoading,
@@ -49,6 +51,51 @@ export const ServiceDescriptionTable = () => {
       await deleteRegime({ id }).unwrap();
     });
   };
+
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'description',
+      numeric: false,
+      disablePadding: false,
+      label: 'Descripción',
+    },
+    {
+      id: 'service',
+      numeric: false,
+      disablePadding: false,
+      label: 'Servicio',
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha creación',
+    },
+    {
+      id: "updatedAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Ultima actualización',
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: false,
+      label: 'Estatus',
+    },
+    {
+      id: 'edit',
+      numeric: true,
+      disablePadding: true,
+      label: '',
+    },
+  ];
+
+  const handleRequestSort = (event: any, property: any) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -73,18 +120,14 @@ export const ServiceDescriptionTable = () => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Descripción</TableCell>
-            <TableCell>Servicio</TableCell>
-            <TableCell>Fecha creación</TableCell>
-            <TableCell>Ultima actualización</TableCell>
-            <TableCell>Estatus</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+      <EnhancedTableHead
+              headCells={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
         <TableBody>
-          {rows?.map((row) => (
+          {stableSort(rows ? rows : [], getComparator(order, orderBy)).map((row: any) => (
             <TableRow
               key={row._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
