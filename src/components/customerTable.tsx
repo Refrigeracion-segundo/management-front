@@ -114,7 +114,7 @@ export const CustomerTable = () => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.length.toString() : '0') }]}
               colSpan={10}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}

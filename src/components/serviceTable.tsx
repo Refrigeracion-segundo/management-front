@@ -151,10 +151,8 @@ export const ServiceTable = () => {
               onRequestSort={handleRequestSort}
             />
         <TableBody>
-          {(rowsPerPage > 0
-            ? stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          )?.map((row: any) => (
+          {stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            ?.map((row: any) => (
             <TableRow
               key={row.name}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -203,7 +201,7 @@ export const ServiceTable = () => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.length.toString() : '0') }]}
               colSpan={9}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}

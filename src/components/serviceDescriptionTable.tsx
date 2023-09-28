@@ -127,7 +127,7 @@ export const ServiceDescriptionTable = () => {
               onRequestSort={handleRequestSort}
             />
         <TableBody>
-          {stableSort(rows ? rows : [], getComparator(order, orderBy)).map((row: any) => (
+          {stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any) => (
             <TableRow
               key={row._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -169,7 +169,7 @@ export const ServiceDescriptionTable = () => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.length.toString() : '0') }]}
               colSpan={6}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}
