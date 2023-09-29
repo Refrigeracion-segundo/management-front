@@ -155,10 +155,6 @@ export const DialogCustomer = (props: {
       <Dialog
         disableEscapeKeyDown={true}
         open={openDialog}
-        onClose={() => {
-          dispatch(closeClient());
-          dispatch(isUpdatingClient(false));
-        }}
         maxWidth="lg"
         fullWidth
       >

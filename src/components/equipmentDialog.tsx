@@ -81,9 +81,6 @@ export const DialogEquipment = (props: {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => {
-          dispatch(closeEquipment());
-        }}
       >
         <DialogTitle>
           <Typography variant="h6" align="center">
