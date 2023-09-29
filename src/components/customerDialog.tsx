@@ -296,6 +296,7 @@ export const DialogCustomer = (props: {
                             })
                           );
                         }}
+                        inputProps={{ maxLength: 10 }}
                         error={!!errors.phone}
                         helperText={!!errors.phone && errors.phone.message}
                       />
@@ -404,6 +405,7 @@ export const DialogCustomer = (props: {
                             saveClient({ ...dataClient, rfc: e.target.value })
                           );
                         }}
+                        inputProps={{ maxLength: 13 }}
                         helperText={!!errors.rfc && errors.rfc.message}
                       />
                     );

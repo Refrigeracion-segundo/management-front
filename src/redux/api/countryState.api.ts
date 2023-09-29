@@ -19,7 +19,7 @@ export const countryStateApi = createApi({
   endpoints: (builder) => ({
     findState: builder.query<IAddressResponse, string>({
       query: (params) => ({
-        url: `${COUNTRY_URL.GET_STATES}?country=142&name=${params}&page=1`,
+        url: `${COUNTRY_URL.GET_STATES}?country=142&name=${params}&limit=${100}&page=1`,
         method: METHOD_TYPES.GET,
         // query: { name: params, page: 1, countryKey: 142 },
       }),
@@ -35,7 +35,7 @@ export const countryStateApi = createApi({
       { stateId: number; name: string }
     >({
       query: (data) => ({
-        url: `${COUNTRY_URL.GET_CITIES}?country=142&state=${data.stateId}&name=${data.name}&page=1`,
+        url: `${COUNTRY_URL.GET_CITIES}?country=142&state=${data.stateId}&limit=${1000}&name=${data.name}&page=1`,
         method: METHOD_TYPES.GET,
       }),
       keepUnusedDataFor: 1,
