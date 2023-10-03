@@ -1,11 +1,28 @@
 import { Box, TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
 
-export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
+export function descendingComparator<T>(a: T, b: T, orderBy: keyof T | string) {
+
+  let compareA, compareB
+  if(typeof orderBy === 'string'){
+    const keys = orderBy.split('.')
+    let valueA: any = a
+    for (const key of keys) {
+      valueA = valueA[key]
+    }
+    compareA = valueA
+
+    let valueB: any = b
+    for (const key of keys) {
+      valueB = valueB[key]
+    }
+    compareB = valueB
+  }
+
+  if (compareB < compareA) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (compareB > compareA) {
     return 1;
   }
   return 0;

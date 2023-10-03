@@ -55,7 +55,7 @@ export const OrderTable = () => {
       label: 'Persona que reporto el servicio',
     },
     {
-      id: "customer",
+      id: "customer.name",
       numeric: false,
       disablePadding: false,
       label: 'Cliente',

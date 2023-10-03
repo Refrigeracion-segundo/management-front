@@ -60,7 +60,7 @@ export const ServiceDescriptionTable = () => {
       label: 'Descripción',
     },
     {
-      id: 'service',
+      id: 'service.name',
       numeric: false,
       disablePadding: false,
       label: 'Servicio',
