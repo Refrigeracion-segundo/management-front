@@ -28,7 +28,7 @@ export const Login = () => {
   const [login, { isLoading }] = useLoginMutation();
   const loginUser = async (data: ILogin) => {
     try {
-      await login(data).unwrap();
+      await login({ ...data, email: data.email.trim()}).unwrap();
 
       window.location.reload();
     } catch {
