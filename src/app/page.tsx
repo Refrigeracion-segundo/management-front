@@ -6,12 +6,6 @@ import {
   CircularProgress,
   Grid,
   Paper,
-  // Table,
-  // TableBody,
-  // TableCell,
-  // TableContainer,
-  // TableHead,
-  // TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,10 +13,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Controller, useForm } from "react-hook-form";
 import {
-  AreaChart,
   Card,
-  DonutChart,
-  LineChart,
   Table,
   TableBody,
   TableCell,
@@ -584,7 +575,7 @@ export default function Home() {
               </Card>
             </Grid>
 
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <Card>
                 <AreaChart
                   className="h-72 mt-4"
@@ -596,9 +587,9 @@ export default function Home() {
                   valueFormatter={dataFormatter}
                 />
               </Card>
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <Card className="max-w-lg">
                 <Title>Sales</Title>
                 <DonutChart
@@ -618,9 +609,9 @@ export default function Home() {
                 />
                 <Title>Usuario</Title>
               </Card>
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <Card>
                 <Title>Export/Import Growth Rates (1970 to 2021)</Title>
                 <LineChart
@@ -634,7 +625,7 @@ export default function Home() {
                   yAxisWidth={50}
                 />
               </Card>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </Box>

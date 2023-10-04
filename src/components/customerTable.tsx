@@ -2,12 +2,10 @@
 import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { IClientResponse } from "@/common";
+import { EnhancedTableHead, HeadCell, IClientResponse, Order, getComparator, stableSort } from "@/common";
 import { CustomerTableRows } from "./customerTableRows";
 import { useFindAllClientsQuery } from "@/redux/api";
 import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
@@ -22,6 +20,8 @@ export const CustomerTable = () => {
   } = useFindAllClientsQuery();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState('name')
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -29,6 +29,63 @@ export const CustomerTable = () => {
   ) => {
     setPage(newPage);
   };
+
+  const handleRequestSort = (event: any, property: any) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
+
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'expand',
+      numeric: false,
+      disablePadding: false,
+      label: '',
+    },
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Nombre completo',
+    },
+    {
+      id: 'phone',
+      numeric: false,
+      disablePadding: false,
+      label: 'Celular',
+    },
+    {
+      id: 'contactPerson',
+      numeric: false,
+      disablePadding: false,
+      label: 'Persona de contacto',
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Fecha creación',
+    },
+    {
+      id: "updatedAt",
+      numeric: false,
+      disablePadding: false,
+      label: 'Ultima actualización',
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: false,
+      label: 'Estatus',
+    },
+    {
+      id: 'edit',
+      numeric: true,
+      disablePadding: true,
+      label: '',
+    },
+  ];
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,21 +96,15 @@ export const CustomerTable = () => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>Nombre completo</TableCell>
-            <TableCell align="left">Celular</TableCell>
-            <TableCell align="left">Persona de contacto</TableCell>
-            <TableCell align="left">Fecha registro</TableCell>
-            <TableCell align="left">Ultima actualización</TableCell>
-            <TableCell align="left">Estatus</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+      <EnhancedTableHead
+              headCells={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
         <TableBody>
           {isSuccess &&
-            rows?.map((row) => (
+            stableSort(rows ? rows : [], getComparator(order, orderBy)).map((row: any) => (
               <CustomerTableRows
                 key={row._id}
                 row={row as unknown as IClientResponse}
@@ -63,7 +114,7 @@ export const CustomerTable = () => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.length.toString() : '0') }]}
               colSpan={10}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}

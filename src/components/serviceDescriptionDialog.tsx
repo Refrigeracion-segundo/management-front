@@ -84,9 +84,6 @@ export const DialogServiceDescription = (props: {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => {
-          dispatch(closeServiceDescription());
-        }}
         fullWidth
       >
         <DialogTitle>

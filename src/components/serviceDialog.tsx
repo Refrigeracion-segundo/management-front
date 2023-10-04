@@ -73,10 +73,6 @@ export const DialogService = () => {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => {
-          dispatch(closeService());
-          reset(undefined);
-        }}
         fullWidth
         maxWidth="md"
       >

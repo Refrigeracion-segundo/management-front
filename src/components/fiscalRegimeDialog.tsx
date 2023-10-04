@@ -64,9 +64,6 @@ export const DialogFiscalRegime = (props: {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => {
-          dispatch(closeFiscalRegime());
-        }}
         fullWidth
       >
         <DialogTitle>

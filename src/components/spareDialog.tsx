@@ -89,10 +89,6 @@ export const DialogSpare = (props: {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => {
-          dispatch(closeSpare());
-          dispatch(isUpdatingSpare(false));
-        }}
       >
         <DialogTitle>
           <Typography variant="h6" align="center">

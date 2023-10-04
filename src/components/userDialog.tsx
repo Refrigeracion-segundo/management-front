@@ -98,10 +98,6 @@ export const DialogUser = (props: {
       </IconButton>
       <Dialog
         open={openDialog}
-        onClose={() => {
-          dispatch(close());
-          dispatch(isUpdatingUser(false));
-        }}
         maxWidth="sm"
         fullWidth={!isUpdate}
       >

@@ -11,7 +11,6 @@ import { SnackbarProvider } from "notistack";
 import Login from "./login";
 import { ConfirmProvider } from "material-ui-confirm";
 import "moment/locale/es";
-import { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
