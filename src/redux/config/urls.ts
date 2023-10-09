@@ -1,4 +1,3 @@
-
 export const enum LOGIN_URL {
   LOGIN = "/auth/login",
 }
@@ -72,6 +71,7 @@ export const enum ORDER_URL {
   UPDATE = "/order",
   DELETE = "/order",
   UPDATE_STATUS = "/order/status",
+  VERIFY_ORDER = "/order/verify/orderId",
 }
 
 export const enum DASHBOARD_URL {

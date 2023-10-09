@@ -35,17 +35,12 @@ export const orderApi = createApi({
         toDate: Date;
         description?: string;
         orderId?: number;
-        status?: string;
+        filter?: string;
+        search?: string;
       }
     >({
       query: (params) => ({
-        url: `${ORDER_URL.FIND_ALL}?perPage=${params.perPage}&page=${
-          params.page
-        }&fromDate=${moment(params.fromDate).format(
-          "YYYY-MM-DD"
-        )}&toDate=${moment(params.toDate).format("YYYY-MM-DD")}&orderId=${
-          params.orderId
-        }&search=${params.description}&status=${params.status}`,
+        url: `${ORDER_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
         // params,
       }),
@@ -75,9 +70,27 @@ export const orderApi = createApi({
       }),
       invalidatesTags: ["findAllOrder"],
     }),
+    verifyOrderKey: builder.query<void, number>({
+      query: (data) => ({
+        url: `${ORDER_URL.VERIFY_ORDER}/${data}`,
+        method: METHOD_TYPES.GET,
+      }),
+    }),
   }),
 });
 
+const getFilters = (filters: any) => {
+  let query = "";
+  for (const key in filters) {
+    if (filters[key]) {
+      if (key == "fromDate" || key == "toDate")
+        query += `${key}=${moment(filters[key]).format("YYYY-MM-DD")}&`;
+      else query += `${key}=${filters[key]}&`;
+    }
+  }
+
+  return query.substring(0, query.length - 1);
+};
 export const {
   useRegisterOrderMutation,
   useLazyFindAllOrderQuery,
@@ -85,4 +98,5 @@ export const {
   useUpdateOrderMutation,
   useDeleteOrderMutation,
   useUpdateStatusMutation,
+  useLazyVerifyOrderKeyQuery,
 } = orderApi;

@@ -5,6 +5,7 @@ import {
   openOrder,
   orderUsers,
   saveDirection,
+  saveNumOrder,
   saveOrderClient,
   saveOrderGeneral,
 } from "@/redux/slices/order";
@@ -36,6 +37,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   useLazyFindAllClientsQuery,
   useLazyFindUserTechniciansQuery,
+  useLazyVerifyOrderKeyQuery,
   useRegisterOrderMutation,
   useUpdateOrderMutation,
 } from "@/redux/api";
@@ -48,6 +50,7 @@ import { makeStyles } from "@mui/styles";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { enqueueSnackbar } from "notistack";
+import { OrderSpare } from "./orderSpare";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -71,6 +74,8 @@ export const OrderDialog = () => {
     service,
     direction,
     users,
+    spares,
+    numberOrder,
   } = useSelector((store: RootState) => store.order);
   const {
     formState: { errors },
@@ -79,8 +84,10 @@ export const OrderDialog = () => {
   } = useForm<IOrderGeneral>({
     values: {
       ...general,
+      client,
     },
   });
+  const [isErrorOrder, setErrorOrder] = useState(false);
   const dispatch = useDispatch();
   const [useDates, setUseDates] = useState<boolean>(false);
   const [valueStep, setValueStep] = useState("direction");
@@ -111,18 +118,40 @@ export const OrderDialog = () => {
     { isSuccess: isSuccessUpdateOrder, isLoading: isLoadingUpdateOrder },
   ] = useUpdateOrderMutation();
 
+  const [verifyOrder, { isError, isLoading }] = useLazyVerifyOrderKeyQuery();
   return (
     <div>
       <IconButton onClick={() => dispatch(openOrder())}>
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-        fullScreen
-        // maxWidth="xl"handleAddDataEquip
-      >
+      <Dialog open={openDialog} fullScreen>
         <DialogTitle>
-          <Typography align="center">Formulario de ordenes</Typography>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item xs={2}></Grid>
+            <Typography align="center">Formulario de ordenes</Typography>
+            <Grid item xs={2}>
+              <TextField
+                size="small"
+                disabled={isUpdate}
+                placeholder="# Orden"
+                type="number"
+                defaultValue={isUpdate ? numberOrder : ""}
+                onChange={async (e) => {
+                  !isUpdate &&
+                    verifyOrder(parseInt(e.target.value)).then((c) => {
+                      if (c.status == "rejected") {
+                        setErrorOrder(true);
+                      } else {
+                        setErrorOrder(false);
+                        dispatch(saveNumOrder(parseInt(e.target.value)));
+                      }
+                    });
+                }}
+                error={isErrorOrder}
+                helperText={isErrorOrder && "Este numero de orden ya existe"}
+              />
+            </Grid>
+          </Grid>
         </DialogTitle>
         <br />
 
@@ -136,7 +165,6 @@ export const OrderDialog = () => {
             <Grid item xs={6}>
               <Controller
                 name="client"
-                defaultValue={client}
                 control={control}
                 rules={{
                   required: {
@@ -144,6 +172,7 @@ export const OrderDialog = () => {
                     message: "Seleccione un cliente",
                   },
                 }}
+                defaultValue={client}
                 render={({ field }) => (
                   <Autocomplete
                     loading={isLoadingClients}
@@ -174,7 +203,6 @@ export const OrderDialog = () => {
                       }
                     }}
                     fullWidth
-                    // sx={{ width: 300, marginTop: "-3px" }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -247,7 +275,7 @@ export const OrderDialog = () => {
                   render={({ field }) => {
                     return (
                       <DesktopDatePicker
-                        label="Fecha de finalizacion"
+                        label="Fecha de finalización"
                         inputFormat={"MM/DD/YYYY"}
                         value={field.value}
                         onChange={(value: any) => {
@@ -279,7 +307,7 @@ export const OrderDialog = () => {
                 rules={{
                   required: {
                     value: false,
-                    message: "Seleccione tecnicos",
+                    message: "Seleccione técnicos",
                   },
                 }}
                 defaultValue={users}
@@ -310,7 +338,7 @@ export const OrderDialog = () => {
                         {...params}
                         variant="standard"
                         margin="dense"
-                        label="Seleccione los tecnicos"
+                        label="Seleccione los técnicos"
                         error={!!errors.users}
                         helperText={!!errors.users && errors.users.message}
                       />
@@ -329,8 +357,8 @@ export const OrderDialog = () => {
                     message: "Ingrese a la persona que reporto el servicio",
                   },
                 }}
-                defaultValue={general.report}
                 control={control}
+                defaultValue={general.report}
                 render={({ field }) => {
                   return (
                     <TextField
@@ -356,8 +384,8 @@ export const OrderDialog = () => {
                     message: "Ingrese una descripción de la orden",
                   },
                 }}
-                defaultValue={general.description}
                 control={control}
+                defaultValue={general.description}
                 render={({ field }) => {
                   return (
                     <TextField
@@ -392,13 +420,18 @@ export const OrderDialog = () => {
                   className={classes.root}
                 >
                   <BottomNavigationAction
-                    label="Direccion del trabajo"
+                    label="Dirección del trabajo"
                     value="direction"
                     icon={<EditRoad style={{ color: "#fff" }} />}
                   />
                   <BottomNavigationAction
                     label="Equipos a reparar"
                     value="equipments"
+                    icon={<Construction style={{ color: "#fff" }} />}
+                  />
+                  <BottomNavigationAction
+                    label="Refacciones"
+                    value="spare"
                     icon={<Construction style={{ color: "#fff" }} />}
                   />
                   <BottomNavigationAction
@@ -414,6 +447,8 @@ export const OrderDialog = () => {
                   <OrderDirection />
                 ) : valueStep == "equipments" ? (
                   <OrderEquipments />
+                ) : valueStep == "spare" ? (
+                  <OrderSpare />
                 ) : (
                   <OrderServices />
                 )}
@@ -435,6 +470,7 @@ export const OrderDialog = () => {
             onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
+                  orderId: numberOrder,
                   report: data.report,
                   startDate: useDates ? general.startDate : undefined,
                   endDate: useDates ? general.endDate : undefined,
@@ -442,6 +478,15 @@ export const OrderDialog = () => {
                   customer: client._id,
                   ...direction,
                   description: data.description,
+                  spares: !!spares.length
+                    ? spares.map((p) => {
+                        return {
+                          spare: p._id,
+                          quantity: p.quantity,
+                          price: p.suggestedPrice,
+                        };
+                      })
+                    : [],
                   services: service.map((p) => {
                     return {
                       service: (p.service.service as IServiceResponse)._id,

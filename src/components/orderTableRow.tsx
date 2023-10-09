@@ -7,8 +7,10 @@ import {
   isUpdatingOrder,
   openOrder,
   pushOrderService,
+  pushSpareOrder,
   saveDirection,
   saveEquipment,
+  saveNumOrder,
   saveOrderClient,
   saveOrderGeneral,
   saveTechnician,
@@ -117,17 +119,22 @@ export const OrderTableRows = (props: {
         })
       );
     });
+    data.spares?.forEach((p) => {
+      dispatch(
+        pushSpareOrder({
+          ...p.spare,
+          quantity: p.quantity,
+          suggestedPrice: p.price,
+        })
+      );
+    });
+    dispatch(saveNumOrder(data.orderId));
     dispatch(isUpdatingOrder(true));
     dispatch(openOrder());
   };
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openAnchor = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+
   return (
     <Fragment key={row._id}>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -183,10 +190,10 @@ export const OrderTableRows = (props: {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-            <Typography variant="h6" gutterBottom component="div">
+              <Typography variant="h6" gutterBottom component="div">
                 Descripción
               </Typography>
-            <Typography variant="body1" gutterBottom component="div">
+              <Typography variant="body1" gutterBottom component="div">
                 {row.description}
               </Typography>
               <Typography variant="h6" gutterBottom component="div">
@@ -229,6 +236,30 @@ export const OrderTableRows = (props: {
                     <TableCell>Total</TableCell>
                     <TableCell>{currencyMx.format(total)}</TableCell>
                   </TableRow>
+                </TableBody>
+              </Table>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Refacción</TableCell>
+                    <TableCell>Precio</TableCell>
+                    <TableCell>Cantidad</TableCell>
+                    <TableCell>Total</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.spares?.map((spare) => {
+                    return (
+                      <TableRow>
+                        <TableCell>{spare.spare.description}</TableCell>
+                        <TableCell>{currencyMx.format(spare.price)}</TableCell>
+                        <TableCell>{spare.quantity}</TableCell>
+                        <TableCell>
+                          {currencyMx.format(spare.price * spare.quantity)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </Box>

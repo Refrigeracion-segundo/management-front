@@ -8,6 +8,7 @@ import {
   IOrderService,
   IOrderUpdate,
   IServiceResponse,
+  ISpareResponse,
   IUserResponse,
 } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
@@ -25,6 +26,8 @@ export interface Order {
   general: IOrderGeneral;
   total: number;
   filters: IOrderFilters;
+  spares: Array<ISpareResponse & { quantity: number }>;
+  numberOrder?: number;
 }
 
 const initialState: Order = {
@@ -83,6 +86,8 @@ const initialState: Order = {
     fromDate: new Date(moment().startOf("month").format()),
     toDate: new Date(moment().endOf("month").format()),
   },
+  spares: [],
+  numberOrder: undefined,
 };
 
 export const orderSlice = createSlice({
@@ -197,7 +202,11 @@ export const orderSlice = createSlice({
       state.filters = value.payload;
     },
     cleanReduxOrder: (state) => {
-      state = { ...initialState };
+      return {
+        ...initialState,
+        client: initialState.client,
+        numberOrder: undefined,
+      };
     },
     deleteAllEquipment: (state) => {
       state.equipment = [];
@@ -205,6 +214,36 @@ export const orderSlice = createSlice({
     deleteAllServices: (state) => {
       state.service = [];
       state.total = 0;
+    },
+    pushSpareOrder: (
+      state,
+      value: PayloadAction<ISpareResponse & { quantity: number }>
+    ) => {
+      state.spares = [...state.spares, value.payload];
+    },
+    deleteOneSpareOrder: (state, value: PayloadAction<number>) => {
+      state.spares = state.spares.filter((_, i) => i !== value.payload);
+    },
+    deleteAllSparesOrder: (state) => {
+      state.spares = [];
+    },
+    updateSpareOrder: (
+      state,
+      value: PayloadAction<{ _id: string; quantity: number; price: number }>
+    ) => {
+      state.spares = state.spares.map((spare) => {
+        if (spare._id == value.payload._id) {
+          return {
+            ...spare,
+            suggestedPrice: value.payload.price,
+            quantity: value.payload.quantity,
+          };
+        }
+        return spare;
+      });
+    },
+    saveNumOrder: (state, value: PayloadAction<number>) => {
+      state.numberOrder = value.payload;
     },
   },
 });
@@ -230,6 +269,11 @@ export const {
   cleanReduxOrder,
   deleteAllEquipment,
   deleteAllServices,
+  pushSpareOrder,
+  deleteOneSpareOrder,
+  deleteAllSparesOrder,
+  updateSpareOrder,
+  saveNumOrder,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

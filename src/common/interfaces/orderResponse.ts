@@ -3,6 +3,7 @@ import {
   IOrderDirection,
   IServiceDescriptionResponse,
   IServiceResponse,
+  ISpareResponse,
   IUserResponse,
 } from ".";
 import { IOrderRegister } from "./orderRegister";
@@ -38,4 +39,9 @@ export interface IOrderDataResponse extends IOrderDirection {
   status: string;
   createdAt: Date;
   updatedAt: Date;
+  spares: Array<{
+    spare: ISpareResponse;
+    price: number;
+    quantity: number;
+  }>;
 }

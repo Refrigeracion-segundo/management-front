@@ -22,9 +22,7 @@ import {
   TableRow,
   Title,
 } from "@tremor/react";
-import {
-  useLazyFindTotalQuery,
-} from "@/redux/api/dashboard.api";
+import { useLazyFindTotalQuery } from "@/redux/api/dashboard.api";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -33,57 +31,7 @@ import { saveFiltersDashboard } from "@/redux/slices/dashboard";
 import { useLazyFindAllOrderQuery } from "@/redux/api";
 import { STATUS_ORIGINAL } from "@/redux/constants";
 import useUser from "./lib/hooks/useUser";
-const data = [
-  ["Year", "Sales", "Expenses", "Profit"],
-  ["2014", 1000, 400, 600],
-  ["2015", 1170, 460, 710],
-  ["2016", 660, 1120, 300],
-  ["2017", 1030, 540, 490],
-];
-
-const optionsBar = {
-  title: "Company Performance",
-  titleTextStyle: { color: "#FFF" }, // Cambia el color del título
-  hAxis: { title: "Year", textStyle: { color: "#FFF" } },
-  vAxis: { title: "Amount", textStyle: { color: "#FFF" } },
-  legendTextStyle: { color: "#FFF" },
-  backgroundColor: "#222", // Fondo oscuro
-  colors: ["#2196F3", "#F44336", "#4CAF50"], // Colores de las barras
-};
-
-const dataPie = [
-  ["Task", "Hours per Day"],
-  ["Work", 11],
-  ["Eat", 2],
-  ["Sleep", 7],
-  ["Relax", 4],
-];
-
-const optionsPie = {
-  title: "Daily Activities",
-  titleTextStyle: { color: "#FFF" }, // Cambia el color del título
-  legendTextStyle: { color: "#FFF" },
-  backgroundColor: "#222", // Fondo oscuro
-  colors: ["#2196F3", "#F44336", "#4CAF50", "#FF9800"], // Colores de las secciones
-};
-
-const dataLine = [
-  ["Year", "Sales", "Expenses"],
-  ["2014", 1000, 400],
-  ["2015", 1170, 460],
-  ["2016", 660, 1120],
-  ["2017", 1030, 540],
-];
-
-const optionsLine = {
-  title: "Company Performance (Dark Theme)",
-  titleTextStyle: { color: "#FFF" }, // Cambiar el color del título
-  hAxis: { title: "Year", textStyle: { color: "#FFF" } }, // Cambiar el color del texto del eje X
-  vAxis: { title: "Amount", textStyle: { color: "#FFF" } }, // Cambiar el color del texto del eje Y
-  legendTextStyle: { color: "#FFF" }, // Cambiar el color del texto de la leyenda
-  backgroundColor: "#222", // Establecer el fondo oscuro
-  colors: ["#2196F3", "#F44336"], // Colores de las líneas
-};
+import Link from "next/link";
 
 const chartdata = [
   {
@@ -181,6 +129,7 @@ const dataFormatter = (number: number) => {
 export default function Home() {
   const { control } = useForm();
   const dispatch = useDispatch();
+
   const home = useUser({ redirectTo: "/login" });
   const { filters } = useSelector((store: RootState) => store.dashboard);
   const [
@@ -202,7 +151,8 @@ export default function Home() {
       fromDate: filters.fromDate,
       toDate: filters.toDate,
       orderId: 0,
-      status: STATUS_ORIGINAL.PAID,
+      filter: "status",
+      search: STATUS_ORIGINAL.PAID,
     });
     getOrdersNoPaid({
       perPage: 30,
@@ -210,10 +160,11 @@ export default function Home() {
       fromDate: filters.fromDate,
       toDate: filters.toDate,
       orderId: 0,
-      status: STATUS_ORIGINAL.INVOICED,
+      filter: "status",
+      search: STATUS_ORIGINAL.INVOICED,
     });
   }, [filters.fromDate, filters.toDate, filters.status]);
-  
+
   return (
     home.user && (
       <Box sx={{ p: 15 }}>
@@ -279,18 +230,16 @@ export default function Home() {
                   <CircularProgress size={30} />
                 </div>
               ) : (
-                <>
+                <Link href={"order/paid"}>
                   <Typography align="center">
                     {dataTotal?.["paid"].total}
                   </Typography>
                   <Typography align="center">Pagadas y facturadas</Typography>
                   <Typography align="center">
                     Total:
-                    {currencyMx.format(
-                      dataTotal?.["paid"].amount as number
-                    )}
+                    {currencyMx.format(dataTotal?.["paid"].amount as number)}
                   </Typography>
-                </>
+                </Link>
               )}
             </Grid>
             <Grid
@@ -314,7 +263,7 @@ export default function Home() {
                   <CircularProgress size={30} />
                 </div>
               ) : (
-                <>
+                <Link href={"order/invoiced"}>
                   <Typography align="center">
                     {dataTotal?.invoiced.total}
                   </Typography>
@@ -325,7 +274,7 @@ export default function Home() {
                     Total:{" "}
                     {currencyMx.format(dataTotal?.invoiced.amount as number)}
                   </Typography>
-                </>
+                </Link>
               )}
             </Grid>
             <Grid
@@ -349,7 +298,7 @@ export default function Home() {
                   <CircularProgress size={30} />
                 </div>
               ) : (
-                <div>
+                <Link href={"order/pending"}>
                   <Typography align="center">
                     {dataTotal?.pending.total as number}
                   </Typography>
@@ -358,7 +307,7 @@ export default function Home() {
                     Total:{" "}
                     {currencyMx.format(dataTotal?.pending.amount as number)}
                   </Typography>
-                </div>
+                </Link>
               )}
             </Grid>
             <Grid
@@ -382,7 +331,7 @@ export default function Home() {
                   <CircularProgress size={30} />
                 </div>
               ) : (
-                <>
+                <Link href={"order/in progress"}>
                   <Typography align="center">
                     {dataTotal?.["in progress"].total}
                   </Typography>
@@ -393,7 +342,7 @@ export default function Home() {
                       dataTotal?.["in progress"].amount as number
                     )}
                   </Typography>
-                </>
+                </Link>
               )}
             </Grid>
           </Grid>
@@ -416,7 +365,6 @@ export default function Home() {
                 sx={{ p: 2 }}
                 style={{ backgroundColor: "#080d1f" }}
               >
-
                 <Grid item xs={12}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Controller

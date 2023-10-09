@@ -5,8 +5,9 @@ import { OrderTable } from "@/components/orderTable";
 import { Box } from "@mui/material";
 import { useParams } from "next/navigation";
 import React from "react";
+import { useDispatch } from "react-redux";
 
-const Order = () => {
+const Status = () => {
   const { status } = useParams();
 
   return (
@@ -18,4 +19,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default Status;
