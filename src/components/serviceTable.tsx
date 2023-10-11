@@ -42,13 +42,13 @@ export const ServiceTable = () => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState('name')
 
-  const handleDelete = async (name: string, id: string) => {
+  const handleDelete = async (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(async () => {
       try {
-        await deleteService({ id }).unwrap();
+        await deleteService({ _id }).unwrap();
         enqueueSnackbar("Se elimino el servicio con exito", {
           variant: "success",
         });

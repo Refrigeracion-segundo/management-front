@@ -35,13 +35,13 @@ export const TableUser = (props: {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState('name')
 
-  const handleDelete = async (name: string, id: string) => {
+  const handleDelete = async (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja al usuario ${name}? `,
     }).then(async () => {
       try {
-        await deleteUser({ id }).unwrap();
+        await deleteUser({ _id }).unwrap();
         enqueueSnackbar("Usuario eliminado correctamente", {
           variant: "success",
         });

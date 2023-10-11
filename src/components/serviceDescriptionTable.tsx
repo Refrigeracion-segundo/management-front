@@ -43,12 +43,12 @@ export const ServiceDescriptionTable = () => {
     isFetching,
   } = useFindAllServiceDescriptionQuery();
   const [deleteRegime] = useDeleteServiceDescriptionMutation();
-  const handleDelete = (name: string, id: string) => {
+  const handleDelete = (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(async () => {
-      await deleteRegime({ id }).unwrap();
+      await deleteRegime({ _id }).unwrap();
     });
   };
 

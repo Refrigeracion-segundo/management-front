@@ -27,7 +27,7 @@ import {
 
 import { useDeleteSpareMutation, useFindAllSpareQuery } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 
@@ -44,13 +44,13 @@ export const TableSpare = (props: {
   const confirm = useConfirm();
   const dispatch = useDispatch();
 
-  const handleDelete = async (name: string, id: string) => {
+  const handleDelete = async (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(async () => {
       try {
-        await deleteSpare({ id }).unwrap();
+        await deleteSpare({ _id }).unwrap();
         dispatch(closeSpare());
         enqueueSnackbar("Eliminado con existo", { variant: "success" });
       } catch {
@@ -157,7 +157,7 @@ export const TableSpare = (props: {
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
               <TableCell>
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+                { STATUS_DATA.get(row.status)?.translate }
               </TableCell>
               <TableCell>
                 <IconButton

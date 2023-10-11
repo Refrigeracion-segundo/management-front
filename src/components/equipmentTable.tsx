@@ -40,12 +40,12 @@ export const EquipmentTable = () => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState('name')
 
-  const handleDelete = (name: string, id: string) => {
+  const handleDelete = (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(() => {
-      deleteEquipment({ id })
+      deleteEquipment({ _id })
         .unwrap()
         .then(() => {
           enqueueSnackbar("Se elimino correctamente", { variant: "success" });

@@ -35,12 +35,12 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
   const [deleteClient] = useDeleteClientMutation();
-  const handleDelete = (name: string, id: string) => {
+  const handleDelete = (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja al cliente ${name}? `,
     }).then(() => {
-      deleteClient({ id });
+      deleteClient({ _id });
     });
   };
 

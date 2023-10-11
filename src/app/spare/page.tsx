@@ -4,6 +4,7 @@ import {
   ISpareUpdate,
 } from "@/common";
 import { DialogSpare } from "@/components/spareDialog";
+import { SpareFilters } from "@/components/spareFIlters";
 import { TableSpare } from "@/components/tableSpare";
 import { Box, Divider } from "@mui/material";
 import React from "react";
@@ -25,6 +26,7 @@ const Spare = () => {
     <div style={{ marginTop: "1%" }}>
       <Divider variant="middle" />
       <Box sx={{ p: 5 }}>
+      <SpareFilters />
         <DialogSpare
           register={register}
           clearErrors={clearErrors}

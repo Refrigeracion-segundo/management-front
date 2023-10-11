@@ -2,6 +2,7 @@ export const STATUS_DB = {
   ACTIVE: "active",
   ELIMINATED: "eliminated",
 };
+
 export enum STATUS_ORIGINAL {
   PENDING = "pending",
   IN_PROGRESS = "in progress",
@@ -30,3 +31,8 @@ STATUS.set(STATUS_ORIGINAL.IN_PROGRESS, {
   translate: "EN PROGRESO",
 });
 STATUS.set(STATUS_ORIGINAL.CANCELED, { color: "red", translate: "CANCELADA" });
+
+export const STATUS_DATA = new Map<string, { translate: string }>();
+
+STATUS_DATA.set(STATUS_DB.ACTIVE, { translate: "ACTIVO" });
+STATUS_DATA.set(STATUS_DB.ELIMINATED, { translate: "BAJA" });
