@@ -26,7 +26,7 @@ import {
   openServiceDescription,
   saveServiceDescription,
 } from "@/redux/slices/serviceDescription";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA} from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 export const ServiceDescriptionTable = () => {
@@ -145,7 +145,7 @@ export const ServiceDescriptionTable = () => {
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+                {STATUS_DATA.get(row.status)?.translate}
               </TableCell>
               <TableCell>
                 <IconButton

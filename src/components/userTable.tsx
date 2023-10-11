@@ -18,7 +18,7 @@ import { EnhancedTableHead, HeadCell, IUserUpdate, Order, RoleTranslate, getComp
 import { useDispatch } from "react-redux";
 import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
 import { useDeleteUserMutation, useFindAllUsersQuery } from "@/redux/api";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import moment from "moment";
@@ -155,7 +155,7 @@ export const TableUser = (props: {
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
               <TableCell align="right">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              { STATUS_DATA.get(row.status)?.translate }
               </TableCell>
               <TableCell>
                 <IconButton

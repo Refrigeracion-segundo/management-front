@@ -1,19 +1,24 @@
-import { ISpareRegister, ISpareUpdate } from "@/common";
+import { IFilters, ISpareRegister, ISpareUpdate } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-export interface DialogUser {
+export interface DialogSpare {
   openDialog: boolean;
   isUpdate: boolean;
   spare: ISpareRegister | ISpareUpdate;
+  filters: IFilters;
 }
 
-const initialState: DialogUser = {
+const initialState: DialogSpare = {
   openDialog: false,
   isUpdate: false,
   spare: {
     description: "",
     suggestedPrice: 0,
   } as ISpareRegister,
+  filters: {
+    filter: "",
+    search: "",
+  },
 };
 
 export const dialogSpareSlice = createSlice({
@@ -40,6 +45,9 @@ export const dialogSpareSlice = createSlice({
     cleanReduxSpare: (state) => {
       state = { ...initialState };
     },
+    saveSpareFilters: (state, value: PayloadAction<IFilters>) => {
+      state.filters = value.payload;
+    },
   },
 });
 
@@ -49,6 +57,7 @@ export const {
   isUpdatingSpare,
   saveSpare,
   cleanReduxSpare,
+  saveSpareFilters,
 } = dialogSpareSlice.actions;
 
 export default dialogSpareSlice.reducer;

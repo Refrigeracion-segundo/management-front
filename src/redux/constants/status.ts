@@ -1,6 +1,6 @@
 export const STATUS_DB = {
   ACTIVE: "active",
-  ELIMINATED: "eliminated",
+  ELIMINATED: "deleted",
 };
 
 export enum STATUS_ORIGINAL {

@@ -1,7 +1,7 @@
 "use client";
 import { IClientResponse, IClientUpdate, IRegimeResponse } from "@/common";
 import { useDeleteClientMutation } from "@/redux/api";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import {
   isUpdatingClient,
   openClient,
@@ -74,7 +74,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
           {moment(row.updatedAt).format("LLLL")}
         </TableCell>
         <TableCell align="left">
-          {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+          {STATUS_DATA.get(row.status)?.translate}
         </TableCell>
 
         <TableCell>

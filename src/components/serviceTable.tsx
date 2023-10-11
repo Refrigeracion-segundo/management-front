@@ -26,7 +26,7 @@ import {
   openService,
   saveService,
 } from "@/redux/slices/service";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import { currencyMx } from "@/redux/constants/formatCurrency";
@@ -179,7 +179,7 @@ export const ServiceTable = () => {
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+                {STATUS_DATA.get(row.status)?.translate}
               </TableCell>
               <TableCell>
                 <IconButton

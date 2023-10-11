@@ -1,6 +1,6 @@
 "use client";
 import { STATUS_DATA } from "@/redux/constants";
-import { saveFilters } from "@/redux/slices/order";
+import { saveSpareFilters } from "@/redux/slices/dialogSpare";
 import { RootState } from "@/redux/store";
 import { Autocomplete, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 export const SpareFilters = () => {
-  const { filters } = useSelector((store: RootState) => store.order);
+  const { filters } = useSelector((store: RootState) => store.dialogSpare);
   const [filter, setFilter] = useState("");
   const dispatch = useDispatch();
   const { control } = useForm<{
@@ -72,7 +72,7 @@ export const SpareFilters = () => {
                   onChange={(e, n) => {
                     field.onChange(n);
                     dispatch(
-                      saveFilters({
+                      saveSpareFilters({
                         ...filters,
                         search: n.name,
                         filter: "status",
@@ -92,7 +92,6 @@ export const SpareFilters = () => {
             name="descriptionFilter"
             // defaultValue={""}
             render={({ field }) => {
-              console.log(field.value);
               return (
                 <TextField
                   size="small"
@@ -101,9 +100,18 @@ export const SpareFilters = () => {
                   label={ filtersOptions.find((f) => f.filter === filter)?.translate }
                   onChange={(e) => {
                     field.onChange(e);
-                    if (filter == "") return;
+                    if (filter == "") {
+                      dispatch(
+                        saveSpareFilters({
+                          ...filters,
+                          search: undefined,
+                          filter,
+                        })
+                      );
+                      return
+                    };
                     dispatch(
-                      saveFilters({
+                      saveSpareFilters({
                         ...filters,
                         search: e.target.value,
                         filter,

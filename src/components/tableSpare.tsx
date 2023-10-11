@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,7 +17,7 @@ import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
 import { EnhancedTableHead, HeadCell, ISpareUpdate, Order, getComparator, stableSort } from "@/common";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   closeSpare,
   isUpdatingSpare,
@@ -25,17 +25,22 @@ import {
   saveSpare,
 } from "@/redux/slices/dialogSpare";
 
-import { useDeleteSpareMutation, useFindAllSpareQuery } from "@/redux/api";
+import { useDeleteSpareMutation, useLazyFindAllSpareQuery } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
+import { RootState } from "@/redux/store";
 
 export const TableSpare = (props: {
   setValue: UseFormSetValue<ISpareUpdate>;
 }) => {
   const { setValue } = props;
-  const { data: rows, isLoading, isFetching } = useFindAllSpareQuery();
+  const [getSpare, { data: rows, isSuccess, isLoading, isFetching }] =
+    useLazyFindAllSpareQuery();
+  const {
+    filters: { filter, search },
+  } = useSelector((store: RootState) => store.dialogSpare);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [deleteSpare] = useDeleteSpareMutation();
@@ -43,6 +48,16 @@ export const TableSpare = (props: {
   const [orderBy, setOrderBy] = useState('description')
   const confirm = useConfirm();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    getSpare({
+      filter,
+      search,
+    });
+  }, [
+    filter,
+    search,
+  ]);
 
   const handleDelete = async (name: string, _id: string) => {
     confirm({
