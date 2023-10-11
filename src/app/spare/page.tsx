@@ -4,11 +4,14 @@ import {
   ISpareUpdate,
 } from "@/common";
 import { DialogSpare } from "@/components/spareDialog";
-import { SpareFilters } from "@/components/spareFIlters";
+import { FiltersComponent } from "@/components/spareFIlters";
 import { TableSpare } from "@/components/tableSpare";
+import { saveSpareFilters } from "@/redux/slices/dialogSpare";
+import { RootState } from "@/redux/store";
 import { Box, Divider } from "@mui/material";
 import React from "react";
 import { UseFormGetValues, UseFormSetValue, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 const Spare = () => {
   const {
@@ -22,11 +25,19 @@ const Spare = () => {
   } = useForm<ISpareRegister | ISpareUpdate>({
     defaultValues: { description: "", suggestedPrice: 0 },
   });
+  const { filters } = useSelector((store: RootState) => store.dialogSpare);
+
+  const filtersOptions = [
+    { filter: "status", translate: "Estatus" },
+    { filter: "description", translate: "Descripción" },
+    { filter: "suggestedPrice", translate: "Precio sugerido" },
+  ];
+
   return (
     <div style={{ marginTop: "1%" }}>
       <Divider variant="middle" />
       <Box sx={{ p: 5 }}>
-      <SpareFilters />
+      <FiltersComponent filtersOptions={filtersOptions} filters={filters} cb={saveSpareFilters} />
         <DialogSpare
           register={register}
           clearErrors={clearErrors}

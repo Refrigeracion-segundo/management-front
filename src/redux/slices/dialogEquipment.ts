@@ -1,10 +1,11 @@
-import { IEquipmentRegister, IEquipmentUpdate } from "@/common";
+import { IEquipmentRegister, IEquipmentUpdate, IFilters } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface DialogUser {
   openDialog: boolean;
   isUpdate: boolean;
   data: IEquipmentUpdate | IEquipmentRegister;
+  filters: IFilters;
 }
 
 const initialState: DialogUser = {
@@ -12,6 +13,10 @@ const initialState: DialogUser = {
   isUpdate: false,
   data: {
     name: "",
+  },
+  filters: {
+    filter: "",
+    search: "",
   },
 };
 
@@ -56,6 +61,9 @@ export const dialogEquipmentSlice = createSlice({
       return {
         ...initialState,
       };
+    },
+    saveEquipmentFilters: (state, value: PayloadAction<IFilters>) => {
+      state.filters = value.payload;
     },
   },
 });

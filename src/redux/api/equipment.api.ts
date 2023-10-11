@@ -11,6 +11,7 @@ import {
   IEquipmentResponse,
   IEquipmentUpdate,
 } from "@/common";
+import { getFilters } from "../constants/getFIlters";
 
 export const equipmentApi = createApi({
   reducerPath: ReducerPaths.EQUIPMENT,
@@ -27,9 +28,15 @@ export const equipmentApi = createApi({
         invalidatesTags: ["findAllEquipment"],
       }
     ),
-    findAllEquipment: builder.query<Array<IEquipmentResponse>, void>({
-      query: () => ({
-        url: EQUIPMENT_URL.FIND_ALL,
+    findAllEquipment: builder.query<
+      Array<IEquipmentResponse>,
+      {
+        filter?: string;
+        search?: string;
+      }
+    >({
+      query: (params) => ({
+        url: `${EQUIPMENT_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllEquipment"],

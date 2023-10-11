@@ -1,15 +1,14 @@
 "use client";
-import { IFilters } from "@/common";
 import { STATUS_DATA } from "@/redux/constants";
 import { saveSpareFilters } from "@/redux/slices/dialogSpare";
+import { RootState } from "@/redux/store";
 import { Autocomplete, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-export const FiltersComponent = (props: { filtersOptions: { filter: string, translate: string }[], filters: IFilters, cb: (filters: IFilters) => any } ) => {
-  
-  const { filtersOptions, filters, cb } = props 
+export const EquipmentFilters = () => {
+  const { filters } = useSelector((store: RootState) => store.dialogSpare);
   const [filter, setFilter] = useState("");
   const dispatch = useDispatch();
   const { control } = useForm<{
@@ -17,6 +16,11 @@ export const FiltersComponent = (props: { filtersOptions: { filter: string, tran
     statusAutocomplete: any;
     descriptionFilter: any;
   }>();
+
+  const filtersOptions = [
+    { filter: "status", translate: "Estatus" },
+    { filter: "name", translate: "Nombre" },
+  ];
 
   return (
     <Grid container justifyContent="center" spacing={2}>
@@ -66,8 +70,6 @@ export const FiltersComponent = (props: { filtersOptions: { filter: string, tran
                   size="small"
                   onChange={(e, n) => {
                     field.onChange(n);
-
-                    if( n )
                     dispatch(
                       saveSpareFilters({
                         ...filters,
@@ -99,7 +101,8 @@ export const FiltersComponent = (props: { filtersOptions: { filter: string, tran
                     field.onChange(e);
                     if (filter == "") {
                       dispatch(
-                        cb({...filters,
+                        saveSpareFilters({
+                          ...filters,
                           search: undefined,
                           filter,
                         })
