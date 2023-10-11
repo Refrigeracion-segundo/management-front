@@ -3,8 +3,8 @@ import {
   ISpareRegister,
   ISpareUpdate,
 } from "@/common";
+import { FiltersComponent } from "@/components/fIlters";
 import { DialogSpare } from "@/components/spareDialog";
-import { FiltersComponent } from "@/components/spareFIlters";
 import { TableSpare } from "@/components/tableSpare";
 import { saveSpareFilters } from "@/redux/slices/dialogSpare";
 import { RootState } from "@/redux/store";
