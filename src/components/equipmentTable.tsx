@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,8 +15,7 @@ import {
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { EnhancedTableHead, HeadCell, IEquipmentUpdate, Order, getComparator, stableSort } from "@/common";
-import { useDispatch } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
 import {
   isUpdatingEquipment,
   openEquipment,
@@ -24,21 +23,36 @@ import {
 } from "@/redux/slices/dialogEquipment";
 import {
   useDeleteEquipmentMutation,
-  useFindAllEquipmentQuery,
+  useLazyFindAllEquipmentQuery,
 } from "@/redux/api/equipment.api";
-import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
+import { RootState } from "@/redux/store";
 
 export const EquipmentTable = () => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const { data: rows, isLoading, isFetching } = useFindAllEquipmentQuery();
+  const [getEquipment, { data: rows, isSuccess, isLoading, isFetching }] =
+  useLazyFindAllEquipmentQuery();
+  const {
+    filters: { filter, search },
+  } = useSelector((store: RootState) => store.equipment);
   const [deleteEquipment, {}] = useDeleteEquipmentMutation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState('name')
+
+  useEffect(() => {
+    getEquipment({
+      filter,
+      search,
+    });
+  }, [
+    filter,
+    search,
+  ]);
 
   const handleDelete = (name: string, _id: string) => {
     confirm({

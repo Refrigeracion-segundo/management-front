@@ -74,6 +74,7 @@ export const {
   isUpdatingEquipment,
   saveEquipment,
   clearEquipment,
+  saveEquipmentFilters,
 } = dialogEquipmentSlice.actions;
 
 export default dialogEquipmentSlice.reducer;

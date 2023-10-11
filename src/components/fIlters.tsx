@@ -107,7 +107,7 @@ export const FiltersComponent = (props: { filtersOptions: { filter: string, tran
                       return
                     };
                     dispatch(
-                      saveSpareFilters({
+                      cb({
                         ...filters,
                         search: e.target.value,
                         filter,
