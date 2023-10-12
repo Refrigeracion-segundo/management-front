@@ -1,5 +1,6 @@
 "use client";
 import { openSlider } from "@/redux/slices/slider";
+import { RootState } from "@/redux/store";
 import { ArrowDropDown, Menu as MenuIcon } from "@mui/icons-material";
 import {
   Avatar,
@@ -11,16 +12,17 @@ import {
 } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const NavBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { path } = useSelector((store: RootState) => store.generalApp);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const user = JSON.parse(localStorage.getItem('user') || '{}').user
+  const user = JSON.parse(localStorage.getItem("user") || "{}").user;
   const handleClose = () => {
     setAnchorEl(null);
     localStorage.removeItem("user");
@@ -37,7 +39,7 @@ export const NavBar = () => {
         </IconButton>
       </Grid>
       <Grid item xs={7}>
-        <Typography>Refrigeración segunda</Typography>
+        <Typography>Refrigeración segunda / {path}</Typography>
       </Grid>
       <Grid
         item
@@ -48,10 +50,15 @@ export const NavBar = () => {
         alignItems="center"
       >
         <Grid item>
-          <Avatar sx={{ bgcolor: blue['A400'] }}>{user.name[0].toUpperCase()}{user.lastName[0].toUpperCase()}</Avatar>
+          <Avatar sx={{ bgcolor: blue["A400"] }}>
+            {user.name[0].toUpperCase()}
+            {user.lastName[0].toUpperCase()}
+          </Avatar>
         </Grid>
         <Grid item>
-          <Typography>{user.name.toUpperCase()} {user.lastName.toUpperCase()}</Typography>
+          <Typography>
+            {user.name.toUpperCase()} {user.lastName.toUpperCase()}
+          </Typography>
         </Grid>
         <Grid item>
           <IconButton onClick={handleClick}>

@@ -1,5 +1,6 @@
 "use client";
 import { ROLES } from "@/common";
+import { changePath } from "@/redux/slices/general";
 import { closeSlider } from "@/redux/slices/slider";
 import {
   AccountBalance,
@@ -9,7 +10,7 @@ import {
   Diversity3,
   HomeRepairService,
   Person,
-  Dashboard
+  Dashboard,
 } from "@mui/icons-material";
 import {
   Box,
@@ -37,19 +38,19 @@ export const ListPermisions = (props: { role: string }) => {
       text: "Ordenes",
       icon: <Checklist />,
       redirect: "/order",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
+      allowedRol: [ROLES.ADMIN, ROLES.TECHNICAL],
     },
     {
       text: "Servicios",
       icon: <HomeRepairService />,
       redirect: "/services",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
+      allowedRol: [ROLES.ADMIN, ROLES.TECHNICAL],
     },
     {
       text: "Clientes",
       icon: <Diversity3 />,
       redirect: "/customer",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
+      allowedRol: [ROLES.ADMIN, ROLES.TECHNICAL],
     },
     {
       text: "Usuarios",
@@ -61,19 +62,19 @@ export const ListPermisions = (props: { role: string }) => {
       text: "Refacciones",
       icon: <Construction />,
       redirect: "/spare",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
+      allowedRol: [ROLES.ADMIN, ROLES.TECHNICAL],
     },
     {
       text: "Regimen fiscal",
       icon: <AccountBalance />,
       redirect: "/fiscalRegime",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
+      allowedRol: [ROLES.ADMIN, ROLES.TECHNICAL],
     },
     {
       text: "Equipamiento",
       icon: <Build />,
       redirect: "/equipment",
-      allowedRol: [ROLES.ADMIN, ROLES.USER],
+      allowedRol: [ROLES.ADMIN, ROLES.TECHNICAL],
     },
   ];
   return (
@@ -90,7 +91,9 @@ export const ListPermisions = (props: { role: string }) => {
                   dispatch(closeSlider());
                 }}
               >
-                <ListItemButton>
+                <ListItemButton
+                  onClick={(e) => dispatch(changePath(option.text))}
+                >
                   <ListItemIcon>{option.icon}</ListItemIcon>
                   <ListItemText primary={option.text} />
                 </ListItemButton>

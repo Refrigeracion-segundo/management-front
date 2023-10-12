@@ -21,6 +21,7 @@ import dashboard from "./slices/dashboard";
 import { userApi } from "./api/user.api";
 import { spareApi } from "./api/spare.api";
 import notification from "./slices/notification";
+import generalApp from "./slices/general";
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +37,7 @@ export const store = configureStore({
     order: order,
     dashboard: dashboard,
     notification: notification,
+    generalApp: generalApp,
     [userApi.reducerPath]: userApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
     [fiscalRegimeApi.reducerPath]: fiscalRegimeApi.reducer,
