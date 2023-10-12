@@ -230,6 +230,7 @@ export const OrderDirection = () => {
           render={({ field }) => (
             <TextField
               // {...field}
+              value={field.value}
               label="Código postal"
               variant="standard"
               margin="dense"
@@ -263,6 +264,7 @@ export const OrderDirection = () => {
           render={({ field }) => (
             <TextField
               // {...field}
+              value={field.value}
               variant="standard"
               margin="dense"
               id="suburb"
@@ -299,6 +301,7 @@ export const OrderDirection = () => {
           render={({ field }) => (
             <TextField
               // {...field}
+              value={field.value}
               onChange={(e) => {
                 field.onChange(e);
                 if (e.target.value == "") {
@@ -341,10 +344,11 @@ export const OrderDirection = () => {
           render={({ field }) => (
             <TextField
               // {...field}
+              value={field.value}
               onChange={(e) => {
                 field.onChange(e);
                 if (e.target.value == "") {
-                  dispatch(saveDirection({ ...direction, street: undefined }));
+                  dispatch(saveDirection({ ...direction, street: "" }));
                 } else {
                   dispatch(
                     saveDirection({ ...direction, street: e.target.value })
@@ -377,12 +381,11 @@ export const OrderDirection = () => {
           render={({ field }) => (
             <TextField
               // {...field}
+              value={field.value}
               onChange={(e) => {
                 field.onChange(e);
                 if (e.target.value == "") {
-                  dispatch(
-                    saveDirection({ ...direction, streetNumber: undefined })
-                  );
+                  dispatch(saveDirection({ ...direction, streetNumber: "" }));
                 } else {
                   dispatch(
                     saveDirection({
