@@ -59,6 +59,14 @@ export const serviceDescriptionApi = createApi({
       }),
       invalidatesTags: ["findAllServiceDescription"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: SERVICE_DESCRIPTION_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllServiceDescription"],
+    }),
   }),
 });
 
@@ -68,4 +76,5 @@ export const {
   useLazyFindAllServiceDescriptionQuery,
   useUpdateServiceDescriptionMutation,
   useDeleteServiceDescriptionMutation,
+  useReactiveMutation,
 } = serviceDescriptionApi;

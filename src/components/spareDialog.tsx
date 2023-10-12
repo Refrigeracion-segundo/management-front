@@ -32,8 +32,12 @@ import {
   isUpdatingSpare,
   openSpare,
 } from "@/redux/slices/dialogSpare";
-import { useRegisterSpareMutation, useUpdateSpareMutation } from "@/redux/api";
+// import { useRegisterSpareMutation, useUpdateSpareMutation } from "@/redux/api";
 import { enqueueSnackbar } from "notistack";
+import {
+  useRegisterSpareMutation,
+  useUpdateSpareMutation,
+} from "@/redux/api/spare.api";
 
 export const DialogSpare = (props: {
   register: UseFormRegister<ISpareRegister>;

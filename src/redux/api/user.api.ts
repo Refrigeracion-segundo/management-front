@@ -62,6 +62,14 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["findAllUsers"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: USER_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllUsers"],
+    }),
   }),
 });
 
@@ -72,4 +80,5 @@ export const {
   useFindAllUsersQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useReactiveMutation,
 } = userApi;

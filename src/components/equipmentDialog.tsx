@@ -70,6 +70,7 @@ export const DialogEquipment = (props: {
       enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
     }
   };
+
   return (
     <div>
       <IconButton
@@ -79,9 +80,7 @@ export const DialogEquipment = (props: {
       >
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-      >
+      <Dialog open={openDialog}>
         <DialogTitle>
           <Typography variant="h6" align="center">
             Formulario de Refacciones

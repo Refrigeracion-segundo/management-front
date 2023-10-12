@@ -14,6 +14,7 @@ export const enum CLIENTS_URL {
   FIND_ALL = "/customer",
   UPDATE = "/customer",
   DELETE = "/customer",
+  REACTIVATE = "/customer/reactivate",
 }
 
 export const enum USER_URL {
@@ -22,6 +23,7 @@ export const enum USER_URL {
   UPDATE = "/user",
   DELETE = "/user",
   FIND_TECH = "/user/role",
+  REACTIVATE = "/user/reactivate",
 }
 
 export const enum EQUIPMENT_URL {
@@ -29,6 +31,7 @@ export const enum EQUIPMENT_URL {
   FIND_ALL = "/equipment-type",
   UPDATE = "/equipment-type",
   DELETE = "/equipment-type",
+  REACTIVATE = "/equipment-type/reactivate",
 }
 
 export const enum FISCAL_REGIME_URL {
@@ -36,6 +39,7 @@ export const enum FISCAL_REGIME_URL {
   FIND_ALL = "/fiscal-regime",
   UPDATE = "/fiscal-regime",
   DELETE = "/fiscal-regime",
+  REACTIVATE = "/fiscal-regime/reactivate",
 }
 
 export const enum SERVICE_URL {
@@ -43,6 +47,7 @@ export const enum SERVICE_URL {
   FIND_ALL = "/service",
   UPDATE = "/service",
   DELETE = "/service",
+  REACTIVATE = "/service/reactivate",
 }
 
 export const enum COUNTRY_URL {
@@ -56,6 +61,7 @@ export const enum SERVICE_DESCRIPTION_URL {
   FIND_ALL = "/service/description/all",
   UPDATE = "/service/description",
   DELETE = "/service/description",
+  REACTIVATE = "/service/description/reactivate",
 }
 
 export const enum SPARE_URL {
@@ -63,6 +69,7 @@ export const enum SPARE_URL {
   FIND_ALL = "/spare",
   UPDATE = "/spare",
   DELETE = "/spare",
+  REACTIVATE = "/spare/reactivate",
 }
 
 export const enum ORDER_URL {

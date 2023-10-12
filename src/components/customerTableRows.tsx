@@ -1,6 +1,6 @@
 "use client";
 import { IClientResponse, IClientUpdate, IRegimeResponse } from "@/common";
-import { useDeleteClientMutation } from "@/redux/api";
+import { useDeleteClientMutation, useReactiveMutation } from "@/redux/api";
 import { STATUS_DATA } from "@/redux/constants";
 import {
   isUpdatingClient,
@@ -12,9 +12,11 @@ import {
   Edit,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  Replay,
 } from "@mui/icons-material";
 import {
   Box,
+  CircularProgress,
   Collapse,
   IconButton,
   Table,
@@ -35,6 +37,8 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
   const [deleteClient] = useDeleteClientMutation();
+  const [reactivateCustomer, { isLoading: isLoadingReactivate }] =
+    useReactiveMutation();
   const handleDelete = (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
@@ -48,6 +52,15 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
     dispatch(openClient());
     dispatch(saveClient(data));
     dispatch(isUpdatingClient(true));
+  };
+
+  const reactivate = (id: string) => {
+    confirm({
+      title: "Hey cuidado!!",
+      description: `Seguro que deseas reactivar a este cliente?`,
+    }).then(() => {
+      reactivateCustomer(id);
+    });
   };
 
   return (
@@ -89,6 +102,13 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
             onClick={() => handleEdit(row as unknown as IClientUpdate)}
           >
             <Edit />
+          </IconButton>
+          <IconButton
+            color="primary"
+            onClick={() => reactivate(row._id)}
+            disabled={row.status == "active"}
+          >
+            {!isLoadingReactivate ? <Replay /> : <CircularProgress size={15} />}
           </IconButton>
         </TableCell>
       </TableRow>

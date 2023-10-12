@@ -5,7 +5,6 @@ import { OrderTable } from "@/components/orderTable";
 import { Box } from "@mui/material";
 import { useParams } from "next/navigation";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 const Status = () => {
   const { status } = useParams();

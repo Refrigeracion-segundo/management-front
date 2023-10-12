@@ -31,9 +31,13 @@ import {
   UseFormReset,
 } from "react-hook-form";
 import { IUserRegister, IUserUpdate, ROLES, RoleTranslate } from "@/common";
-import { useRegisterUserMutation, useUpdateUserMutation } from "@/redux/api";
+// import { useRegisterUserMutation, useUpdateUserMutation } from "@/redux/api";
 import { LoadingButton } from "@mui/lab";
 import { enqueueSnackbar } from "notistack";
+import {
+  useRegisterUserMutation,
+  useUpdateUserMutation,
+} from "@/redux/api/user.api";
 
 export const DialogUser = (props: {
   register: UseFormRegister<IUserRegister>;
@@ -96,11 +100,7 @@ export const DialogUser = (props: {
       >
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-        maxWidth="sm"
-        fullWidth={!isUpdate}
-      >
+      <Dialog open={openDialog} maxWidth="sm" fullWidth={!isUpdate}>
         <DialogTitle>
           <Typography variant="h6" align="center">
             Formulario de usuarios

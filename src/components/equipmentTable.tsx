@@ -5,7 +5,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Replay } from "@mui/icons-material";
 import {
   CircularProgress,
   IconButton,
@@ -14,8 +14,16 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
-import { EnhancedTableHead, HeadCell, IEquipmentUpdate, Order, getComparator, stableSort } from "@/common";
+import {
+  EnhancedTableHead,
+  HeadCell,
+  IEquipmentUpdate,
+  Order,
+  getComparator,
+  stableSort,
+} from "@/common";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   isUpdatingEquipment,
   openEquipment,
@@ -23,7 +31,9 @@ import {
 } from "@/redux/slices/dialogEquipment";
 import {
   useDeleteEquipmentMutation,
+  useFindAllEquipmentQuery,
   useLazyFindAllEquipmentQuery,
+  useReactiveMutation,
 } from "@/redux/api/equipment.api";
 import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
@@ -34,25 +44,24 @@ export const EquipmentTable = () => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
   const [getEquipment, { data: rows, isSuccess, isLoading, isFetching }] =
-  useLazyFindAllEquipmentQuery();
+    useLazyFindAllEquipmentQuery();
   const {
     filters: { filter, search },
   } = useSelector((store: RootState) => store.equipment);
   const [deleteEquipment, {}] = useDeleteEquipmentMutation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState('name')
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState("name");
+  const [reactivateEquipment, { isLoading: isLoadingEquipment }] =
+    useReactiveMutation();
 
   useEffect(() => {
     getEquipment({
       filter,
       search,
     });
-  }, [
-    filter,
-    search,
-  ]);
+  }, [filter, search]);
 
   const handleDelete = (name: string, _id: string) => {
     confirm({
@@ -74,41 +83,41 @@ export const EquipmentTable = () => {
   };
 
   const handleRequestSort = (event: any, property: any) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   const headCells: readonly HeadCell[] = [
     {
-      id: 'name',
+      id: "name",
       numeric: false,
       disablePadding: false,
-      label: 'Nombre',
+      label: "Nombre",
     },
     {
       id: "createdAt",
       numeric: false,
       disablePadding: false,
-      label: 'Fecha creación',
+      label: "Fecha creación",
     },
     {
       id: "updatedAt",
       numeric: false,
       disablePadding: false,
-      label: 'Ultima actualización',
+      label: "Ultima actualización",
     },
     {
       id: "status",
       numeric: false,
       disablePadding: false,
-      label: 'Estatus',
+      label: "Estatus",
     },
     {
-      id: 'edit',
+      id: "edit",
       numeric: true,
       disablePadding: true,
-      label: '',
+      label: "",
     },
   ];
 
@@ -132,55 +141,88 @@ export const EquipmentTable = () => {
     dispatch(openEquipment());
   };
 
+  const reactivate = (id: string) => {
+    confirm({
+      title: "Hey cuidado!!",
+      description: `Seguro que deseas reactivar a este cliente?`,
+    }).then(() => {
+      reactivateEquipment(id);
+    });
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-      <EnhancedTableHead
-              headCells={headCells}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
+        <EnhancedTableHead
+          headCells={headCells}
+          order={order}
+          orderBy={orderBy}
+          onRequestSort={handleRequestSort}
+        />
         <TableBody>
-        {stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row: any) => (
-            <TableRow
-              key={row.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="left">
-                {moment(row.createdAt).format("LLLL")}
-              </TableCell>
-              <TableCell align="left">
-                {moment(row.updatedAt).format("LLLL")}
-              </TableCell>
-              <TableCell align="left">
-                {STATUS_DATA.get(row.status)?.translate}
-              </TableCell>
+          {stableSort(rows ? rows : [], getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            ?.map((row: any) => (
+              <TableRow
+                key={row.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="left">
+                  {moment(row.createdAt).format("LLLL")}
+                </TableCell>
+                <TableCell align="left">
+                  {moment(row.updatedAt).format("LLLL")}
+                </TableCell>
+                <TableCell align="left">
+                  {STATUS_DATA.get(row.status)?.translate}
+                </TableCell>
 
-              <TableCell>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleDelete(row.name, row._id)}
-                >
-                  <Delete />
-                </IconButton>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleEdit(row as unknown as IEquipmentUpdate)}
-                >
-                  <Edit />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDelete(row.name, row._id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() =>
+                      handleEdit(row as unknown as IEquipmentUpdate)
+                    }
+                  >
+                    <Edit />
+                  </IconButton>
+
+                  <IconButton
+                    color="primary"
+                    onClick={() => reactivate(row._id)}
+                    disabled={row.status == "active"}
+                  >
+                    {!isLoadingEquipment ? (
+                      <Replay />
+                    ) : (
+                      <CircularProgress size={15} />
+                    )}
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.length.toString() : '0') }]}
+              rowsPerPageOptions={[
+                5,
+                10,
+                25,
+                {
+                  label: "All",
+                  value: parseInt(rows ? rows.length.toString() : "0"),
+                },
+              ]}
               colSpan={5}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}

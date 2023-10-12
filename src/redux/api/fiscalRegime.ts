@@ -48,6 +48,14 @@ export const fiscalRegimeApi = createApi({
       }),
       invalidatesTags: ["findAllFiscalRegime"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: FISCAL_REGIME_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllFiscalRegime"],
+    }),
   }),
 });
 
@@ -57,4 +65,5 @@ export const {
   useLazyFindAllFiscalRegimeQuery,
   useUpdateRegimeMutation,
   useDeleteRegimeMutation,
+  useReactiveMutation,
 } = fiscalRegimeApi;

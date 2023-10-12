@@ -55,6 +55,14 @@ export const clientsApi = createApi({
       }),
       invalidatesTags: ["findAllCustomers"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: CLIENTS_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllCustomers"],
+    }),
   }),
 });
 
@@ -64,4 +72,5 @@ export const {
   useLazyFindAllClientsQuery,
   useUpdateClientMutation,
   useDeleteClientMutation,
+  useReactiveMutation,
 } = clientsApi;

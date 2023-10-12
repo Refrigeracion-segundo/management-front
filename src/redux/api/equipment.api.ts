@@ -57,6 +57,14 @@ export const equipmentApi = createApi({
       }),
       invalidatesTags: ["findAllEquipment"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: EQUIPMENT_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllEquipment"],
+    }),
   }),
 });
 
@@ -66,4 +74,5 @@ export const {
   useFindAllEquipmentQuery,
   useUpdateEquipmentMutation,
   useDeleteEquipmentMutation,
+  useReactiveMutation,
 } = equipmentApi;

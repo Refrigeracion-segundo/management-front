@@ -6,7 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Replay } from "@mui/icons-material";
 import {
   CircularProgress,
   IconButton,
@@ -16,8 +16,16 @@ import {
 import moment from "moment";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
-import { EnhancedTableHead, HeadCell, ISpareUpdate, Order, getComparator, stableSort } from "@/common";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  EnhancedTableHead,
+  HeadCell,
+  ISpareUpdate,
+  Order,
+  getComparator,
+  stableSort,
+} from "@/common";
+
 import {
   closeSpare,
   isUpdatingSpare,
@@ -25,12 +33,17 @@ import {
   saveSpare,
 } from "@/redux/slices/dialogSpare";
 
-import { useDeleteSpareMutation, useLazyFindAllSpareQuery } from "@/redux/api";
+// import { useDeleteSpareMutation, useLazyFindAllSpareQuery } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import { RootState } from "@/redux/store";
+import {
+  useDeleteSpareMutation,
+  useLazyFindAllSpareQuery,
+  useReactiveMutation,
+} from "@/redux/api/spare.api";
 
 export const TableSpare = (props: {
   setValue: UseFormSetValue<ISpareUpdate>;
@@ -44,8 +57,8 @@ export const TableSpare = (props: {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [deleteSpare] = useDeleteSpareMutation();
-  const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState('description')
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState("description");
   const confirm = useConfirm();
   const dispatch = useDispatch();
 
@@ -54,10 +67,10 @@ export const TableSpare = (props: {
       filter,
       search,
     });
-  }, [
-    filter,
-    search,
-  ]);
+  }, [filter, search]);
+
+  const [reactivateSpare, { isLoading: isLoadingSpare }] =
+    useReactiveMutation();
 
   const handleDelete = async (name: string, _id: string) => {
     confirm({
@@ -75,47 +88,47 @@ export const TableSpare = (props: {
   };
 
   const handleRequestSort = (event: any, property: any) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   const headCells: readonly HeadCell[] = [
     {
-      id: 'description',
+      id: "description",
       numeric: false,
       disablePadding: false,
-      label: 'Descripción',
+      label: "Descripción",
     },
     {
-      id: 'suggestedPrice',
+      id: "suggestedPrice",
       numeric: false,
       disablePadding: false,
-      label: 'Precio sugerido',
+      label: "Precio sugerido",
     },
     {
       id: "createdAt",
       numeric: false,
       disablePadding: false,
-      label: 'Fecha creación',
+      label: "Fecha creación",
     },
     {
       id: "updatedAt",
       numeric: false,
       disablePadding: false,
-      label: 'Ultima actualización',
+      label: "Ultima actualización",
     },
     {
       id: "status",
       numeric: false,
       disablePadding: false,
-      label: 'Estatus',
+      label: "Estatus",
     },
     {
-      id: 'edit',
+      id: "edit",
       numeric: true,
       disablePadding: true,
-      label: '',
+      label: "",
     },
   ];
 
@@ -142,59 +155,87 @@ export const TableSpare = (props: {
     setValue("suggestedPrice", data.suggestedPrice);
   };
 
+  const reactivate = (id: string) => {
+    confirm({
+      title: "Hey cuidado!!",
+      description: `Seguro que deseas reactivar esta refacción?`,
+    }).then(() => {
+      reactivateSpare(id);
+    });
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-      <EnhancedTableHead
-              headCells={headCells}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
+        <EnhancedTableHead
+          headCells={headCells}
+          order={order}
+          orderBy={orderBy}
+          onRequestSort={handleRequestSort}
+        />
         <TableBody>
-          {stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          {stableSort(rows ? rows : [], getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             ?.map((row: any) => (
-            <TableRow
-              key={row.description}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.description}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {currencyMx.format(row.suggestedPrice)}
-              </TableCell>
+              <TableRow
+                key={row.description}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.description}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {currencyMx.format(row.suggestedPrice)}
+                </TableCell>
 
-              <TableCell align="left">
-                {moment(row.createdAt).format("LLLL")}
-              </TableCell>
-              <TableCell align="left">
-                {moment(row.updatedAt).format("LLLL")}
-              </TableCell>
-              <TableCell>
-                { STATUS_DATA.get(row.status)?.translate }
-              </TableCell>
-              <TableCell>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleDelete(row.description, row._id)}
-                >
-                  <Delete />
-                </IconButton>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleEdit(row as unknown as ISpareUpdate)}
-                >
-                  <Edit />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell align="left">
+                  {moment(row.createdAt).format("LLLL")}
+                </TableCell>
+                <TableCell align="left">
+                  {moment(row.updatedAt).format("LLLL")}
+                </TableCell>
+                <TableCell>{STATUS_DATA.get(row.status)?.translate}</TableCell>
+                <TableCell>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDelete(row.description, row._id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleEdit(row as unknown as ISpareUpdate)}
+                  >
+                    <Edit />
+                  </IconButton>
+
+                  <IconButton
+                    color="primary"
+                    onClick={() => reactivate(row._id)}
+                    disabled={row.status == "active"}
+                  >
+                    {!isLoadingSpare ? (
+                      <Replay />
+                    ) : (
+                      <CircularProgress size={15} />
+                    )}
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: parseInt(rows ? rows.length.toString() : '0') }]}
+              rowsPerPageOptions={[
+                5,
+                10,
+                25,
+                {
+                  label: "All",
+                  value: parseInt(rows ? rows.length.toString() : "0"),
+                },
+              ]}
               colSpan={6}
               count={rows ? rows.length : 0}
               rowsPerPage={rowsPerPage}

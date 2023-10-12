@@ -5,7 +5,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Replay } from "@mui/icons-material";
 import {
   CircularProgress,
   IconButton,
@@ -28,6 +28,7 @@ import {
   useDeleteServiceMutation,
   useFindAllServiceQuery,
   useLazyFindAllServiceQuery,
+  useReactiveMutation,
 } from "@/redux/api/services.api";
 import {
   isUpdatingService,
@@ -56,6 +57,10 @@ export const ServiceTable = () => {
   useEffect(() => {
     getServices(filters);
   }, [filters]);
+
+  const [reactivateService, { isLoading: isLoadingService }] =
+    useReactiveMutation();
+
   const handleDelete = async (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
@@ -154,7 +159,14 @@ export const ServiceTable = () => {
     dispatch(isUpdatingService(true));
     dispatch(openService());
   };
-
+  const reactivate = (id: string) => {
+    confirm({
+      title: "Hey cuidado!!",
+      description: `Seguro que deseas reactivar este servicio?`,
+    }).then(() => {
+      reactivateService(id);
+    });
+  };
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -211,6 +223,17 @@ export const ServiceTable = () => {
                     onClick={() => handleEdit(row as unknown as IServiceUpdate)}
                   >
                     <Edit />
+                  </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => reactivate(row._id)}
+                    disabled={row.status == "active"}
+                  >
+                    {!isLoadingService ? (
+                      <Replay />
+                    ) : (
+                      <CircularProgress size={15} />
+                    )}
                   </IconButton>
                 </TableCell>
               </TableRow>

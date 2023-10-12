@@ -1,6 +1,7 @@
 "use client";
 import { ISpareResponse } from "@/common";
-import { useLazyFindAllSpareQuery } from "@/redux/api";
+import { useLazyFindAllSpareQuery } from "@/redux/api/spare.api";
+// import { useLazyFindAllSpareQuery } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
   deleteAllSparesOrder,
@@ -95,7 +96,7 @@ export const OrderSpare = () => {
                   options={
                     isSuccess ? (listSpare as Array<ISpareResponse>) : []
                   }
-                  onOpen={() => getSpare({ filter: '', search: '' })}
+                  onOpen={() => getSpare({ filter: "", search: "" })}
                   loading={isLoading}
                   value={field.value}
                   getOptionLabel={(option: ISpareResponse) => {

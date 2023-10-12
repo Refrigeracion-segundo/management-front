@@ -6,7 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Replay } from "@mui/icons-material";
 import {
   CircularProgress,
   IconButton,
@@ -27,8 +27,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   useDeleteServiceDescriptionMutation,
-  useFindAllServiceDescriptionQuery,
   useLazyFindAllServiceDescriptionQuery,
+  useReactiveMutation,
 } from "@/redux/api/serviceDescription.api";
 import {
   isUpdatingServiceDescription,
@@ -51,6 +51,11 @@ export const ServiceDescriptionTable = () => {
   );
   const [getSvcDescription, { data: rows, isLoading, isFetching }] =
     useLazyFindAllServiceDescriptionQuery();
+  const [
+    reactivateServiceDescription,
+    { isLoading: isLoadingServiceDescription },
+  ] = useReactiveMutation();
+
   const [deleteRegime] = useDeleteServiceDescriptionMutation();
   const handleDelete = (name: string, _id: string) => {
     confirm({
@@ -129,7 +134,14 @@ export const ServiceDescriptionTable = () => {
     dispatch(saveServiceDescription(data));
     dispatch(openServiceDescription());
   };
-
+  const reactivate = (id: string) => {
+    confirm({
+      title: "Hey cuidado!!",
+      description: `Seguro que deseas reactivar esta descripción de servicio?`,
+    }).then(() => {
+      reactivateServiceDescription(id);
+    });
+  };
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -176,6 +188,18 @@ export const ServiceDescriptionTable = () => {
                     }
                   >
                     <Edit />
+                  </IconButton>
+
+                  <IconButton
+                    color="primary"
+                    onClick={() => reactivate(row._id)}
+                    disabled={row.status == "active"}
+                  >
+                    {!isLoadingServiceDescription ? (
+                      <Replay />
+                    ) : (
+                      <CircularProgress size={15} />
+                    )}
                   </IconButton>
                 </TableCell>
               </TableRow>

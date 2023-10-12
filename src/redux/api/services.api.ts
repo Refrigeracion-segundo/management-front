@@ -50,6 +50,14 @@ export const serviceApi = createApi({
       }),
       invalidatesTags: ["findAllService"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: SERVICE_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllService"],
+    }),
   }),
 });
 
@@ -59,4 +67,5 @@ export const {
   useLazyFindAllServiceQuery,
   useUpdateServiceMutation,
   useDeleteServiceMutation,
+  useReactiveMutation,
 } = serviceApi;

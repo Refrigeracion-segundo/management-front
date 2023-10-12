@@ -55,6 +55,14 @@ export const spareApi = createApi({
       }),
       invalidatesTags: ["findAllSpare"],
     }),
+    reactive: builder.mutation<void, string>({
+      query: (_id: string) => ({
+        url: SPARE_URL.REACTIVATE,
+        method: METHOD_TYPES.PATCH,
+        data: { _id },
+      }),
+      invalidatesTags: ["findAllSpare"],
+    }),
   }),
 });
 
@@ -64,4 +72,5 @@ export const {
   useFindAllSpareQuery,
   useUpdateSpareMutation,
   useDeleteSpareMutation,
+  useReactiveMutation,
 } = spareApi;

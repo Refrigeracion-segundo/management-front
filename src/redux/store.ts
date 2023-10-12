@@ -6,7 +6,7 @@ import dialogSpare from "./slices/dialogSpare";
 import dialogClient from "./slices/dialogClient";
 import dialogEquipment from "./slices/dialogEquipment";
 import fiscalRegime from "./slices/fiscalRegime";
-import { clientsApi, loginApi, orderApi, spareApi, userApi } from "./api";
+import { clientsApi, loginApi, orderApi } from "./api";
 import { setupAxiosTokenInterceptor } from "@/app/interceptor/interceptor";
 import { equipmentApi } from "./api/equipment.api";
 import { fiscalRegimeApi } from "./api/fiscalRegime";
@@ -18,6 +18,8 @@ import serviceDescription from "./slices/serviceDescription";
 import order from "./slices/order";
 import { dashboardApi } from "./api/dashboard.api";
 import dashboard from "./slices/dashboard";
+import { userApi } from "./api/user.api";
+import { spareApi } from "./api/spare.api";
 
 export const store = configureStore({
   reducer: {
