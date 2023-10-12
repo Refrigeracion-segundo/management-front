@@ -1,10 +1,11 @@
-import { IUserRegister, IUserUpdate } from "@/common";
+import { IFilters, IUserRegister, IUserUpdate } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface DialogUser {
   openDialog: boolean;
   isUpdate: boolean;
   user: IUserRegister | IUserUpdate;
+  filters: IFilters;
 }
 
 const initialState: DialogUser = {
@@ -16,6 +17,10 @@ const initialState: DialogUser = {
     email: "",
     password: "",
     roles: [],
+  },
+  filters: {
+    filter: "",
+    search: "",
   },
 };
 
@@ -43,6 +48,9 @@ export const dialogUserSlice = createSlice({
     cleanReduxUser: (state) => {
       state = { ...initialState };
     },
+    saveUserFilters: (state, value: PayloadAction<IFilters>) => {
+      state.filters = value.payload;
+    },
   },
 });
 
@@ -52,6 +60,7 @@ export const {
   isUpdating: isUpdatingUser,
   saveUser,
   cleanReduxUser,
+  saveUserFilters,
 } = dialogUserSlice.actions;
 
 export default dialogUserSlice.reducer;
