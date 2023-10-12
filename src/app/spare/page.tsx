@@ -30,7 +30,6 @@ const Spare = () => {
   const filtersOptions = [
     { filter: "status", translate: "Estatus" },
     { filter: "description", translate: "Descripción" },
-    { filter: "suggestedPrice", translate: "Precio sugerido" },
   ];
 
   return (
