@@ -28,7 +28,7 @@ import {
 } from "@/redux/slices/order";
 import { useConfirm } from "material-ui-confirm";
 import CSSTransitionGroup from "react-addons-css-transition-group";
-import TransitionGroup from "react-addons-transition-group";
+
 export const OrderEquipments = () => {
   const { equipment } = useSelector((store: RootState) => store.order);
   const dispatch = useDispatch();

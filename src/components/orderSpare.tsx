@@ -31,7 +31,7 @@ import { useConfirm } from "material-ui-confirm";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+import CSSTransitionGroup from "react-addons-css-transition-group";
 
 export const OrderSpare = () => {
   const {
@@ -169,63 +169,63 @@ export const OrderSpare = () => {
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              <TransitionGroup component={null}>
-                {spares?.map((sp, index) => (
-                  <CSSTransition key={index} timeout={500} classNames="fade">
-                    <TableRow>
-                      <TableCell>{sp.description}</TableCell>
-                      <TableCell>
-                        <TextField
-                          defaultValue={sp.suggestedPrice}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                $
-                              </InputAdornment>
-                            ),
-                          }}
-                          onChange={(e) => {
-                            dispatch(
-                              updateSpareOrder({
-                                _id: sp._id,
-                                price: parseFloat(e.target.value),
-                                quantity: sp.quantity,
-                              })
-                            );
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          defaultValue={sp.quantity}
-                          onChange={(e) => {
-                            dispatch(
-                              updateSpareOrder({
-                                _id: sp._id,
-                                price: sp.suggestedPrice,
-                                quantity: parseFloat(e.target.value),
-                              })
-                            );
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {currencyMx.format(sp.suggestedPrice * sp.quantity)}
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => deleteSpare(index)}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
-            </TableBody>
+
+            <CSSTransitionGroup
+              transitionName="example"
+              transitionEnterTimeout={1000}
+              transitionLeaveTimeout={1000}
+              component={TableBody}
+            >
+              {spares?.map((sp, index) => (
+                <TableRow>
+                  <TableCell>{sp.description}</TableCell>
+                  <TableCell>
+                    <TextField
+                      defaultValue={sp.suggestedPrice}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      }}
+                      onChange={(e) => {
+                        dispatch(
+                          updateSpareOrder({
+                            _id: sp._id,
+                            price: parseFloat(e.target.value),
+                            quantity: sp.quantity,
+                          })
+                        );
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      defaultValue={sp.quantity}
+                      onChange={(e) => {
+                        dispatch(
+                          updateSpareOrder({
+                            _id: sp._id,
+                            price: sp.suggestedPrice,
+                            quantity: parseFloat(e.target.value),
+                          })
+                        );
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {currencyMx.format(sp.suggestedPrice * sp.quantity)}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => deleteSpare(index)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </CSSTransitionGroup>
           </Table>
         </TableContainer>
       </Grid>
