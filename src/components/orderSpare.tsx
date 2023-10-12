@@ -95,7 +95,7 @@ export const OrderSpare = () => {
                   options={
                     isSuccess ? (listSpare as Array<ISpareResponse>) : []
                   }
-                  onOpen={() => getSpare()}
+                  onOpen={() => getSpare({ filter: '', search: '' })}
                   loading={isLoading}
                   value={field.value}
                   getOptionLabel={(option: ISpareResponse) => {

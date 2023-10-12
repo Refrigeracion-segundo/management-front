@@ -101,7 +101,7 @@ export const DialogService = () => {
                   isUpdate ? dataService.equipmentType : ("" as any)
                 }
                 loading={isLoadingEquipment}
-                onOpen={() => getEquipment()}
+                onOpen={() => getEquipment({ filter:'', search: '' })}
                 // multiple
                 options={
                   isSuccessEquipment
