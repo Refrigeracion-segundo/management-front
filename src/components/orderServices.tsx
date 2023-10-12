@@ -130,9 +130,7 @@ export const OrderServices = () => {
           <Autocomplete
             disablePortal
             options={equipment}
-            getOptionLabel={(option) =>
-              `${option.equipment}`
-            }
+            getOptionLabel={(option) => `${option.equipment}`}
             onChange={(e, value) => {
               if (value) {
                 setSelectEquipment(value);

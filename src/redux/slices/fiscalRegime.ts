@@ -27,12 +27,10 @@ export const fiscalRegimeSlice = createSlice({
       };
     },
     closeFiscalRegime: (state) => {
-      return {
-        ...state,
-        openDialog: false,
-        isUpdate: false,
-        data: initialState.data,
-      };
+      state.openDialog = false;
+      state.isUpdate = false;
+      state.data.description = "";
+      state.data.key = 0;
     },
     isUpdatingFiscalRegime: (state, value: PayloadAction<boolean>) => {
       return {
@@ -47,12 +45,14 @@ export const fiscalRegimeSlice = createSlice({
       return {
         ...state,
         data: value.payload,
-        isUpdate: true,
+
         openDialog: true,
       };
     },
     clearFiscalRegime: (state) => {
-      state = initialState;
+      state.data.description = "";
+      state.data.key = 0;
+      // state.openDialog = false;
     },
   },
 });

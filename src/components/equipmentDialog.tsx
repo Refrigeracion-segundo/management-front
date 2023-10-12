@@ -20,12 +20,14 @@ import {
   FormState,
   UseFormHandleSubmit,
   UseFormRegister,
+  useForm,
 } from "react-hook-form";
 import { IEquipmentRegister, IEquipmentUpdate } from "@/common";
 import {
   clearEquipment,
   closeEquipment,
   openEquipment,
+  saveEquipment,
 } from "@/redux/slices/dialogEquipment";
 import {
   useRegisterEquipmentMutation,
@@ -33,16 +35,18 @@ import {
 } from "@/redux/api/equipment.api";
 import { enqueueSnackbar } from "notistack";
 
-export const DialogEquipment = (props: {
-  register: UseFormRegister<IEquipmentRegister>;
-  formState: FormState<IEquipmentRegister>;
-  handleSubmit: UseFormHandleSubmit<IEquipmentRegister>;
-}) => {
+export const DialogEquipment = () => {
+  const { data: dataEquipment } = useSelector(
+    (store: RootState) => store.equipment
+  );
   const {
-    register,
     formState: { errors },
+    register,
     handleSubmit,
-  } = props;
+  } = useForm<IEquipmentRegister>({
+    defaultValues: { name: "" },
+    values: dataEquipment,
+  });
   const { openDialog, isUpdate } = useSelector(
     (store: RootState) => store.equipment
   );
@@ -64,10 +68,10 @@ export const DialogEquipment = (props: {
             id: (data as IEquipmentUpdate)._id as string,
           }).unwrap();
       dispatch(clearEquipment());
-      enqueueSnackbar("Se guardo con exito", { variant: "success" });
+      enqueueSnackbar("Se guardo con éxito", { variant: "success" });
       dispatch(closeEquipment());
     } catch {
-      enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
+      // enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
     }
   };
 
@@ -104,6 +108,11 @@ export const DialogEquipment = (props: {
                     message: "El nombre es requerido",
                   },
                 })}
+                onChange={(e) => {
+                  dispatch(
+                    saveEquipment({ ...dataEquipment, name: e.target.value })
+                  );
+                }}
                 helperText={!!errors.name && errors.name.message}
                 error={!!errors.name}
               />

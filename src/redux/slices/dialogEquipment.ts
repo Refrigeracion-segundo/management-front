@@ -44,6 +44,7 @@ export const dialogEquipmentSlice = createSlice({
       return {
         ...state,
         isUpdate: value.payload,
+        openDialog: true,
       };
     },
     saveEquipment: (
@@ -53,8 +54,8 @@ export const dialogEquipmentSlice = createSlice({
       return {
         ...state,
         data: value.payload,
-        isUpdate: true,
-        openDialog: true,
+        // isUpdate: true,
+        // openDialog: true,
       };
     },
     clearEquipment: (state) => {

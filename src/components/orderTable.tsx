@@ -41,15 +41,7 @@ export const OrderTable = () => {
       filter,
       search,
     });
-  }, [
-    rowsPerPage,
-    page,
-    orderId,
-    fromDate,
-    toDate,
-    filter,
-    search,
-  ]);
+  }, [rowsPerPage, page, orderId, fromDate, toDate, filter, search]);
 
   const headCells: readonly HeadCell[] = [
     {

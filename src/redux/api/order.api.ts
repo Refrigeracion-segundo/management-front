@@ -88,6 +88,7 @@ const getFilters = (filters: any) => {
 
   return query.substring(0, query.length - 1);
 };
+
 export const {
   useRegisterOrderMutation,
   useLazyFindAllOrderQuery,

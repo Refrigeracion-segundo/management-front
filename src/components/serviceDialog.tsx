@@ -102,7 +102,7 @@ export const DialogService = () => {
                   isUpdate ? dataService.equipmentType : ("" as any)
                 }
                 loading={isLoadingEquipment}
-                onOpen={() => getEquipment({ filter:'', search: '' })}
+                onOpen={() => getEquipment({ filter: "", search: "" })}
                 // multiple
                 options={
                   isSuccessEquipment
@@ -350,11 +350,7 @@ export const DialogService = () => {
                 dispatch(closeService());
                 dispatch(clearService());
                 reset(undefined);
-              } catch {
-                enqueueSnackbar("Intente de nuevo mas tarde", {
-                  variant: "error",
-                });
-              }
+              } catch {}
             })}
           >
             Guardar

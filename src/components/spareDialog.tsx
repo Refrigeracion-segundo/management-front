@@ -78,7 +78,7 @@ export const DialogSpare = (props: {
       dispatch(closeSpare());
       dispatch(cleanReduxSpare());
     } catch {
-      enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
+      // enqueueSnackbar("Ups!, intente de nuevo mas tarde", { variant: "error" });
     }
   };
   return (

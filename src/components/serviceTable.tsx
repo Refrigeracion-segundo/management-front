@@ -71,7 +71,7 @@ export const ServiceTable = () => {
           variant: "success",
         });
       } catch {
-        enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
+        // enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
       }
     });
   };

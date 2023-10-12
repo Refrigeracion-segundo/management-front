@@ -80,7 +80,7 @@ export const DialogUser = (props: {
       dispatch(cleanReduxUser());
       enqueueSnackbar("Registrado correctamente", { variant: "success" });
     } catch {
-      enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
+      // enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
     }
   };
 

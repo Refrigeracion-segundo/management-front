@@ -80,9 +80,9 @@ export const TableSpare = (props: {
       try {
         await deleteSpare({ _id }).unwrap();
         dispatch(closeSpare());
-        enqueueSnackbar("Eliminado con existo", { variant: "success" });
+        enqueueSnackbar("Eliminado con éxito", { variant: "success" });
       } catch {
-        enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
+        // enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
       }
     });
   };

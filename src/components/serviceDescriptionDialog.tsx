@@ -82,10 +82,7 @@ export const DialogServiceDescription = (props: {
       >
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-        fullWidth
-      >
+      <Dialog open={openDialog} fullWidth>
         <DialogTitle>
           <Typography variant="h6" align="center">
             Formulario del servicios
@@ -227,11 +224,7 @@ export const DialogServiceDescription = (props: {
                 enqueueSnackbar("Registrado correctamente", {
                   variant: "success",
                 });
-              } catch {
-                enqueueSnackbar("Intente de nuevo mas tarde", {
-                  variant: "error",
-                });
-              }
+              } catch {}
             })}
             style={{ width: "20%" }}
           >

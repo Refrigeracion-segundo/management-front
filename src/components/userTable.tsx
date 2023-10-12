@@ -73,11 +73,7 @@ export const TableUser = (props: {
         enqueueSnackbar("Usuario eliminado correctamente", {
           variant: "success",
         });
-      } catch {
-        enqueueSnackbar("Ocurrio un error al eliminar al usuario", {
-          variant: "error",
-        });
-      }
+      } catch {}
     });
   };
 

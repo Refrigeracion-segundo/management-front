@@ -11,13 +11,8 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 const Equipment = () => {
-  const { data } = useSelector((store: RootState) => store.equipment);
-  const { formState, register, handleSubmit } = useForm<IEquipmentRegister>({
-    defaultValues: { name: "" },
-    values: {
-      ...data,
-    },
-  });
+  // const { data } = useSelector((store: RootState) => store.equipment);
+
   const { filters } = useSelector((store: RootState) => store.equipment);
 
   const filtersOptions = [
@@ -27,12 +22,12 @@ const Equipment = () => {
 
   return (
     <Box sx={{ p: 5 }}>
-      <FiltersComponent filtersOptions={filtersOptions} filters={filters} cb={saveEquipmentFilters} />
-      <DialogEquipment
-        register={register}
-        formState={formState}
-        handleSubmit={handleSubmit}
+      <FiltersComponent
+        filtersOptions={filtersOptions}
+        filters={filters}
+        cb={saveEquipmentFilters}
       />
+      <DialogEquipment />
       <EquipmentTable />
     </Box>
   );

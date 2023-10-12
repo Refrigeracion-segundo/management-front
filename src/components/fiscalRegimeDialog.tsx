@@ -24,6 +24,7 @@ import {
   clearFiscalRegime,
   closeFiscalRegime,
   openFiscalRegime,
+  saveFiscalRegime,
 } from "@/redux/slices/fiscalRegime";
 import {
   useRegisterRegimeMutation,
@@ -39,20 +40,36 @@ export const DialogFiscalRegime = () => {
   );
   const {
     formState: { errors },
-    register,
+
     handleSubmit,
     control,
-  } = useForm<IRegimeRegister>({
-    values: {
-      ...data,
-    },
-  });
+  } = useForm<IRegimeRegister>({ values: data });
   const [registerRegime, { isLoading }] = useRegisterRegimeMutation();
   const [updateRegime, { isLoading: isLoadingUpdate }] =
     useUpdateRegimeMutation();
 
-  useEffect(() => {}, [isUpdate]);
+  useEffect(() => {}, [data]);
 
+  const saveData = async (newData: any) => {
+    isUpdate
+      ? await updateRegime({
+          ...newData,
+          _id: (data as IRegimeUpdate)._id,
+          key: Number(newData.key),
+        }).unwrap()
+      : await registerRegime({
+          ...newData,
+          key: Number(newData.key),
+        }).unwrap();
+    // setValue("key", 0);
+    // setValue("description", "");
+
+    // dispatch(clearFiscalRegime());
+    dispatch(closeFiscalRegime());
+    enqueueSnackbar("Registrado correctamente", {
+      variant: "success",
+    });
+  };
   const dispatch = useDispatch();
   return (
     <div>
@@ -85,8 +102,8 @@ export const DialogFiscalRegime = () => {
                     message: "La clave es requerida",
                   },
                 }}
-                defaultValue={data.key}
                 control={control}
+                defaultValue={data.key}
                 render={({ field }) => {
                   return (
                     <TextField
@@ -97,6 +114,17 @@ export const DialogFiscalRegime = () => {
                       value={field.value == 0 ? null : field.value}
                       onChange={(e) => {
                         field.onChange(e);
+                        if (
+                          e.target.value !== "" ||
+                          e.target.value !== null ||
+                          e.target.value
+                        )
+                          dispatch(
+                            saveFiscalRegime({
+                              ...data,
+                              key: Number(e.target.value),
+                            })
+                          );
                       }}
                       helperText={
                         !!errors.description && errors.description.message
@@ -121,11 +149,17 @@ export const DialogFiscalRegime = () => {
                 render={({ field }) => {
                   return (
                     <TextField
-                      placeholder="Descripcion"
+                      placeholder="Descripción"
                       fullWidth
                       value={field.value}
                       onChange={(e) => {
                         field.onChange(e);
+                        dispatch(
+                          saveFiscalRegime({
+                            ...data,
+                            description: e.target.value,
+                          })
+                        );
                       }}
                       helperText={
                         !!errors.description && errors.description.message
@@ -148,29 +182,7 @@ export const DialogFiscalRegime = () => {
           <LoadingButton
             loading={isLoading || isLoadingUpdate}
             loadingPosition="end"
-            onClick={handleSubmit(async (newData) => {
-              try {
-                isUpdate
-                  ? await updateRegime({
-                      ...newData,
-                      _id: (data as IRegimeUpdate)._id,
-                      key: Number(newData.key),
-                    }).unwrap()
-                  : await registerRegime({
-                      ...newData,
-                      key: Number(newData.key),
-                    }).unwrap();
-                dispatch(clearFiscalRegime());
-                dispatch(closeFiscalRegime());
-                enqueueSnackbar("Registrado correctamente", {
-                  variant: "success",
-                });
-              } catch {
-                enqueueSnackbar("Intente de nuevo mas tarde", {
-                  variant: "error",
-                });
-              }
-            })}
+            onClick={handleSubmit(saveData)}
             style={{ width: "20%" }}
           >
             Guardar

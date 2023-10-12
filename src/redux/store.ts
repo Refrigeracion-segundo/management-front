@@ -20,6 +20,7 @@ import { dashboardApi } from "./api/dashboard.api";
 import dashboard from "./slices/dashboard";
 import { userApi } from "./api/user.api";
 import { spareApi } from "./api/spare.api";
+import notification from "./slices/notification";
 
 export const store = configureStore({
   reducer: {
@@ -34,6 +35,7 @@ export const store = configureStore({
     serviceDescription: serviceDescription,
     order: order,
     dashboard: dashboard,
+    notification: notification,
     [userApi.reducerPath]: userApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
     [fiscalRegimeApi.reducerPath]: fiscalRegimeApi.reducer,
@@ -64,3 +66,4 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 setupAxiosTokenInterceptor(store);
 export type AppDispatch = typeof store.dispatch;
+export const dispatchGlobal = store.dispatch;

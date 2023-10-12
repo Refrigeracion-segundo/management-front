@@ -58,7 +58,7 @@ export const OrderTableRows = (props: {
         await deleteOrderApi({ _id }).unwrap();
         enqueueSnackbar("Eliminación completada");
       } catch {
-        enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
+        // enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });
       }
     });
   };

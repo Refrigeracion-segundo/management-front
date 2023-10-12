@@ -468,6 +468,12 @@ export const OrderDialog = () => {
             Cerrar
           </Button>
           <Button
+            disabled={
+              service.length == 0 ||
+              // general.report == "" ||
+              client._id == ""
+              // general.description == ""
+            }
             onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
@@ -510,11 +516,7 @@ export const OrderDialog = () => {
                     variant: "success",
                   });
                   dispatch(cleanReduxOrder());
-                } catch {
-                  enqueueSnackbar("Intente de nuevo mas tarde", {
-                    variant: "error",
-                  });
-                }
+                } catch {}
               }
             })}
           >

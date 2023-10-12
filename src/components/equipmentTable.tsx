@@ -72,13 +72,13 @@ export const EquipmentTable = () => {
         .unwrap()
         .then(() => {
           enqueueSnackbar("Se elimino correctamente", { variant: "success" });
-        })
-        .catch(() => {
-          enqueueSnackbar(
-            "Ups!, parece que ocurrio un error. Intente de nuevo mas tarde",
-            { variant: "error" }
-          );
         });
+      // .catch(() => {
+      //   enqueueSnackbar(
+      //     "Ups!, parece que ocurrio un error. Intente de nuevo mas tarde",
+      //     { variant: "error" }
+      //   );
+      // });
     });
   };
 
@@ -138,7 +138,7 @@ export const EquipmentTable = () => {
   const handleEdit = (data: IEquipmentUpdate) => {
     dispatch(saveEquipment({ _id: data._id, name: data.name }));
     dispatch(isUpdatingEquipment(true));
-    dispatch(openEquipment());
+    // dispatch(openEquipment());
   };
 
   const reactivate = (id: string) => {
