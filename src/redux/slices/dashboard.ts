@@ -14,7 +14,8 @@ const initialState: Dashboard = {
   isUpdate: false,
   filters: {
     orderId: 0,
-    description: "",
+    filter: "",
+    search: "",
     fromDate: new Date(moment().startOf("month").format()),
     toDate: new Date(moment().endOf("month").format()),
     status: STATUS_ORIGINAL.PAID,
