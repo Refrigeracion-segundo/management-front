@@ -52,9 +52,7 @@ export const fiscalRegimeSlice = createSlice({
       };
     },
     clearFiscalRegime: (state) => {
-      return {
-        ...initialState,
-      };
+      state = initialState;
     },
   },
 });

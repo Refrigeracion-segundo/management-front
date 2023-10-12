@@ -7,10 +7,12 @@ import {
 } from "../config";
 import {
   IDeleteGeneral,
+  IFilters,
   IServiceRegister,
   IServiceResponse,
   IServiceUpdate,
 } from "@/common";
+import { getFilters } from "../constants/getFIlters";
 
 export const serviceApi = createApi({
   reducerPath: ReducerPaths.SERVICE,
@@ -25,9 +27,9 @@ export const serviceApi = createApi({
       }),
       invalidatesTags: ["findAllService"],
     }),
-    findAllService: builder.query<Array<IServiceResponse>, void>({
-      query: () => ({
-        url: SERVICE_URL.FIND_ALL,
+    findAllService: builder.query<Array<IServiceResponse>, IFilters | void>({
+      query: (params) => ({
+        url: `${SERVICE_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllService"],

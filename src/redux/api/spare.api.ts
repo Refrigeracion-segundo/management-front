@@ -31,7 +31,7 @@ export const spareApi = createApi({
       {
         filter?: string;
         search?: string;
-      }
+      } | void
     >({
       query: (params) => ({
         url: `${SPARE_URL.FIND_ALL}?${getFilters(params)}`,

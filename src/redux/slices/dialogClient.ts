@@ -1,10 +1,11 @@
-import { IClientRegister } from "@/common";
+import { IClientRegister, IFilters } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface DialogUser {
   openDialog: boolean;
   isUpdate: boolean;
   dataClient: IClientRegister;
+  filters: IFilters;
 }
 
 const initialState: DialogUser = {
@@ -15,14 +16,14 @@ const initialState: DialogUser = {
     contactPerson: "",
     phone: "",
     rfc: "",
-    street: "",
-    streetNumber: "",
-    apartmentNumber: "",
-    zipCode: "",
-    state: "",
-    city: "",
-    suburb: "",
-    stateId: 0,
+    // street: "",
+    // streetNumber: "",
+    // apartmentNumber: "",
+    // zipCode: "",
+    // state: "",
+    // city: "",
+    // suburb: "",
+    // stateId: 0,
     fiscalRegime: {
       _id: "",
       status: "",
@@ -31,6 +32,10 @@ const initialState: DialogUser = {
       description: "",
       key: 0,
     },
+  },
+  filters: {
+    filter: "",
+    search: "",
   },
 };
 
@@ -54,6 +59,9 @@ export const dialogClientSlice = createSlice({
     cleanReduxClient: (state) => {
       state = { ...initialState };
     },
+    saveFiltersClient: (state, value: PayloadAction<IFilters>) => {
+      state.filters = value.payload;
+    },
   },
 });
 
@@ -63,6 +71,7 @@ export const {
   isUpdatingClient,
   saveClient,
   cleanReduxClient,
+  saveFiltersClient,
 } = dialogClientSlice.actions;
 
 export default dialogClientSlice.reducer;

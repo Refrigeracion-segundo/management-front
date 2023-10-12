@@ -7,9 +7,12 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
-export const FiltersComponent = (props: { filtersOptions: { filter: string, translate: string }[], filters: IFilters, cb: (filters: IFilters) => any } ) => {
-  
-  const { filtersOptions, filters, cb } = props 
+export const FiltersComponent = (props: {
+  filtersOptions: { filter: string; translate: string }[];
+  filters: IFilters;
+  cb: (filters: IFilters) => any;
+}) => {
+  const { filtersOptions, filters, cb } = props;
   const [filter, setFilter] = useState("");
   const dispatch = useDispatch();
   const { control } = useForm<{
@@ -67,14 +70,14 @@ export const FiltersComponent = (props: { filtersOptions: { filter: string, tran
                   onChange={(e, n) => {
                     field.onChange(n);
 
-                    if( n )
-                    dispatch(
-                      saveSpareFilters({
-                        ...filters,
-                        search: n.name,
-                        filter: "status",
-                      })
-                    );
+                    if (n)
+                      dispatch(
+                        cb({
+                          ...filters,
+                          search: n.name,
+                          filter: "status",
+                        })
+                      );
                   }}
                   renderInput={(params) => (
                     <TextField {...params} placeholder="Filtrar por" />
@@ -94,18 +97,15 @@ export const FiltersComponent = (props: { filtersOptions: { filter: string, tran
                   size="small"
                   fullWidth
                   value={typeof field.value == "string" ? field.value : ""}
-                  label={ filtersOptions.find((f) => f.filter === filter)?.translate }
+                  label={
+                    filtersOptions.find((f) => f.filter === filter)?.translate
+                  }
                   onChange={(e) => {
                     field.onChange(e);
                     if (filter == "") {
-                      dispatch(
-                        cb({...filters,
-                          search: undefined,
-                          filter,
-                        })
-                      );
-                      return
-                    };
+                      dispatch(cb({ ...filters, search: undefined, filter }));
+                      return;
+                    }
                     dispatch(
                       cb({
                         ...filters,

@@ -11,6 +11,7 @@ import {
   IClientUpdate,
   IDeleteGeneral,
 } from "@/common";
+import { getFilters } from "../constants/getFIlters";
 
 export const clientsApi = createApi({
   reducerPath: ReducerPaths.CLIENTS,
@@ -25,9 +26,15 @@ export const clientsApi = createApi({
       }),
       invalidatesTags: ["findAllCustomers"],
     }),
-    findAllClients: builder.query<Array<IClientResponse>, void>({
-      query: () => ({
-        url: CLIENTS_URL.FIND_ALL,
+    findAllClients: builder.query<
+      Array<IClientResponse>,
+      {
+        filter?: string;
+        search?: string;
+      } | void
+    >({
+      query: (params) => ({
+        url: `${CLIENTS_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllCustomers"],

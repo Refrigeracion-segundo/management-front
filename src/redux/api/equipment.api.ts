@@ -33,7 +33,7 @@ export const equipmentApi = createApi({
       {
         filter?: string;
         search?: string;
-      }
+      } | void
     >({
       query: (params) => ({
         url: `${EQUIPMENT_URL.FIND_ALL}?${getFilters(params)}`,

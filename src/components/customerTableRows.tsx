@@ -108,7 +108,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
                     <TableCell>Estado</TableCell>
                     <TableCell>Ciudad</TableCell>
                     <TableCell>Calle</TableCell>
-                    <TableCell>Codigo postal</TableCell>
+                    <TableCell>Código postal</TableCell>
                     <TableCell>Numero interior</TableCell>
                     <TableCell>Numero exterior</TableCell>
                   </TableRow>
@@ -117,21 +117,21 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
                   <TableRow>
                     <TableCell>{row.rfc}</TableCell>
                     <TableCell>
-                      {(row.fiscalRegime as IRegimeResponse).key +
+                      {(row.fiscalRegime as IRegimeResponse)?.key +
                         " - " +
-                        (row.fiscalRegime as IRegimeResponse).description}
+                        (row.fiscalRegime as IRegimeResponse)?.description}
                     </TableCell>
                     <TableCell>{row?.state as string}</TableCell>
                     <TableCell>{row?.city as string}</TableCell>
                     <TableCell>{row.street}</TableCell>
                     <TableCell>{row.zipCode}</TableCell>
-                    <TableCell>{row.streetNumber}</TableCell>
 
                     <TableCell>
                       {!!row.apartmentNumber
                         ? row.apartmentNumber
                         : "SIN NUMERO"}
                     </TableCell>
+                    <TableCell>{row.streetNumber}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

@@ -89,12 +89,16 @@ export const OrderDirection = () => {
           name="state"
           control={control}
           rules={{
-            required: true,
+            required: false,
           }}
-          defaultValue={{
-            id: direction.stateId as number,
-            name: direction.state as string,
-          }}
+          defaultValue={
+            direction.stateId && direction.state !== ""
+              ? {
+                  id: direction.stateId as number,
+                  name: direction.state as string,
+                }
+              : ""
+          }
           render={({ field }) => (
             <Autocomplete
               value={field.value}
@@ -106,13 +110,22 @@ export const OrderDirection = () => {
               }
               onChange={(_, newValue) => {
                 field.onChange(newValue);
-                dispatch(
-                  saveDirection({
-                    ...direction,
-                    state: (newValue as ICityState).name,
-                    stateId: (newValue as ICityState).id,
-                  })
-                );
+                if (!newValue) {
+                  dispatch(
+                    saveDirection({
+                      ...direction,
+                      state: "",
+                      stateId: 0,
+                    })
+                  );
+                } else
+                  dispatch(
+                    saveDirection({
+                      ...direction,
+                      state: (newValue as ICityState).name,
+                      stateId: (newValue as ICityState).id,
+                    })
+                  );
               }}
               getOptionLabel={(option) => {
                 return typeof option == "string" ? option : option.name;
@@ -137,12 +150,16 @@ export const OrderDirection = () => {
           name="city"
           control={control}
           rules={{
-            required: true,
+            required: false,
           }}
-          defaultValue={{
-            id: direction.cityId as number,
-            name: direction.city as string,
-          }}
+          defaultValue={
+            direction.cityId && direction.city !== ""
+              ? {
+                  id: direction.cityId as number,
+                  name: direction.city as string,
+                }
+              : ""
+          }
           render={({ field }) => (
             <Autocomplete
               value={field.value}
@@ -150,6 +167,23 @@ export const OrderDirection = () => {
               options={isSuccessCities && dataCities ? dataCities.items : []}
               onChange={(_, newValue) => {
                 field.onChange(newValue);
+                if (!newValue) {
+                  dispatch(
+                    saveDirection({
+                      ...direction,
+                      city: "",
+                      cityId: 0,
+                    })
+                  );
+                } else {
+                  dispatch(
+                    saveDirection({
+                      ...direction,
+                      city: (newValue as ICityState).name,
+                      cityId: (newValue as ICityState).id,
+                    })
+                  );
+                }
               }}
               getOptionLabel={(option) => {
                 return typeof option == "string" ? option : option.name;
@@ -176,7 +210,7 @@ export const OrderDirection = () => {
           control={control}
           rules={{
             required: {
-              value: true,
+              value: false,
               message: "Código postal invalido",
             },
             pattern: {
@@ -192,13 +226,24 @@ export const OrderDirection = () => {
               message: "La maxima longitud es de 5 caracteres.",
             },
           }}
+          defaultValue={direction.zipCode}
           render={({ field }) => (
             <TextField
-              {...field}
-              label="Codigo postal"
+              // {...field}
+              label="Código postal"
               variant="standard"
               margin="dense"
               fullWidth
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value == "") {
+                  dispatch(saveDirection({ ...direction, zipCode: "" }));
+                } else {
+                  dispatch(
+                    saveDirection({ ...direction, zipCode: e.target.value })
+                  );
+                }
+              }}
               error={!!errors.zipCode}
               helperText={!!errors.zipCode && errors.zipCode.message}
             />
@@ -217,13 +262,23 @@ export const OrderDirection = () => {
           }}
           render={({ field }) => (
             <TextField
-              {...field}
+              // {...field}
               variant="standard"
               margin="dense"
               id="suburb"
               label="Colonia"
               type="text"
               size="small"
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value == "") {
+                  dispatch(saveDirection({ ...direction, suburb: "" }));
+                } else {
+                  dispatch(
+                    saveDirection({ ...direction, suburb: e.target.value })
+                  );
+                }
+              }}
               fullWidth
               error={!!errors.suburb}
               helperText={!!errors.suburb && errors.suburb.message}
@@ -243,7 +298,22 @@ export const OrderDirection = () => {
           }}
           render={({ field }) => (
             <TextField
-              {...field}
+              // {...field}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value == "") {
+                  dispatch(
+                    saveDirection({ ...direction, apartmentNumber: "" })
+                  );
+                } else {
+                  dispatch(
+                    saveDirection({
+                      ...direction,
+                      apartmentNumber: e.target.value,
+                    })
+                  );
+                }
+              }}
               variant="standard"
               margin="dense"
               id="streetNumber"
@@ -270,7 +340,17 @@ export const OrderDirection = () => {
           }}
           render={({ field }) => (
             <TextField
-              {...field}
+              // {...field}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value == "") {
+                  dispatch(saveDirection({ ...direction, street: undefined }));
+                } else {
+                  dispatch(
+                    saveDirection({ ...direction, street: e.target.value })
+                  );
+                }
+              }}
               variant="standard"
               margin="dense"
               id="street"
@@ -296,7 +376,22 @@ export const OrderDirection = () => {
           }}
           render={({ field }) => (
             <TextField
-              {...field}
+              // {...field}
+              onChange={(e) => {
+                field.onChange(e);
+                if (e.target.value == "") {
+                  dispatch(
+                    saveDirection({ ...direction, streetNumber: undefined })
+                  );
+                } else {
+                  dispatch(
+                    saveDirection({
+                      ...direction,
+                      streetNumber: e.target.value,
+                    })
+                  );
+                }
+              }}
               variant="standard"
               margin="dense"
               id="apartmentNumber"

@@ -101,7 +101,7 @@ export const orderSlice = createSlice({
       };
     },
     closeOrder: (state) => {
-      console.log(state.isUpdate);
+      // console.log(state.isUpdate);
       if (state.isUpdate) {
         return {
           ...state,

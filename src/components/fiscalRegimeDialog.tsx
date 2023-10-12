@@ -16,12 +16,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import {
+  Controller,
   FormState,
   UseFormHandleSubmit,
   UseFormRegister,
+  useForm,
 } from "react-hook-form";
 import { IRegimeRegister, IRegimeUpdate } from "@/common";
 import {
+  clearFiscalRegime,
   closeFiscalRegime,
   openFiscalRegime,
 } from "@/redux/slices/fiscalRegime";
@@ -31,21 +34,22 @@ import {
 } from "@/redux/api/fiscalRegime";
 import { LoadingButton } from "@mui/lab";
 import { enqueueSnackbar } from "notistack";
-import { clearEquipment } from "@/redux/slices/dialogEquipment";
+// import { clearEquipment } from "@/redux/slices/dialogEquipment";
 
-export const DialogFiscalRegime = (props: {
-  register: UseFormRegister<IRegimeRegister>;
-  formState: FormState<IRegimeRegister>;
-  handleSubmit: UseFormHandleSubmit<IRegimeRegister>;
-}) => {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = props;
+export const DialogFiscalRegime = () => {
   const { openDialog, data, isUpdate } = useSelector(
     (store: RootState) => store.fiscalRegime
   );
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+    control,
+  } = useForm<IRegimeRegister>({
+    values: {
+      ...data,
+    },
+  });
   const [registerRegime, { isLoading }] = useRegisterRegimeMutation();
   const [updateRegime, { isLoading: isLoadingUpdate }] =
     useUpdateRegimeMutation();
@@ -62,10 +66,7 @@ export const DialogFiscalRegime = (props: {
       >
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-        fullWidth
-      >
+      <Dialog open={openDialog} fullWidth>
         <DialogTitle>
           <Typography variant="h6" align="center">
             Formulario del SAT
@@ -79,34 +80,63 @@ export const DialogFiscalRegime = (props: {
             spacing={1}
           >
             <Grid item xs={3}>
-              <TextField
-                autoFocus
-                type="number"
-                fullWidth
-                placeholder="Clave"
-                {...register("key", {
+              <Controller
+                name="key"
+                rules={{
                   required: {
                     value: true,
                     message: "La clave es requerida",
                   },
-                  valueAsNumber: true,
-                })}
-                helperText={!!errors.description && errors.description.message}
-                error={!!errors.description}
+                }}
+                defaultValue={data.key}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      autoFocus
+                      type="number"
+                      fullWidth
+                      placeholder="Clave"
+                      value={field.value == 0 ? null : field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                      }}
+                      helperText={
+                        !!errors.description && errors.description.message
+                      }
+                      error={!!errors.description}
+                    />
+                  );
+                }}
               />
             </Grid>
             <Grid item xs={9}>
-              <TextField
-                placeholder="Descripcion"
-                {...register("description", {
+              <Controller
+                name="description"
+                rules={{
                   required: {
                     value: true,
                     message: "La description es requerido",
                   },
-                })}
-                fullWidth
-                helperText={!!errors.description && errors.description.message}
-                error={!!errors.description}
+                }}
+                control={control}
+                defaultValue={data.description}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      placeholder="Descripcion"
+                      fullWidth
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                      }}
+                      helperText={
+                        !!errors.description && errors.description.message
+                      }
+                      error={!!errors.description}
+                    />
+                  );
+                }}
               />
             </Grid>
           </Grid>
@@ -127,11 +157,17 @@ export const DialogFiscalRegime = (props: {
                   ? await updateRegime({
                       ...newData,
                       _id: (data as IRegimeUpdate)._id,
+                      key: Number(newData.key),
                     }).unwrap()
-                  : await registerRegime({ ...newData }).unwrap();
+                  : await registerRegime({
+                      ...newData,
+                      key: Number(newData.key),
+                    }).unwrap();
+                dispatch(clearFiscalRegime());
                 dispatch(closeFiscalRegime());
-                dispatch(clearEquipment());
-                enqueueSnackbar("Registrado correctamente");
+                enqueueSnackbar("Registrado correctamente", {
+                  variant: "success",
+                });
               } catch {
                 enqueueSnackbar("Intente de nuevo mas tarde", {
                   variant: "error",

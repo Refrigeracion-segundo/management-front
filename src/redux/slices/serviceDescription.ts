@@ -1,4 +1,5 @@
 import {
+  IFilters,
   IServiceDescriptionRegister,
   IServiceDescriptionUpdate,
 } from "@/common";
@@ -8,6 +9,7 @@ export interface Service {
   openDialog: boolean;
   isUpdate: boolean;
   data: IServiceDescriptionUpdate | IServiceDescriptionRegister;
+  filters: IFilters;
 }
 
 const initialState: Service = {
@@ -27,6 +29,10 @@ const initialState: Service = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+  },
+  filters: {
+    search: "",
+    filter: "",
   },
 };
 
@@ -65,6 +71,9 @@ export const serviceDescriptionSlice = createSlice({
     clearServiceDescription: (state) => {
       state.data = initialState.data;
     },
+    saveFiltersServiceDescription: (state, value: PayloadAction<IFilters>) => {
+      state.filters = value.payload;
+    },
   },
 });
 
@@ -74,6 +83,7 @@ export const {
   isUpdatingServiceDescription,
   saveServiceDescription,
   clearServiceDescription,
+  saveFiltersServiceDescription,
 } = serviceDescriptionSlice.actions;
 
 export default serviceDescriptionSlice.reducer;
