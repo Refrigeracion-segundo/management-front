@@ -136,13 +136,9 @@ export const DialogSpare = (props: {
                     message: "El precio sugerido debe ser menor a 1000000000",
                   },
                   valueAsNumber: true,
+                  value: dataSpare.suggestedPrice == 0 ? '' as any : dataSpare.suggestedPrice
                 })}
                 type="number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
-                  ),
-                }}
                 helperText={
                   !!errors.suggestedPrice && errors.suggestedPrice.message
                 }

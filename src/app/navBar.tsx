@@ -37,7 +37,7 @@ export const NavBar = () => {
         </IconButton>
       </Grid>
       <Grid item xs={7}>
-        <Typography>Refrigeración segunda</Typography>
+        <Typography>Refrigeración segundo</Typography>
       </Grid>
       <Grid
         item
