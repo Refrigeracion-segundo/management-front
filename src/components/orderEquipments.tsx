@@ -15,9 +15,9 @@ import {
   TextField,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import React from "react";
+import React, { Fragment } from "react";
 import { useForm } from "react-hook-form";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+// import { TransitionGroup } from "react-transition-group";
 import "../app/order.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -27,7 +27,8 @@ import {
   pushOrderEquipment,
 } from "@/redux/slices/order";
 import { useConfirm } from "material-ui-confirm";
-
+import CSSTransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-transition-group";
 export const OrderEquipments = () => {
   const { equipment } = useSelector((store: RootState) => store.order);
   const dispatch = useDispatch();
@@ -183,28 +184,29 @@ export const OrderEquipments = () => {
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              <TransitionGroup component={null}>
-                {equipment?.map((equip, index) => (
-                  <CSSTransition key={index} timeout={500} classNames="fade">
-                    <TableRow>
-                      <TableCell>{equip.equipment}</TableCell>
-                      <TableCell>{equip.brand}</TableCell>
-                      <TableCell>{equip.model}</TableCell>
-                      <TableCell>{equip.serie}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => deleteEquipment(index)}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
-            </TableBody>
+            <CSSTransitionGroup
+              transitionName="example"
+              transitionEnterTimeout={1000}
+              transitionLeaveTimeout={1000}
+              component={TableBody}
+            >
+              {equipment?.map((equip, index) => (
+                <TableRow>
+                  <TableCell>{equip.equipment}</TableCell>
+                  <TableCell>{equip.brand}</TableCell>
+                  <TableCell>{equip.model}</TableCell>
+                  <TableCell>{equip.serie}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => deleteEquipment(index)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </CSSTransitionGroup>
           </Table>
         </TableContainer>
       </Grid>
