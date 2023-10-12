@@ -26,7 +26,6 @@ import {
 } from "@/common";
 
 import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
-// import { useDeleteUserMutation, useLazyFindAllUsersQuery } from "@/redux/api";
 import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";

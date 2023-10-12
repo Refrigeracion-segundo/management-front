@@ -30,7 +30,6 @@ import {
   UseFormReset,
 } from "react-hook-form";
 import { IUserRegister, IUserUpdate, ROLES, RoleTranslate } from "@/common";
-// import { useRegisterUserMutation, useUpdateUserMutation } from "@/redux/api";
 import { LoadingButton } from "@mui/lab";
 import { enqueueSnackbar } from "notistack";
 import {
@@ -136,7 +135,7 @@ export const DialogUser = (props: {
                 {...register("lastName", {
                   required: {
                     value: true,
-                    message: "El apellido es requerido 2",
+                    message: "El apellido es requerido",
                   },
                 })}
                 helperText={!!errors.lastName && errors.lastName.message}
@@ -179,7 +178,7 @@ export const DialogUser = (props: {
                     },
                     maxLength: {
                       value: 16,
-                      message: "Contraseña muy corta",
+                      message: "Contraseña muy larga",
                     },
                   })}
                   helperText={!!errors.password && errors.password.message}

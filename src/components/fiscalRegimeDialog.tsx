@@ -21,7 +21,6 @@ import {
 } from "react-hook-form";
 import { IRegimeRegister, IRegimeUpdate } from "@/common";
 import {
-  clearFiscalRegime,
   closeFiscalRegime,
   openFiscalRegime,
   saveFiscalRegime,
@@ -32,7 +31,6 @@ import {
 } from "@/redux/api/fiscalRegime";
 import { LoadingButton } from "@mui/lab";
 import { enqueueSnackbar } from "notistack";
-// import { clearEquipment } from "@/redux/slices/dialogEquipment";
 
 export const DialogFiscalRegime = () => {
   const { openDialog, data, isUpdate } = useSelector(
@@ -61,10 +59,7 @@ export const DialogFiscalRegime = () => {
           ...newData,
           key: Number(newData.key),
         }).unwrap();
-    // setValue("key", 0);
-    // setValue("description", "");
-
-    // dispatch(clearFiscalRegime());
+        
     dispatch(closeFiscalRegime());
     enqueueSnackbar("Registrado correctamente", {
       variant: "success",

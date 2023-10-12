@@ -17,9 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import {
-  FormState,
-  UseFormHandleSubmit,
-  UseFormRegister,
   useForm,
 } from "react-hook-form";
 import { IEquipmentRegister, IEquipmentUpdate } from "@/common";

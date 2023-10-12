@@ -113,7 +113,6 @@ export const OrderServices = () => {
                 variant="standard"
                 margin="dense"
                 label="Servicio"
-                // sx={{ width: "115%" }}
                 {...register("service", {
                   required: {
                     value: false,

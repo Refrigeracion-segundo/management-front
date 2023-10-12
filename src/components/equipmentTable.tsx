@@ -23,15 +23,12 @@ import {
   stableSort,
 } from "@/common";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   isUpdatingEquipment,
-  openEquipment,
   saveEquipment,
 } from "@/redux/slices/dialogEquipment";
 import {
   useDeleteEquipmentMutation,
-  useFindAllEquipmentQuery,
   useLazyFindAllEquipmentQuery,
   useReactiveMutation,
 } from "@/redux/api/equipment.api";
@@ -73,12 +70,6 @@ export const EquipmentTable = () => {
         .then(() => {
           enqueueSnackbar("Se elimino correctamente", { variant: "success" });
         });
-      // .catch(() => {
-      //   enqueueSnackbar(
-      //     "Ups!, parece que ocurrio un error. Intente de nuevo mas tarde",
-      //     { variant: "error" }
-      //   );
-      // });
     });
   };
 

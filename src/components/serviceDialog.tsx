@@ -33,7 +33,6 @@ import {
   APPLICACTION_TYPE,
   ApplicationTypeTranslate,
 } from "@/common/constants/equipmentApplication";
-import { enqueueSnackbar } from "notistack";
 
 export const DialogService = () => {
   const {
@@ -103,13 +102,12 @@ export const DialogService = () => {
                 }
                 loading={isLoadingEquipment}
                 onOpen={() => getEquipment({ filter: "", search: "" })}
-                // multiple
                 options={
                   isSuccessEquipment
                     ? (dataEquipment as unknown as Array<IEquipmentResponse>)
                     : []
                 }
-                onChange={(value, newValue) => {
+                onChange={(_, newValue) => {
                   if (newValue && newValue.name !== "Seleccione") {
                     dispatch(
                       saveService({
@@ -120,9 +118,6 @@ export const DialogService = () => {
                     clearErrors("equipmentType");
                   }
                 }}
-                // isOptionEqualToValue={(option, value) =>
-                //   option.name === value.name
-                // }
                 getOptionLabel={(option) => (!!option?.name ? option.name : "")}
                 renderInput={(params) => (
                   <TextField
@@ -248,7 +243,7 @@ export const DialogService = () => {
                 }
                 // multiple
                 options={Array.from(ApplicationTypeTranslate.values())}
-                onChange={(value, newValue) => {
+                onChange={(_, newValue) => {
                   if (newValue)
                     dispatch(
                       saveService({
@@ -342,11 +337,6 @@ export const DialogService = () => {
                         dataService.equipmentType as IEquipmentResponse
                       )._id,
                     }).unwrap();
-                // .then(() => {
-                //   dispatch(closeService());
-                //   dispatch(clearService());
-                //   reset(null as any);
-                // });
 
                 dispatch(closeService());
                 dispatch(clearService());

@@ -34,7 +34,7 @@ import {
   openService,
   saveService,
 } from "@/redux/slices/service";
-import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import { currencyMx } from "@/redux/constants/formatCurrency";
@@ -133,14 +133,14 @@ export const ServiceTable = () => {
     },
   ];
 
-  const handleRequestSort = (event: any, property: any) => {
+  const handleRequestSort = (_: any, property: any) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
     setPage(newPage);

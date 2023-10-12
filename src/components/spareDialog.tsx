@@ -31,7 +31,6 @@ import {
   closeSpare,
   openSpare,
 } from "@/redux/slices/dialogSpare";
-// import { useRegisterSpareMutation, useUpdateSpareMutation } from "@/redux/api";
 import { enqueueSnackbar } from "notistack";
 import {
   useRegisterSpareMutation,

@@ -13,8 +13,8 @@ export const SlideOptions = (props: { role: string }) => {
   const { role } = props;
   const dispatch = useDispatch();
   const toggleDrawer =
-    (anchor: Anchor, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
+    (_: Anchor, open: boolean) =>
+    (_: React.KeyboardEvent | React.MouseEvent) => {
       dispatch(closeSlider());
     };
 

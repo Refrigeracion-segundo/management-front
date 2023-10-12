@@ -72,7 +72,6 @@ export const OrderMenuStatus = (props: { _id: string; status: string }) => {
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
-        // placement="bottom-start"
         transition
         disablePortal
         sx={{ zIndex: 999, width: "12%" }}

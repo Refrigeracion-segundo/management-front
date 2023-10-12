@@ -33,7 +33,6 @@ import {
   saveSpare,
 } from "@/redux/slices/dialogSpare";
 
-// import { useDeleteSpareMutation, useLazyFindAllSpareQuery } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
@@ -150,7 +149,6 @@ export const TableSpare = (props: {
     dispatch(openSpare());
     dispatch(isUpdatingSpare(true));
     dispatch(saveSpare({ ...data }));
-    // setValue({ ...data }, is);
     setValue("description", data.description);
     setValue("suggestedPrice", data.suggestedPrice);
   };

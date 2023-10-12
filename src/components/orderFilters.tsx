@@ -90,7 +90,6 @@ export const OrderFilters = (props: { status: string }) => {
                   }))}
                   value={field.value}
                   getOptionLabel={(option) => {
-                    // console.log(option);
                     return option?.value?.translate
                       ? option?.value?.translate
                       : option.translate;
@@ -98,7 +97,6 @@ export const OrderFilters = (props: { status: string }) => {
                   size="small"
                   onChange={(e, n) => {
                     field.onChange(n);
-                    // console.log(n);
                     if(n){
                       dispatch(
                         saveFilters({
@@ -128,9 +126,7 @@ export const OrderFilters = (props: { status: string }) => {
           <Controller
             control={control}
             name="descriptionFilter"
-            // defaultValue={""}
             render={({ field }) => {
-              // console.log(field.value);
               return (
                 <TextField
                   size="small"
@@ -163,7 +159,6 @@ export const OrderFilters = (props: { status: string }) => {
             inputFormat={"MM/DD/YYYY"}
             value={filters.fromDate}
             onChange={(value: any) => {
-              // console.log(value);
               if (value) {
                 dispatch(
                   saveFilters({ ...filters, fromDate: new Date(value) })

@@ -1,7 +1,6 @@
 "use client";
 import { ISpareResponse } from "@/common";
 import { useLazyFindAllSpareQuery } from "@/redux/api/spare.api";
-// import { useLazyFindAllSpareQuery } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
   deleteAllSparesOrder,
@@ -100,13 +99,11 @@ export const OrderSpare = () => {
                   loading={isLoading}
                   value={field.value}
                   getOptionLabel={(option: ISpareResponse) => {
-                    // console.log(option);
                     return option.description;
                   }}
                   size="small"
                   onChange={(_, n) => {
                     field.onChange(n);
-                    // console.log(n);
                     if (n) setSpare(n);
                   }}
                   renderInput={(params) => (
@@ -131,6 +128,7 @@ export const OrderSpare = () => {
             render={({ field }) => {
               return (
                 <TextField
+                  placeholder="Cantidad"
                   size="small"
                   value={field.value}
                   onChange={(e) => {

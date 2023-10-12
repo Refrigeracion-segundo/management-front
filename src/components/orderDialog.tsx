@@ -470,9 +470,7 @@ export const OrderDialog = () => {
           <Button
             disabled={
               service.length == 0 ||
-              // general.report == "" ||
               client._id == ""
-              // general.description == ""
             }
             onClick={handleSubmit(async (data) => {
               {
