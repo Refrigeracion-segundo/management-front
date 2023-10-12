@@ -19,7 +19,6 @@ import { RootState } from "../redux/store";
 import {
   open,
   close,
-  isUpdatingUser,
   cleanReduxUser,
 } from "../redux/slices/dialogUser";
 import {
@@ -148,11 +147,16 @@ export const DialogUser = (props: {
               <TextField
                 placeholder="Correo electrónico"
                 label="Correo electronico"
+                type="email"
                 {...register("email", {
                   required: {
                     value: true,
                     message: "El email es requerido",
                   },
+                  pattern: {
+                    value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: "Email invalido"
+                  }
                 })}
                 helperText={!!errors.email && errors.email.message}
                 error={!!errors.email}

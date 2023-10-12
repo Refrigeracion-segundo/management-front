@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   EnhancedTableHead,
@@ -156,7 +155,7 @@ export const TableUser = (props: {
   const reactivate = (id: string) => {
     confirm({
       title: "Hey cuidado!!",
-      description: `Seguro que deseas reactivar a este regimen fiscal?`,
+      description: `Seguro que deseas reactivar a este usuario?`,
     }).then(() => {
       reactivateUser(id);
     });

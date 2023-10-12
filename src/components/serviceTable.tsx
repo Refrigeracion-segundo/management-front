@@ -26,7 +26,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   useDeleteServiceMutation,
-  useFindAllServiceQuery,
   useLazyFindAllServiceQuery,
   useReactiveMutation,
 } from "@/redux/api/services.api";

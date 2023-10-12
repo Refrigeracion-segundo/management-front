@@ -15,12 +15,11 @@ import {
 } from "@/common";
 import { CustomerTableRows } from "./customerTableRows";
 import {
-  useFindAllClientsQuery,
   useLazyFindAllClientsQuery,
 } from "@/redux/api";
 import { CircularProgress, TableFooter, TablePagination } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 export const CustomerTable = () => {

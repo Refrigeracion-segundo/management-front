@@ -29,7 +29,6 @@ import { ISpareRegister, ISpareUpdate } from "@/common";
 import {
   cleanReduxSpare,
   closeSpare,
-  isUpdatingSpare,
   openSpare,
 } from "@/redux/slices/dialogSpare";
 // import { useRegisterSpareMutation, useUpdateSpareMutation } from "@/redux/api";

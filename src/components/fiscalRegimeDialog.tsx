@@ -17,9 +17,6 @@ import { RootState } from "../redux/store";
 
 import {
   Controller,
-  FormState,
-  UseFormHandleSubmit,
-  UseFormRegister,
   useForm,
 } from "react-hook-form";
 import { IRegimeRegister, IRegimeUpdate } from "@/common";

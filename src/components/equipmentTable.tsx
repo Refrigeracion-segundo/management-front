@@ -144,7 +144,7 @@ export const EquipmentTable = () => {
   const reactivate = (id: string) => {
     confirm({
       title: "Hey cuidado!!",
-      description: `Seguro que deseas reactivar a este cliente?`,
+      description: `Seguro que deseas reactivar a este equipo?`,
     }).then(() => {
       reactivateEquipment(id);
     });
