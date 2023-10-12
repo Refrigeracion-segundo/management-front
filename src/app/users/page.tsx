@@ -33,7 +33,7 @@ const Users = () => {
 
   const filtersOptions = [
     { filter: "user", translate: "Usuario" },
-    { filter: "Email", translate: "Email" },
+    { filter: "email", translate: "Email" },
     { filter: "status", translate: "Estatus" },
   ];
 
@@ -41,7 +41,11 @@ const Users = () => {
     <div style={{ marginTop: "1%" }}>
       <Divider variant="middle" />
       <Box sx={{ p: 5 }}>
-      <FiltersComponent filtersOptions={filtersOptions} filters={filters} cb={saveUserFilters} />
+        <FiltersComponent
+          filtersOptions={filtersOptions}
+          filters={filters}
+          cb={saveUserFilters}
+        />
         <DialogUser
           register={register}
           clearErrors={clearErrors}
