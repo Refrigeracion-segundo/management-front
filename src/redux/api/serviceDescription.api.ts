@@ -7,10 +7,12 @@ import {
 } from "../config";
 import {
   IDeleteGeneral,
+  IFilters,
   IServiceDescriptionRegister,
   IServiceDescriptionResponse,
   IServiceDescriptionUpdate,
 } from "@/common";
+import { getFilters } from "../constants/getFIlters";
 
 export const serviceDescriptionApi = createApi({
   reducerPath: ReducerPaths.SERVICE_DESCRIPTION,
@@ -30,10 +32,10 @@ export const serviceDescriptionApi = createApi({
     }),
     findAllServiceDescription: builder.query<
       Array<IServiceDescriptionResponse>,
-      void
+      IFilters | void
     >({
-      query: () => ({
-        url: SERVICE_DESCRIPTION_URL.FIND_ALL,
+      query: (params) => ({
+        url: `${SERVICE_DESCRIPTION_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllServiceDescription"],

@@ -1,3 +1,3 @@
 export interface IDeleteGeneral {
-  id: string;
+  _id: string;
 }

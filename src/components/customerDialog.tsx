@@ -435,12 +435,16 @@ export const DialogCustomer = (props: {
                   name="state"
                   control={control}
                   rules={{
-                    required: true,
+                    required: false,
                   }}
-                  defaultValue={{
-                    id: dataClient.stateId as number,
-                    name: dataClient.state as string,
-                  }}
+                  defaultValue={
+                    dataClient.stateId
+                      ? {
+                          id: dataClient.stateId as number,
+                          name: dataClient.state as string,
+                        }
+                      : ""
+                  }
                   render={({ field }) => (
                     <Autocomplete
                       value={field.value}
@@ -448,6 +452,16 @@ export const DialogCustomer = (props: {
                       options={dataState?.items ? dataState.items : ([] as any)}
                       onChange={(_, newValue) => {
                         field.onChange(newValue);
+                        if (!newValue) {
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              state: undefined,
+                              stateId: undefined,
+                            })
+                          );
+                          return;
+                        }
                         dispatch(
                           saveClient({
                             ...dataClient,
@@ -462,7 +476,7 @@ export const DialogCustomer = (props: {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Ciudad"
+                          label="Estado"
                           variant="standard"
                           margin="dense"
                           onChange={(e) => {
@@ -479,12 +493,16 @@ export const DialogCustomer = (props: {
                   name="city"
                   control={control}
                   rules={{
-                    required: true,
+                    required: false,
                   }}
-                  defaultValue={{
-                    id: dataClient.cityId as number,
-                    name: dataClient.city as string,
-                  }}
+                  defaultValue={
+                    dataClient.cityId
+                      ? {
+                          id: dataClient.cityId as number,
+                          name: dataClient.city as string,
+                        }
+                      : ""
+                  }
                   render={({ field }) => (
                     <Autocomplete
                       value={field.value}
@@ -492,6 +510,16 @@ export const DialogCustomer = (props: {
                       options={dataCities?.items ? dataCities.items : []}
                       onChange={(_, newValue) => {
                         field.onChange(newValue);
+                        if (!newValue) {
+                          dispatch(
+                            saveClient({
+                              ...dataClient,
+                              city: undefined,
+                              cityId: undefined,
+                            })
+                          );
+                          return;
+                        }
                         dispatch(
                           saveClient({
                             ...dataClient,
@@ -524,7 +552,7 @@ export const DialogCustomer = (props: {
                   name="zipCode"
                   rules={{
                     required: {
-                      value: true,
+                      value: false,
                       message: "Código postal invalido",
                     },
                     pattern: {
@@ -554,6 +582,15 @@ export const DialogCustomer = (props: {
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e);
+                          if (e.target.value == "") {
+                            dispatch(
+                              saveClient({
+                                ...dataClient,
+                                zipCode: undefined,
+                              })
+                            );
+                            return;
+                          }
                           dispatch(
                             saveClient({
                               ...dataClient,
@@ -592,6 +629,15 @@ export const DialogCustomer = (props: {
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e);
+                          if (e.target.value == "") {
+                            dispatch(
+                              saveClient({
+                                ...dataClient,
+                                suburb: undefined,
+                              })
+                            );
+                            return;
+                          }
                           dispatch(
                             saveClient({
                               ...dataClient,
@@ -612,7 +658,7 @@ export const DialogCustomer = (props: {
                   name="street"
                   rules={{
                     required: {
-                      value: true,
+                      value: false,
                       message: "La calle es requerida",
                     },
                   }}
@@ -630,6 +676,15 @@ export const DialogCustomer = (props: {
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e);
+                          if (e.target.value == "") {
+                            dispatch(
+                              saveClient({
+                                ...dataClient,
+                                street: undefined,
+                              })
+                            );
+                            return;
+                          }
                           dispatch(
                             saveClient({
                               ...dataClient,
@@ -667,6 +722,15 @@ export const DialogCustomer = (props: {
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e);
+                          if (e.target.value == "") {
+                            dispatch(
+                              saveClient({
+                                ...dataClient,
+                                apartmentNumber: undefined,
+                              })
+                            );
+                            return;
+                          }
                           dispatch(
                             saveClient({
                               ...dataClient,
@@ -707,6 +771,15 @@ export const DialogCustomer = (props: {
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e);
+                          if (e.target.value == "") {
+                            dispatch(
+                              saveClient({
+                                ...dataClient,
+                                streetNumber: undefined,
+                              })
+                            );
+                            return;
+                          }
                           dispatch(
                             saveClient({
                               ...dataClient,

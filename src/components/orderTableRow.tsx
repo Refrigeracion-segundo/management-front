@@ -49,13 +49,13 @@ export const OrderTableRows = (props: {
   const dispatch = useDispatch();
   const [deleteOrderApi, { isLoading: isLoadingDelete }] =
     useDeleteOrderMutation();
-  const handleDelete = (name: number, id: string) => {
+  const handleDelete = (name: number, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: "Seguro que desea eliminar esta orden?",
     }).then(async () => {
       try {
-        await deleteOrderApi({ id }).unwrap();
+        await deleteOrderApi({ _id }).unwrap();
         enqueueSnackbar("Eliminación completada");
       } catch {
         enqueueSnackbar("Intente de nuevo mas tarde", { variant: "error" });

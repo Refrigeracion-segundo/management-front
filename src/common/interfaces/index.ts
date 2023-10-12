@@ -35,6 +35,7 @@ export * from "./orderService";
 export * from "./orderDirection";
 export * from "./orderGeneral";
 export * from "./orderFilters";
+export * from "./filters";
 export * from "./dashboard";
 // INTERFACES FORMS
 export * from "./formLogin";

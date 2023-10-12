@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,33 +15,48 @@ import {
 import { useConfirm } from "material-ui-confirm";
 import { UseFormSetValue } from "react-hook-form";
 import { EnhancedTableHead, HeadCell, IUserUpdate, Order, RoleTranslate, getComparator, stableSort } from "@/common";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
-import { useDeleteUserMutation, useFindAllUsersQuery } from "@/redux/api";
-import { STATUS_DB } from "@/redux/constants";
+import { useDeleteUserMutation, useLazyFindAllUsersQuery } from "@/redux/api";
+import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import moment from "moment";
+import { RootState } from "@/redux/store";
 
 export const TableUser = (props: {
   setValue: UseFormSetValue<IUserUpdate>;
 }) => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
-  const { data: rows, isLoading, isFetching } = useFindAllUsersQuery();
+  const [getUser, { data: rows, isSuccess, isLoading, isFetching }] =
+  useLazyFindAllUsersQuery();
   const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
+  const {
+    filters: { filter, search },
+  } = useSelector((store: RootState) => store.dialogUser);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState('name')
 
-  const handleDelete = async (name: string, id: string) => {
+  useEffect(() => {
+    getUser({
+      filter,
+      search,
+    });
+  }, [
+    filter,
+    search,
+  ]);
+
+  const handleDelete = async (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja al usuario ${name}? `,
     }).then(async () => {
       try {
-        await deleteUser({ id }).unwrap();
+        await deleteUser({ _id }).unwrap();
         enqueueSnackbar("Usuario eliminado correctamente", {
           variant: "success",
         });
@@ -155,7 +170,7 @@ export const TableUser = (props: {
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
               <TableCell align="right">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+              { STATUS_DATA.get(row.status)?.translate }
               </TableCell>
               <TableCell>
                 <IconButton

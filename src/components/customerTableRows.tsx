@@ -1,7 +1,7 @@
 "use client";
 import { IClientResponse, IClientUpdate, IRegimeResponse } from "@/common";
 import { useDeleteClientMutation } from "@/redux/api";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import {
   isUpdatingClient,
   openClient,
@@ -35,12 +35,12 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
   const confirm = useConfirm();
   const dispatch = useDispatch();
   const [deleteClient] = useDeleteClientMutation();
-  const handleDelete = (name: string, id: string) => {
+  const handleDelete = (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja al cliente ${name}? `,
     }).then(() => {
-      deleteClient({ id });
+      deleteClient({ _id });
     });
   };
 
@@ -74,7 +74,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
           {moment(row.updatedAt).format("LLLL")}
         </TableCell>
         <TableCell align="left">
-          {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+          {STATUS_DATA.get(row.status)?.translate}
         </TableCell>
 
         <TableCell>
@@ -108,7 +108,7 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
                     <TableCell>Estado</TableCell>
                     <TableCell>Ciudad</TableCell>
                     <TableCell>Calle</TableCell>
-                    <TableCell>Codigo postal</TableCell>
+                    <TableCell>Código postal</TableCell>
                     <TableCell>Numero interior</TableCell>
                     <TableCell>Numero exterior</TableCell>
                   </TableRow>
@@ -117,21 +117,21 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
                   <TableRow>
                     <TableCell>{row.rfc}</TableCell>
                     <TableCell>
-                      {(row.fiscalRegime as IRegimeResponse).key +
+                      {(row.fiscalRegime as IRegimeResponse)?.key +
                         " - " +
-                        (row.fiscalRegime as IRegimeResponse).description}
+                        (row.fiscalRegime as IRegimeResponse)?.description}
                     </TableCell>
                     <TableCell>{row?.state as string}</TableCell>
                     <TableCell>{row?.city as string}</TableCell>
                     <TableCell>{row.street}</TableCell>
                     <TableCell>{row.zipCode}</TableCell>
-                    <TableCell>{row.streetNumber}</TableCell>
 
                     <TableCell>
                       {!!row.apartmentNumber
                         ? row.apartmentNumber
                         : "SIN NUMERO"}
                     </TableCell>
+                    <TableCell>{row.streetNumber}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

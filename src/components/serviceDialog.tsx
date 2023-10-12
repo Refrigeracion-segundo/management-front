@@ -3,6 +3,7 @@ import { Add } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -56,10 +57,14 @@ export const DialogService = () => {
       isFetching: isFetchingEquipment,
     },
   ] = useLazyFindAllEquipmentQuery();
-  const [registerService, { isSuccess: isSuccessRegister }] =
-    useRegisterServiceMutation();
-  const [updateService, { isSuccess: isSuccessUpdate }] =
-    useUpdateServiceMutation();
+  const [
+    registerService,
+    { isSuccess: isSuccessRegister, isLoading: isLoadingRegister },
+  ] = useRegisterServiceMutation();
+  const [
+    updateService,
+    { isSuccess: isSuccessUpdate, isLoading: isLoadingUpdate },
+  ] = useUpdateServiceMutation();
 
   const dispatch = useDispatch();
   return (
@@ -71,11 +76,7 @@ export const DialogService = () => {
       >
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-        fullWidth
-        maxWidth="md"
-      >
+      <Dialog open={openDialog} fullWidth maxWidth="md">
         <DialogTitle>
           <div
             style={{
@@ -101,7 +102,7 @@ export const DialogService = () => {
                   isUpdate ? dataService.equipmentType : ("" as any)
                 }
                 loading={isLoadingEquipment}
-                onOpen={() => getEquipment()}
+                onOpen={() => getEquipment({ filter:'', search: '' })}
                 // multiple
                 options={
                   isSuccessEquipment
@@ -260,11 +261,11 @@ export const DialogService = () => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Tipa de aplicacion"
+                    label="Tipo de aplicación"
                     {...register("equipmentApplication", {
                       required: {
                         value: true,
-                        message: "Tipo de aplicacion",
+                        message: "Tipo de aplicación",
                       },
                       value: dataService.equipmentApplication,
                     })}
@@ -318,6 +319,12 @@ export const DialogService = () => {
             Cancelar
           </Button>
           <Button
+            disabled={isLoadingRegister || isLoadingUpdate}
+            endIcon={
+              (isLoadingRegister || isLoadingUpdate) && (
+                <CircularProgress size={15} />
+              )
+            }
             onClick={handleSubmit(async (data) => {
               try {
                 !isUpdate

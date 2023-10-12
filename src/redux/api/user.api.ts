@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
-  LOGIN_URL,
   METHOD_TYPES,
   USER_URL,
   ReducerPaths,
@@ -13,6 +12,7 @@ import {
   IUserUpdate,
   ROLES,
 } from "@/common";
+import { getFilters } from "../constants/getFIlters";
 
 export const userApi = createApi({
   reducerPath: ReducerPaths.USERS,
@@ -27,9 +27,15 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["findAllUsers"],
     }),
-    findAllUsers: builder.query<Array<IUserResponse>, void>({
-      query: () => ({
-        url: USER_URL.FIND_ALL,
+    findAllUsers: builder.query<
+      Array<IUserResponse>,
+      {
+        filter?: string;
+        search?: string;
+      }
+    >({
+      query: (params) => ({
+        url: `${USER_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllUsers"],

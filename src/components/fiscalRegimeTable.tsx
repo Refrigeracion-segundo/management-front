@@ -22,7 +22,7 @@ import {
   useDeleteRegimeMutation,
   useFindAllFiscalRegimeQuery,
 } from "@/redux/api/fiscalRegime";
-import { STATUS_DB } from "@/redux/constants";
+import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 export const FiscalRegimeTable = () => {
@@ -35,12 +35,12 @@ export const FiscalRegimeTable = () => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState('key')
   
-  const handleDelete = (name: string, id: string) => {
+  const handleDelete = (name: string, _id: string) => {
     confirm({
       title: "Hey cuidado!!",
       description: `Seguro que deseas dar de baja a ${name}? `,
     }).then(async () => {
-      await deleteRegime({ id }).unwrap();
+      await deleteRegime({ _id }).unwrap();
     });
   };
 
@@ -135,7 +135,7 @@ export const FiscalRegimeTable = () => {
                 {moment(row.updatedAt).format("LLLL")}
               </TableCell>
               <TableCell align="left">
-                {row.status == STATUS_DB.ACTIVE ? "Activo" : "Eliminado"}
+                {STATUS_DATA.get(row.status)?.translate}
               </TableCell>
 
               <TableCell>

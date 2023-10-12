@@ -64,16 +64,16 @@ export const OrderSpare = () => {
   };
   const saveNewSpare = (data: any) => {
     const { listSpare } = data;
-    console.log("data >> ", data);
+    // console.log("data >> ", data);
     const exist = spares.find((p) => p._id == listSpare._id);
-    console.log("Exist >> ", exist);
+    // console.log("Exist >> ", exist);
     if (exist) {
       setError("listSpare", {
         message: "Esta refacción ya existe en la lista",
       });
       return;
     }
-    console.log("data >> ", listSpare);
+    // console.log("data >> ", listSpare);
     dispatch(pushSpareOrder({ ...listSpare, quantity: data.quantity }));
   };
   return (
@@ -95,17 +95,17 @@ export const OrderSpare = () => {
                   options={
                     isSuccess ? (listSpare as Array<ISpareResponse>) : []
                   }
-                  onOpen={() => getSpare()}
+                  onOpen={() => getSpare({ filter: '', search: '' })}
                   loading={isLoading}
                   value={field.value}
                   getOptionLabel={(option: ISpareResponse) => {
-                    console.log(option);
+                    // console.log(option);
                     return option.description;
                   }}
                   size="small"
                   onChange={(_, n) => {
                     field.onChange(n);
-                    console.log(n);
+                    // console.log(n);
                     if (n) setSpare(n);
                   }}
                   renderInput={(params) => (

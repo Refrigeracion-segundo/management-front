@@ -10,6 +10,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -87,9 +88,7 @@ export const DialogSpare = (props: {
       >
         <Add />
       </IconButton>
-      <Dialog
-        open={openDialog}
-      >
+      <Dialog open={openDialog}>
         <DialogTitle>
           <Typography variant="h6" align="center">
             Formulario de Refacciones
@@ -136,6 +135,11 @@ export const DialogSpare = (props: {
                   valueAsNumber: true,
                 })}
                 type="number"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                }}
                 helperText={
                   !!errors.suggestedPrice && errors.suggestedPrice.message
                 }

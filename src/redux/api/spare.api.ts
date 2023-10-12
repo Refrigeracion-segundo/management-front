@@ -11,6 +11,7 @@ import {
   ISpareResponse,
   ISpareUpdate,
 } from "@/common";
+import { getFilters } from "../constants/getFIlters";
 
 export const spareApi = createApi({
   reducerPath: ReducerPaths.SPARE,
@@ -25,9 +26,15 @@ export const spareApi = createApi({
       }),
       invalidatesTags: ["findAllSpare"],
     }),
-    findAllSpare: builder.query<Array<ISpareResponse>, void>({
-      query: () => ({
-        url: SPARE_URL.FIND_ALL,
+    findAllSpare: builder.query<
+      Array<ISpareResponse>,
+      {
+        filter?: string;
+        search?: string;
+      } | void
+    >({
+      query: (params) => ({
+        url: `${SPARE_URL.FIND_ALL}?${getFilters(params)}`,
         method: METHOD_TYPES.GET,
       }),
       providesTags: ["findAllSpare"],

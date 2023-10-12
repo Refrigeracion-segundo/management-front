@@ -189,10 +189,10 @@ export const OrderDialog = () => {
 
                         dispatch(
                           saveDirection({
-                            street: newValue.street,
-                            streetNumber: newValue.streetNumber,
-                            apartmentNumber: newValue.apartmentNumber,
-                            zipCode: newValue.zipCode,
+                            street: newValue?.street,
+                            streetNumber: newValue?.streetNumber,
+                            apartmentNumber: newValue?.apartmentNumber,
+                            zipCode: newValue?.zipCode,
                             suburb: newValue.suburb,
                             city: newValue.city,
                             cityId: newValue.cityId,
@@ -474,7 +474,7 @@ export const OrderDialog = () => {
                   report: data.report,
                   startDate: useDates ? general.startDate : undefined,
                   endDate: useDates ? general.endDate : undefined,
-                  technicians: !!users.length ? users : undefined,
+                  technicians: users.length > 0 ? users : [],
                   customer: client._id,
                   ...direction,
                   description: data.description,
