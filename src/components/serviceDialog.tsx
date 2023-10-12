@@ -178,6 +178,7 @@ export const DialogService = () => {
             <Grid item xs={5}>
               <TextField
                 fullWidth
+                defaultValue={null}
                 type="number"
                 placeholder="Precio sugerido"
                 {...register("suggestedPrice", {
@@ -187,10 +188,10 @@ export const DialogService = () => {
                   },
                   min: {
                     value: 0,
-                    message: "El precio tiene que ser mTestayor a 0",
+                    message: "El precio tiene que ser mayor a 0",
                   },
                   valueAsNumber: true,
-                  value: dataService.suggestedPrice,
+                  value: dataService.suggestedPrice == 0 ? '' as any : dataService.suggestedPrice,
                 })}
                 onChange={(e) => {
                   if (e.target.value)
