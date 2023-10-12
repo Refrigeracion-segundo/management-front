@@ -33,7 +33,6 @@ export const orderApi = createApi({
         page: number;
         fromDate: Date;
         toDate: Date;
-        description?: string;
         orderId?: number;
         filter?: string;
         search?: string;
@@ -82,11 +81,9 @@ export const orderApi = createApi({
 const getFilters = (filters: any) => {
   let query = "";
   for (const key in filters) {
-    if (filters[key]) {
-      if (key == "fromDate" || key == "toDate")
-        query += `${key}=${moment(filters[key]).format("YYYY-MM-DD")}&`;
-      else query += `${key}=${filters[key]}&`;
-    }
+    if (key == "fromDate" || key == "toDate")
+      query += `${key}=${moment(filters[key]).format("YYYY-MM-DD")}&`;
+    else query += `${key}=${filters[key]}&`;
   }
 
   return query.substring(0, query.length - 1);

@@ -24,7 +24,7 @@ export const OrderTable = () => {
   const [getOrders, { data: rows, isSuccess, isLoading, isFetching }] =
     useLazyFindAllOrderQuery();
   const {
-    filters: { orderId, description, fromDate, toDate, filter, search },
+    filters: { orderId, fromDate, toDate, filter, search },
   } = useSelector((store: RootState) => store.order);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -36,7 +36,6 @@ export const OrderTable = () => {
       perPage: rowsPerPage,
       page: page + 1,
       orderId,
-      description,
       fromDate: new Date(moment(fromDate).startOf("month").format()),
       toDate: new Date(moment(toDate).endOf("month").format()),
       filter,
@@ -46,7 +45,6 @@ export const OrderTable = () => {
     rowsPerPage,
     page,
     orderId,
-    description,
     fromDate,
     toDate,
     filter,

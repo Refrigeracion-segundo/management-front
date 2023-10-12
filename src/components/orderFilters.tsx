@@ -99,13 +99,23 @@ export const OrderFilters = (props: { status: string }) => {
                   onChange={(e, n) => {
                     field.onChange(n);
                     // console.log(n);
-                    dispatch(
-                      saveFilters({
-                        ...filters,
-                        search: n.name,
-                        filter: "status",
-                      })
-                    );
+                    if(n){
+                      dispatch(
+                        saveFilters({
+                          ...filters,
+                          search: n.name,
+                          filter: "status",
+                        })
+                      );
+                    } else {
+                      dispatch(
+                        saveFilters({
+                          ...filters,
+                          search: '',
+                          filter: "status",
+                        })
+                      );
+                    }
                   }}
                   renderInput={(params) => (
                     <TextField {...params} placeholder="Filtrar por" />

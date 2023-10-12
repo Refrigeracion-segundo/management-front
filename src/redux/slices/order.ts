@@ -82,7 +82,8 @@ const initialState: Order = {
   total: 0,
   filters: {
     orderId: 0,
-    description: "",
+    search: "",
+    filter: "description",
     fromDate: new Date(moment().startOf("month").format()),
     toDate: new Date(moment().endOf("month").format()),
   },
