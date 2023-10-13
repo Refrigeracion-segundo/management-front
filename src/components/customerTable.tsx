@@ -116,7 +116,7 @@ export const CustomerTable = () => {
         />
         <TableBody>
           {isSuccess &&
-            stableSort(rows ? rows : [], getComparator(order, orderBy)).map(
+            stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
               (row: any) => (
                 <CustomerTableRows
                   key={row._id}
