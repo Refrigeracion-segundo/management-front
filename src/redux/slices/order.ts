@@ -132,10 +132,8 @@ export const orderSlice = createSlice({
     pushOrderEquipment: (state, value: PayloadAction<IOrderEquipment>) => {
       state.equipment = [...state.equipment, { ...value.payload, _id: v4() }];
     },
-    deleteOrderEquipment: (state, value: PayloadAction<number>) => {
-      state.equipment = state.equipment.filter(
-        (p, index) => index !== value.payload
-      );
+    deleteOrderEquipment: (state, value: PayloadAction<string>) => {
+      state.equipment = state.equipment.filter((p) => p._id !== value.payload);
     },
     pushOrderService: (state, value: PayloadAction<IOrderService>) => {
       state.service = [...state.service, { ...value.payload }];

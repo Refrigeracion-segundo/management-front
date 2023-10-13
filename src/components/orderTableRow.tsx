@@ -1,5 +1,5 @@
 "use client";
-import { IOrderDataResponse } from "@/common";
+import { IOrderDataResponse, IOrderEquipment } from "@/common";
 import { useDeleteOrderMutation } from "@/redux/api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 
@@ -38,6 +38,7 @@ import { enqueueSnackbar } from "notistack";
 import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import { OrderMenuStatus } from "./orderMenuStatus";
+import { v4 } from "uuid";
 
 export const OrderTableRows = (props: {
   row: IOrderDataResponse;
@@ -89,19 +90,10 @@ export const OrderTableRows = (props: {
       })
     );
 
-    const auxEquipment = [
-      ...data.services.map((p) => {
-        return {
-          //   _id: v4(),
-          equipment: p.equipment,
-          brand: p.brand,
-          model: p.model,
-          serie: p.serie,
-        };
-      }),
-    ];
-    dispatch(saveEquipment(auxEquipment));
+    const auxEquipment: Array<IOrderEquipment> = [];
+
     data.services.forEach((service) => {
+      const uid = v4();
       dispatch(
         pushOrderService({
           service: {
@@ -111,6 +103,7 @@ export const OrderTableRows = (props: {
             },
           },
           equipment: {
+            _id: uid,
             equipment: service.equipment,
             brand: service.brand,
             model: service.model,
@@ -118,7 +111,15 @@ export const OrderTableRows = (props: {
           },
         })
       );
+      auxEquipment.push({
+        _id: uid,
+        equipment: service.equipment,
+        brand: service.brand,
+        model: service.model,
+        serie: service.serie,
+      });
     });
+    dispatch(saveEquipment(auxEquipment));
     data.spares?.forEach((p) => {
       dispatch(
         pushSpareOrder({

@@ -27,9 +27,10 @@ import {
 } from "@/redux/slices/order";
 import { useConfirm } from "material-ui-confirm";
 import CSSTransitionGroup from "react-addons-css-transition-group";
+import { v4 } from "uuid";
 
 export const OrderEquipments = () => {
-  const { equipment } = useSelector((store: RootState) => store.order);
+  const { equipment, service } = useSelector((store: RootState) => store.order);
   const dispatch = useDispatch();
   const confirm = useConfirm();
   const {
@@ -42,7 +43,7 @@ export const OrderEquipments = () => {
 
   const handleAddDataEquip = (data: IOrderEquipment) => {
     if (!equipment.find((p) => p.serie == data.serie) || data.serie == "") {
-      dispatch(pushOrderEquipment(data));
+      dispatch(pushOrderEquipment({ ...data, _id: v4() }));
       setFocusEquipment("equipment");
       resetEquipment({
         brand: "",
@@ -54,19 +55,31 @@ export const OrderEquipments = () => {
       enqueueSnackbar("Este numero de serie ya existe", { variant: "error" });
   };
 
-  const deleteEquipment = (index: number) => {
+  const deleteEquipment = (index: number, _id: string) => {
     confirm({
       description: "Seguro que quieres eliminar el equipo?",
     }).then(() => {
-      dispatch(deleteOrderEquipment(index));
+      const exist = service.find((p) => p.equipment._id == _id.toString());
+      if (!exist) dispatch(deleteOrderEquipment(_id));
+      else
+        enqueueSnackbar(
+          "Este equipo se usa en los servicios, no se puede eliminar",
+          { variant: "error" }
+        );
     });
   };
 
   const deleteAll = () => {
     confirm({
-      description: "Seguro que desea eliminar todos los equipamientos?",
+      description:
+        "Seguro que desea eliminar todos los equipamientos?.\n Se eliminaran todos los equipamientos que no se usan en los servicios.",
     }).then(() => {
-      dispatch(deleteAllEquipment());
+      equipment.forEach((eqp, index) => {
+        const exist = service.find((svc) => eqp._id == svc.equipment._id);
+        if (!exist) {
+          dispatch(deleteOrderEquipment(eqp._id as string));
+        }
+      });
     });
   };
 
@@ -198,7 +211,9 @@ export const OrderEquipments = () => {
                   <TableCell>
                     <IconButton
                       color="secondary"
-                      onClick={() => deleteEquipment(index)}
+                      onClick={() =>
+                        deleteEquipment(index, equip._id as string)
+                      }
                     >
                       <Delete />
                     </IconButton>
