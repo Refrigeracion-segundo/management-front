@@ -138,7 +138,7 @@ export const OrderTable = () => {
         <TableBody>
           {stableSort(rows ? rows.data : [], getComparator(order, orderBy)).map(
             (row: any, index: any) => (
-              <OrderTableRows key={index} row={row} total={row.total} />
+              <OrderTableRows key={index} row={row} total={row.total} totalSpare={row.totalSpare} />
             )
           )}
         </TableBody>

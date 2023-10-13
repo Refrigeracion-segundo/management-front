@@ -43,8 +43,9 @@ import { v4 } from "uuid";
 export const OrderTableRows = (props: {
   row: IOrderDataResponse;
   total: number;
+  totalSpare: number
 }) => {
-  const { row, total } = props;
+  const { row, total, totalSpare } = props;
   const [open, setOpen] = useState(false);
   const confirm = useConfirm();
   const dispatch = useDispatch();
@@ -188,7 +189,7 @@ export const OrderTableRows = (props: {
       </TableRow>
 
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
@@ -246,6 +247,8 @@ export const OrderTableRows = (props: {
                     <TableCell>Precio</TableCell>
                     <TableCell>Cantidad</TableCell>
                     <TableCell>Total</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -258,9 +261,21 @@ export const OrderTableRows = (props: {
                         <TableCell>
                           {currencyMx.format(spare.price * spare.quantity)}
                         </TableCell>
+                        <TableCell>
+                        </TableCell>
+                        <TableCell>
+                        </TableCell>
                       </TableRow>
                     );
                   })}
+                  <TableRow>
+                    <TableCell rowSpan={1} />
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>Total</TableCell>
+                    <TableCell>{currencyMx.format(totalSpare)}</TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </Box>
