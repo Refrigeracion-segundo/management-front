@@ -169,16 +169,12 @@ export const DialogUser = (props: {
                   placeholder="Contraseña"
                   {...register("password", {
                     required: {
-                      value: false,
+                      value: true,
                       message: "Contraseña requerida",
                     },
                     minLength: {
-                      value: 5,
+                      value: 4,
                       message: "Contraseña muy corta",
-                    },
-                    maxLength: {
-                      value: 16,
-                      message: "Contraseña muy larga",
                     },
                   })}
                   helperText={!!errors.password && errors.password.message}
