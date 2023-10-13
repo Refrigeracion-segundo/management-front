@@ -33,10 +33,11 @@ export const fiscalRegimeSlice = createSlice({
       state.data.key = 0;
     },
     isUpdatingFiscalRegime: (state, value: PayloadAction<boolean>) => {
-      return {
-        ...state,
-        isUpdate: value.payload,
-      };
+      state.isUpdate = value.payload;
+      // return {
+      //   ...state,
+      //   isUpdate: value.payload,
+      // };
     },
     saveFiscalRegime: (
       state,

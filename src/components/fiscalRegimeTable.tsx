@@ -24,7 +24,10 @@ import {
   stableSort,
 } from "@/common";
 import { useDispatch } from "react-redux";
-import { saveFiscalRegime } from "@/redux/slices/fiscalRegime";
+import {
+  isUpdatingFiscalRegime,
+  saveFiscalRegime,
+} from "@/redux/slices/fiscalRegime";
 import {
   useDeleteRegimeMutation,
   useFindAllFiscalRegimeQuery,
@@ -100,6 +103,7 @@ export const FiscalRegimeTable = () => {
 
   const handleEdit = (data: IRegimeUpdate) => {
     dispatch(saveFiscalRegime(data));
+    dispatch(isUpdatingFiscalRegime(true));
   };
 
   const handleChangePage = (
