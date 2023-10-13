@@ -48,7 +48,7 @@ ErrorsTranslate.set(
 );
 ErrorsTranslate.set(
   HttpError.EQUIPMENT_TYPE_ALREADY_EXIST,
-  "Este tipo de equipamiento ya existe"
+  "Este tipo de equipo ya existe"
 );
 ErrorsTranslate.set(
   HttpError.EQUIPMENT_TYPE_NOT_FOUND,

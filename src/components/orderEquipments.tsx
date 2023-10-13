@@ -72,7 +72,7 @@ export const OrderEquipments = () => {
   const deleteAll = () => {
     confirm({
       description:
-        "Seguro que desea eliminar todos los equipamientos?.\n Se eliminaran todos los equipamientos que no se usan en los servicios.",
+        "Seguro que desea eliminar todos los equipos?.\n Se eliminaran todos los equipos que no se usan en los servicios.",
     }).then(() => {
       equipment.forEach((eqp, index) => {
         const exist = service.find((svc) => eqp._id == svc.equipment._id);

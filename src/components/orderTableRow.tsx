@@ -208,7 +208,7 @@ export const OrderTableRows = (props: {
                     <TableCell>Marca</TableCell>
                     <TableCell>Modelo</TableCell>
                     <TableCell>Serie</TableCell>
-                    <TableCell>Precio dado</TableCell>
+                    <TableCell>Precio</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

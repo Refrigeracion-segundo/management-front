@@ -97,11 +97,11 @@ const Services = () => {
         }}
       >
         <BottomNavigationAction
-          label="Categorías de servicios"
+          label="Tipo de servicio"
           icon={<HomeRepairService />}
         />
         <BottomNavigationAction
-          label="Descripción de servicios"
+          label="Descripción de servicio"
           icon={<Build />}
         />
       </BottomNavigation>

@@ -122,11 +122,11 @@ export const DialogService = () => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Tipo de equipamiento"
+                    label="Tipo de equipo"
                     {...register("equipmentType", {
                       required: {
                         value: true,
-                        message: "Seleccione un equipamiento válido",
+                        message: "Seleccione un tipo de equipo válido",
                       },
                       value: dataService.equipmentType,
                     })}
@@ -206,11 +206,11 @@ export const DialogService = () => {
             <Grid item xs={5}>
               <TextField
                 fullWidth
-                placeholder="Capacidad de equipamiento"
+                placeholder="Capacidad de equipo"
                 {...register("equipmentCapacity", {
                   required: {
                     value: true,
-                    message: "La capacidad de equipamiento es requerido",
+                    message: "La capacidad de equipo es requerido",
                   },
                   value: dataService.equipmentCapacity,
                 })}
