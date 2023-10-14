@@ -16,7 +16,8 @@ const initialState: Service = {
   openDialog: false,
   isUpdate: false,
   data: {
-    description: "",
+    name: "",
+    suggestedPrice: 0,
   },
   filters: {
     search: "",
