@@ -1,13 +1,4 @@
-import {
-  IEquipmentResponse,
-  IFilters,
-  IServiceRegister,
-  IServiceUpdate,
-} from "@/common";
-import {
-  APPLICACTION_TYPE,
-  ApplicationTypeTranslate,
-} from "@/common/constants/equipmentApplication";
+import { IFilters, IServiceRegister, IServiceUpdate } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface Service {
@@ -21,20 +12,7 @@ const initialState: Service = {
   openDialog: false,
   isUpdate: false,
   data: {
-    name: "",
     description: "",
-    suggestedPrice: 0,
-    equipmentCapacity: "",
-    equipmentApplication: ApplicationTypeTranslate.get(
-      APPLICACTION_TYPE.AIR_CONDITIONING
-    )?.key as unknown as string,
-    equipmentType: {
-      _id: "",
-      name: "",
-      status: "",
-      createdAt: 0,
-      updatedAt: 0,
-    } as any as IEquipmentResponse,
   },
   filters: {
     search: "",
@@ -78,7 +56,7 @@ export const serviceSlice = createSlice({
       };
     },
     clearService: (state) => {
-      state.data = initialState.data;
+      state.data = { description: "" };
     },
     saveFiltersService: (state, value: PayloadAction<IFilters>) => {
       state.filters = value.payload;

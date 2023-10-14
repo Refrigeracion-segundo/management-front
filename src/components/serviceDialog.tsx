@@ -13,10 +13,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { IServiceRegister, IEquipmentResponse, IServiceUpdate } from "@/common";
 import {
   clearService,
@@ -33,6 +33,8 @@ import {
   APPLICACTION_TYPE,
   ApplicationTypeTranslate,
 } from "@/common/constants/equipmentApplication";
+import { LoadingButton } from "@mui/lab";
+import { enqueueSnackbar } from "notistack";
 
 export const DialogService = () => {
   const {
@@ -40,22 +42,15 @@ export const DialogService = () => {
     isUpdate,
     data: dataService,
   } = useSelector((store: RootState) => store.service);
+  const [selectEquipmentType, setSelectEquipmentType] = useState<string>();
   const {
     formState: { errors },
     register,
     handleSubmit,
     clearErrors,
     reset,
-  } = useForm<IServiceRegister>();
-  const [
-    getEquipment,
-    {
-      data: dataEquipment,
-      isLoading: isLoadingEquipment,
-      isSuccess: isSuccessEquipment,
-      isFetching: isFetchingEquipment,
-    },
-  ] = useLazyFindAllEquipmentQuery();
+    control,
+  } = useForm<IServiceRegister>({ values: dataService });
   const [
     registerService,
     { isSuccess: isSuccessRegister, isLoading: isLoadingRegister },
@@ -75,70 +70,11 @@ export const DialogService = () => {
       >
         <Add />
       </IconButton>
-      <Dialog open={openDialog} fullWidth maxWidth="md">
+      <Dialog open={openDialog} fullWidth>
         <DialogTitle>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              width: "100%",
-            }}
-          >
-            <Typography
-              variant="h6"
-              textAlign="center"
-              style={{ marginRight: "9%" }}
-            >
-              Formulario de Servicios
-            </Typography>
-
-            <div style={{ width: 250 }}>
-              <Autocomplete
-                autoFocus
-                disablePortal
-                defaultValue={
-                  isUpdate ? dataService.equipmentType : ("" as any)
-                }
-                loading={isLoadingEquipment}
-                onOpen={() => getEquipment({ filter: "", search: "" })}
-                options={
-                  isSuccessEquipment
-                    ? (dataEquipment as unknown as Array<IEquipmentResponse>)
-                    : []
-                }
-                onChange={(_, newValue) => {
-                  if (newValue && newValue.name !== "Seleccione") {
-                    dispatch(
-                      saveService({
-                        ...dataService,
-                        equipmentType: newValue as any as IEquipmentResponse,
-                      })
-                    );
-                    clearErrors("equipmentType");
-                  }
-                }}
-                getOptionLabel={(option) => (!!option?.name ? option.name : "")}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Tipo de equipo"
-                    {...register("equipmentType", {
-                      required: {
-                        value: true,
-                        message: "Seleccione un tipo de equipo válido",
-                      },
-                      value: dataService.equipmentType,
-                    })}
-                    helperText={
-                      !!errors.equipmentType && errors.equipmentType.message
-                    }
-                    error={!!errors.equipmentType}
-                  />
-                )}
-              />
-            </div>
-          </div>
+          <Typography variant="h6" align="center">
+            Formulario tipo de servicios
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <Grid
@@ -146,206 +82,77 @@ export const DialogService = () => {
             justifyContent="center"
             alignContent="center"
             direction="row"
-            spacing={2}
-            sx={{ marginTop: 1 }}
+            spacing={1}
           >
-            <Grid item xs={5}>
-              <TextField
-                fullWidth
-                placeholder="Nombre"
-                {...register("name", {
+            <Grid item xs={9}>
+              <Controller
+                name="description"
+                control={control}
+                defaultValue={dataService.description}
+                rules={{
                   required: {
                     value: true,
-                    message: "El nombre es requerido",
+                    message: "La descripción es requerida",
                   },
-                  value: dataService.name,
-                })}
-                onChange={(e) => {
-                  if (e.target.value)
-                    dispatch(
-                      saveService({ ...dataService, name: e.target.value })
-                    );
                 }}
-                helperText={!!errors.name && errors.name.message}
-                error={!!errors.name}
-              />
-            </Grid>
-            <Grid item xs={5}>
-              <TextField
-                fullWidth
-                defaultValue={null}
-                type="number"
-                placeholder="Precio sugerido"
-                {...register("suggestedPrice", {
-                  required: {
-                    value: true,
-                    message: "El precio sugerido es requerido",
-                  },
-                  min: {
-                    value: 0,
-                    message: "El precio tiene que ser mayor a 0",
-                  },
-                  valueAsNumber: true,
-                  value: dataService.suggestedPrice == 0 ? '' as any : dataService.suggestedPrice,
-                })}
-                onChange={(e) => {
-                  if (e.target.value)
-                    dispatch(
-                      saveService({
-                        ...dataService,
-                        suggestedPrice: parseFloat(e.target.value),
-                      })
-                    );
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      autoFocus
+                      type="text"
+                      fullWidth
+                      placeholder="Descripcion"
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        dispatch(
+                          saveService({
+                            ...dataService,
+                            description: e.target.value,
+                          })
+                        );
+                      }}
+                      helperText={
+                        !!errors.description && errors.description.message
+                      }
+                      error={!!errors.description}
+                    />
+                  );
                 }}
-                helperText={
-                  !!errors.suggestedPrice && errors.suggestedPrice.message
-                }
-                error={!!errors.suggestedPrice}
-              />
-            </Grid>
-            <Grid item xs={5}>
-              <TextField
-                fullWidth
-                placeholder="Capacidad de equipo"
-                {...register("equipmentCapacity", {
-                  required: {
-                    value: true,
-                    message: "La capacidad de equipo es requerido",
-                  },
-                  value: dataService.equipmentCapacity,
-                })}
-                onChange={(e) => {
-                  if (e.target.value)
-                    dispatch(
-                      saveService({
-                        ...dataService,
-                        equipmentCapacity: e.target.value,
-                      })
-                    );
-                }}
-                helperText={
-                  !!errors.equipmentCapacity && errors.equipmentCapacity.message
-                }
-                error={!!errors.equipmentCapacity}
-              />
-            </Grid>
-            <Grid item xs={5}>
-              <Autocomplete
-                disablePortal
-                defaultValue={
-                  isUpdate
-                    ? ApplicationTypeTranslate.get(
-                        dataService.equipmentApplication
-                      )
-                    : ApplicationTypeTranslate.get(
-                        APPLICACTION_TYPE.AIR_CONDITIONING
-                      )
-                }
-                // multiple
-                options={Array.from(ApplicationTypeTranslate.values())}
-                onChange={(_, newValue) => {
-                  if (newValue)
-                    dispatch(
-                      saveService({
-                        ...dataService,
-                        equipmentApplication: newValue.key,
-                      })
-                    );
-                  clearErrors("equipmentApplication");
-                }}
-                getOptionLabel={(option) => option.translate}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Tipo de aplicación"
-                    {...register("equipmentApplication", {
-                      required: {
-                        value: true,
-                        message: "Tipo de aplicación",
-                      },
-                      value: dataService.equipmentApplication,
-                    })}
-                    helperText={
-                      !!errors.equipmentApplication &&
-                      errors.equipmentApplication.message
-                    }
-                    error={!!errors.equipmentApplication}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={10}>
-              <TextField
-                fullWidth
-                defaultValue={isUpdate ? dataService.description : ""}
-                placeholder="Descripcion"
-                multiline
-                rows={4}
-                {...register("description", {
-                  required: {
-                    value: true,
-                    message: "La descripcion es requerido",
-                  },
-                  value: dataService.description,
-                })}
-                onChange={(e) => {
-                  if (e.target.value)
-                    dispatch(
-                      saveService({
-                        ...dataService,
-                        description: e.target.value,
-                      })
-                    );
-                }}
-                helperText={!!errors.description && errors.description.message}
-                error={!!errors.description}
               />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            color="secondary"
-            onClick={() => {
-              dispatch(closeService());
-              reset(undefined);
-            }}
-          >
+          <Button color="secondary" onClick={() => dispatch(closeService())}>
             Cancelar
           </Button>
-          <Button
-            disabled={isLoadingRegister || isLoadingUpdate}
-            endIcon={
-              (isLoadingRegister || isLoadingUpdate) && (
-                <CircularProgress size={15} />
-              )
-            }
-            onClick={handleSubmit(async (data) => {
+          <LoadingButton
+            loading={isLoadingRegister || isLoadingUpdate}
+            loadingPosition="end"
+            onClick={handleSubmit(async (newData) => {
               try {
-                !isUpdate
-                  ? await registerService({
-                      ...data,
-                      equipmentType: (
-                        dataService.equipmentType as IEquipmentResponse
-                      )._id,
+                isUpdate
+                  ? await updateService({
+                      ...newData,
+                      _id: (dataService as IServiceUpdate)._id,
                     }).unwrap()
-                  : await updateService({
-                      ...data,
-                      _id: (dataService as IServiceUpdate)._id as string,
-                      equipmentType: (
-                        dataService.equipmentType as IEquipmentResponse
-                      )._id,
+                  : await registerService({
+                      ...newData,
                     }).unwrap();
 
-                dispatch(closeService());
                 dispatch(clearService());
-                reset(undefined);
+                dispatch(closeService());
+
+                enqueueSnackbar("Registrado correctamente", {
+                  variant: "success",
+                });
               } catch {}
             })}
+            style={{ width: "20%" }}
           >
             Guardar
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </div>

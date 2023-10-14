@@ -1,5 +1,6 @@
 import {
   IClientResponse,
+  IEquipmentResponse,
   IOrderDirection,
   IServiceDescriptionResponse,
   IServiceResponse,
@@ -29,11 +30,12 @@ export interface IOrderDataResponse extends IOrderDirection {
   services: Array<{
     service: IServiceResponse;
     serviceDescription: IServiceDescriptionResponse;
-    equipment: string;
+    equipmentType: IEquipmentResponse;
     brand: string;
-    model: string;
-    serie: string;
+    model?: string;
+    serie?: string;
     price: number;
+    equipmentCapacity?: number;
   }>;
   total: number;
   status: string;

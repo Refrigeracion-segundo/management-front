@@ -209,7 +209,7 @@ export const OrderDialog = () => {
                         {...params}
                         variant="standard"
                         margin="dense"
-                        label="Clientes"
+                        label="Clientes *"
                         fullWidth
                         error={!!errors.client}
                         helperText={
@@ -364,6 +364,7 @@ export const OrderDialog = () => {
                   return (
                     <TextField
                       placeholder="Nombre de la persona que reporto el servicio"
+                      label="Nombre de la persona que reporto el servicio *"
                       size="small"
                       fullWidth
                       value={field.value}
@@ -391,6 +392,7 @@ export const OrderDialog = () => {
                   return (
                     <TextField
                       placeholder="Descripción de la orden"
+                      label="Descripción de la orden *"
                       multiline
                       size="small"
                       fullWidth
@@ -468,10 +470,7 @@ export const OrderDialog = () => {
             Cerrar
           </Button>
           <Button
-            disabled={
-              service.length == 0 ||
-              client._id == ""
-            }
+            disabled={service.length == 0 || client._id == ""}
             onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
@@ -494,14 +493,16 @@ export const OrderDialog = () => {
                     : [],
                   services: service.map((p) => {
                     return {
-                      service: (p.service.service as IServiceResponse)._id,
-                      serviceDescription: p.service._id,
-                      equipment: p.equipment.equipment,
+                      service: p.service._id,
+                      serviceDescription: p.svcDescription._id,
+                      equipmentType: p.equipment.equipment._id,
                       brand: p.equipment.brand,
                       model: p.equipment.model,
-                      price: (p.service.service as IServiceResponse)
-                        .suggestedPrice,
+                      equipmentCapacity: p.equipment.capacity
+                        ? p.equipment.capacity
+                        : undefined,
                       serie: p.equipment.serie,
+                      price: p.svcDescription.suggestedPrice,
                     };
                   }),
                 };

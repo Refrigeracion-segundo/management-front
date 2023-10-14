@@ -43,7 +43,7 @@ import { v4 } from "uuid";
 export const OrderTableRows = (props: {
   row: IOrderDataResponse;
   total: number;
-  totalSpare: number
+  totalSpare: number;
 }) => {
   const { row, total, totalSpare } = props;
   const [open, setOpen] = useState(false);
@@ -97,27 +97,25 @@ export const OrderTableRows = (props: {
       const uid = v4();
       dispatch(
         pushOrderService({
-          service: {
-            ...service.serviceDescription,
-            service: {
-              ...service.service,
-            },
-          },
+          service: service.service,
+          svcDescription: service.serviceDescription,
           equipment: {
             _id: uid,
-            equipment: service.equipment,
+            equipment: service.equipmentType,
             brand: service.brand,
             model: service.model,
             serie: service.serie,
+            capacity: service.equipmentCapacity,
           },
         })
       );
       auxEquipment.push({
         _id: uid,
-        equipment: service.equipment,
+        equipment: service.equipmentType,
         brand: service.brand,
         model: service.model,
         serie: service.serie,
+        capacity: service.equipmentCapacity,
       });
     });
     dispatch(saveEquipment(auxEquipment));
@@ -204,26 +202,37 @@ export const OrderTableRows = (props: {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Mantenimiento</TableCell>
+                    <TableCell>Servicio(s) requerido(s)</TableCell>
                     <TableCell>Equipo</TableCell>
                     <TableCell>Marca</TableCell>
                     <TableCell>Modelo</TableCell>
                     <TableCell>Serie</TableCell>
+                    <TableCell>Capacidad HP</TableCell>
                     <TableCell>Precio</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.services.map((service) => {
                     return (
-                      <TableRow key={service.service._id}>
+                      <TableRow key={service.service?._id}>
                         <TableCell>
-                          {service.serviceDescription.description} -{" "}
-                          {service.service.name}
+                          {`${service.service.description} - ${service.serviceDescription.name}`}
+                          {/* {service?.serviceDescription.description} -{" "}
+                          {service?.service?.name} */}
                         </TableCell>
-                        <TableCell>{service.equipment}</TableCell>
+                        <TableCell>{service.equipmentType.name}</TableCell>
                         <TableCell>{service.brand}</TableCell>
-                        <TableCell>{service.model}</TableCell>
-                        <TableCell>{service.serie}</TableCell>
+                        <TableCell>
+                          {service.model ? service.model : "--------"}
+                        </TableCell>
+                        <TableCell>
+                          {service.serie ? service.serie : "--------"}
+                        </TableCell>
+                        <TableCell>
+                          {service?.equipmentCapacity
+                            ? service.equipmentCapacity
+                            : "--------"}
+                        </TableCell>
                         <TableCell>
                           {currencyMx.format(service.price)}
                         </TableCell>
@@ -232,6 +241,7 @@ export const OrderTableRows = (props: {
                   })}
                   <TableRow>
                     <TableCell rowSpan={1} />
+                    <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
@@ -261,10 +271,8 @@ export const OrderTableRows = (props: {
                         <TableCell>
                           {currencyMx.format(spare.price * spare.quantity)}
                         </TableCell>
-                        <TableCell>
-                        </TableCell>
-                        <TableCell>
-                        </TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                     );
                   })}

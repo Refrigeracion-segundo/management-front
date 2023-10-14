@@ -1,10 +1,12 @@
 import {
+  IEquipmentResponse,
   IOrderEquipment,
   IOrderService,
   IServiceDescriptionResponse,
   IServiceResponse,
 } from "@/common";
 import { useLazyFindAllServiceDescriptionQuery } from "@/redux/api/serviceDescription.api";
+import { useLazyFindAllServiceQuery } from "@/redux/api/services.api";
 import { currencyMx } from "@/redux/constants/formatCurrency";
 import {
   deleteAllServices,
@@ -51,12 +53,21 @@ export const OrderServices = () => {
   const [
     getServices,
     {
-      data: dataServices,
+      data: dataSvcTypes,
       isLoading: isLoadingService,
       isSuccess: isSuccessService,
     },
+  ] = useLazyFindAllServiceQuery();
+  const [
+    getSvcDescription,
+    {
+      data: dataSvcDescription,
+      isLoading: isLoadingSvcDescription,
+      isSuccess: isSuccessSvcDescription,
+    },
   ] = useLazyFindAllServiceDescriptionQuery();
-  const [selectService, setSelectService] =
+  const [selectService, setSelectService] = useState<IServiceResponse>();
+  const [selectServiceDescription, setSelectServiceDescription] =
     useState<IServiceDescriptionResponse>();
   const [selectEquipment, setSelectEquipment] = useState<IOrderEquipment>();
 
@@ -74,6 +85,22 @@ export const OrderServices = () => {
     }).then(() => {
       dispatch(deleteAllServices());
     });
+  };
+
+  const createOptionEquipment = (equipment: any): string => {
+    let label = `${equipment.equipment.name} -`;
+    for (const key in equipment) {
+      console.log(key);
+      if (
+        equipment[key] &&
+        key !== "equipment" &&
+        key !== "_id" &&
+        key !== "brand"
+      )
+        label += ` ${equipment[key]} -`;
+    }
+    console.log(label);
+    return label.substring(0, label.length - 1);
   };
   return (
     <>
@@ -95,13 +122,9 @@ export const OrderServices = () => {
             disablePortal
             loading={isLoadingService}
             onOpen={() => getServices()}
-            options={isSuccessService && dataServices ? dataServices : []}
-            getOptionLabel={(option) =>
-              `${option.description} - ${
-                (option.service as IServiceResponse).name
-              }`
-            }
-            onChange={(e, value) => {
+            options={isSuccessService && dataSvcTypes ? dataSvcTypes : []}
+            getOptionLabel={(option) => `${option.description} `}
+            onChange={(_, value) => {
               if (value) {
                 setSelectService(value);
               }
@@ -112,7 +135,7 @@ export const OrderServices = () => {
                 {...params}
                 variant="standard"
                 margin="dense"
-                label="Servicio"
+                label="Tipo de servicio"
                 {...register("service", {
                   required: {
                     value: false,
@@ -128,8 +151,47 @@ export const OrderServices = () => {
         <Grid item xs={3}>
           <Autocomplete
             disablePortal
+            loading={isLoadingSvcDescription}
+            onOpen={() => getSvcDescription()}
+            options={
+              isSuccessSvcDescription && dataSvcDescription
+                ? dataSvcDescription
+                : []
+            }
+            getOptionLabel={(option) => `${option.name}`}
+            onChange={(_, value) => {
+              if (value) {
+                setSelectServiceDescription(value);
+              }
+            }}
+            sx={{ marginTop: "-3px" }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                margin="dense"
+                label="Descripción de servicio"
+                {...register("svcDescription", {
+                  required: {
+                    value: false,
+                    message: "Este campo es requerido",
+                  },
+                })}
+                error={!!errors.svcDescription}
+                helperText={
+                  !!errors.svcDescription && errors.svcDescription.message
+                }
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={3}>
+          <Autocomplete
+            disablePortal
             options={equipment}
-            getOptionLabel={(option) => `${option.equipment}`}
+            getOptionLabel={(option) => createOptionEquipment(option)}
+            groupBy={(option) => `Marca: ${option.brand.toUpperCase()}`}
             onChange={(e, value) => {
               if (value) {
                 setSelectEquipment(value);
@@ -167,6 +229,7 @@ export const OrderServices = () => {
                 dispatch(
                   pushOrderService({
                     service: selectService as any,
+                    svcDescription: selectServiceDescription as any,
                     equipment: selectEquipment as any,
                   })
                 );
@@ -195,9 +258,11 @@ export const OrderServices = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Servicio</TableCell>
+                  <TableCell>Descripción del servicio</TableCell>
                   <TableCell>Equipo</TableCell>
                   <TableCell>Marca</TableCell>
                   <TableCell>Serie</TableCell>
+                  <TableCell>Capacidad HP</TableCell>
                   <TableCell>Precio sugerido</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
@@ -205,19 +270,21 @@ export const OrderServices = () => {
               <TableBody>
                 {service.map((svc, index) => (
                   <TableRow key={index}>
-                    <TableCell>
-                      {svc.service.description} -{" "}
-                      {(svc.service.service as IServiceResponse).name}
-                    </TableCell>
-                    <TableCell>{svc.equipment.equipment}</TableCell>
+                    <TableCell>{svc.service?.description}</TableCell>
+                    <TableCell>{svc.svcDescription.name}</TableCell>
+                    <TableCell>{svc.equipment.equipment.name}</TableCell>
                     <TableCell>{svc.equipment.brand}</TableCell>
-                    <TableCell>{svc.equipment.serie}</TableCell>
+                    <TableCell>
+                      {svc.equipment.serie ? svc.equipment.serie : "------"}
+                    </TableCell>
+                    <TableCell>
+                      {svc.equipment.capacity
+                        ? `${svc.equipment.capacity} HP`
+                        : "------"}
+                    </TableCell>
                     <TableCell>
                       <TextField
-                        defaultValue={
-                          (svc.service.service as IServiceResponse)
-                            .suggestedPrice
-                        }
+                        defaultValue={svc.svcDescription.suggestedPrice}
                         type="number"
                         InputProps={{
                           startAdornment: (
@@ -245,6 +312,8 @@ export const OrderServices = () => {
                 ))}
                 <TableRow>
                   <TableCell rowSpan={1} />
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell>Total</TableCell>

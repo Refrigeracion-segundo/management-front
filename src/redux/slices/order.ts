@@ -139,7 +139,7 @@ export const orderSlice = createSlice({
       state.service = [...state.service, { ...value.payload }];
       let aux = 0;
       state.service.forEach((p) => {
-        aux += (p.service.service as IServiceResponse).suggestedPrice;
+        aux += p.svcDescription.suggestedPrice;
       });
       state.total = aux;
     },
@@ -149,7 +149,7 @@ export const orderSlice = createSlice({
       );
       let aux = 0;
       state.service.forEach((p) => {
-        aux += (p.service.service as IServiceResponse).suggestedPrice;
+        aux += p.svcDescription.suggestedPrice;
       });
       state.total = aux;
     },
@@ -163,10 +163,10 @@ export const orderSlice = createSlice({
             ...p,
             service: {
               ...p.service,
-              service: {
-                ...(p.service.service as IServiceResponse),
-                suggestedPrice: value.payload.price,
-              },
+            },
+            svcDescription: {
+              ...p.svcDescription,
+              suggestedPrice: value.payload.price,
             },
           };
         return {
@@ -175,7 +175,7 @@ export const orderSlice = createSlice({
       });
       let aux = 0;
       state.service.forEach((p) => {
-        aux += (p.service.service as IServiceResponse).suggestedPrice;
+        aux += p.svcDescription.suggestedPrice;
       });
       state.total = aux;
     },

@@ -21,10 +21,7 @@ const Services = () => {
   const { filters: filtersService } = useSelector(
     (store: RootState) => store.service
   );
-  const { formState, register, handleSubmit, clearErrors, control } =
-    useForm<IServiceDescriptionRegister>({
-      values: data,
-    });
+
   const [value, setValue] = React.useState(0);
 
   const filtersOptionsService = [
@@ -36,10 +33,6 @@ const Services = () => {
       filter: "description",
       translate: "Descripción",
     },
-    {
-      filter: "equipmentCapacity",
-      translate: "Capacidad del equipo",
-    },
   ];
 
   const filtersOptionsDescription = [
@@ -48,7 +41,6 @@ const Services = () => {
       translate: "Estatus",
     },
     { filter: "description", translate: "Descripción" },
-    { filter: "service", translate: "Servicio" },
   ];
   const components = (value: number) => {
     saveFiltersService({ filter: "", search: "" });
@@ -63,13 +55,7 @@ const Services = () => {
               cb={saveFiltersServiceDescription}
             />
 
-            <DialogServiceDescription
-              register={register}
-              formState={formState}
-              handleSubmit={handleSubmit}
-              clearErrors={clearErrors}
-              control={control}
-            />
+            <DialogServiceDescription />
             <ServiceDescriptionTable />
           </Fragment>
         );

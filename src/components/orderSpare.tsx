@@ -78,11 +78,11 @@ export const OrderSpare = () => {
   };
   return (
     <>
-      <br />
-      <br />
       <Grid item xs={12}>
         <Divider variant="middle" />
       </Grid>
+      <br />
+      <br />
 
       <Grid item container xs={12} columnSpacing={2} alignItems="flex-end">
         <Grid item xs={2}>
@@ -157,7 +157,7 @@ export const OrderSpare = () => {
       <br />
       <Grid item xs={12}>
         <TableContainer component={Paper}>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Descripción</TableCell>
@@ -185,6 +185,7 @@ export const OrderSpare = () => {
                           <InputAdornment position="start">$</InputAdornment>
                         ),
                       }}
+                      size="small"
                       onChange={(e) => {
                         dispatch(
                           updateSpareOrder({
@@ -199,14 +200,25 @@ export const OrderSpare = () => {
                   <TableCell>
                     <TextField
                       defaultValue={sp.quantity}
+                      size="small"
+                      type="number"
                       onChange={(e) => {
-                        dispatch(
-                          updateSpareOrder({
-                            _id: sp._id,
-                            price: sp.suggestedPrice,
-                            quantity: parseFloat(e.target.value),
-                          })
-                        );
+                        if (e.target.value)
+                          dispatch(
+                            updateSpareOrder({
+                              _id: sp._id,
+                              price: sp.suggestedPrice,
+                              quantity: parseFloat(e.target.value),
+                            })
+                          );
+                        else
+                          dispatch(
+                            updateSpareOrder({
+                              _id: sp._id,
+                              price: sp.suggestedPrice,
+                              quantity: 1,
+                            })
+                          );
                       }}
                     />
                   </TableCell>

@@ -1,6 +1,7 @@
-import { IOrderEquipment } from "@/common";
+import { IEquipmentResponse, IOrderEquipment } from "@/common";
 import { Add, Delete } from "@mui/icons-material";
 import {
+  Autocomplete,
   Button,
   Divider,
   Grid,
@@ -15,24 +16,30 @@ import {
   TextField,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import "../app/order.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import {
-  deleteAllEquipment,
-  deleteOrderEquipment,
-  pushOrderEquipment,
-} from "@/redux/slices/order";
+import { deleteOrderEquipment, pushOrderEquipment } from "@/redux/slices/order";
 import { useConfirm } from "material-ui-confirm";
 import CSSTransitionGroup from "react-addons-css-transition-group";
 import { v4 } from "uuid";
+import { useLazyFindAllEquipmentQuery } from "@/redux/api/equipment.api";
 
 export const OrderEquipments = () => {
   const { equipment, service } = useSelector((store: RootState) => store.order);
   const dispatch = useDispatch();
   const confirm = useConfirm();
+  const [
+    getEquipments,
+    {
+      data: dataEquipment,
+      isLoading: isLoadingEquipment,
+      isSuccess: isSuccessEquipment,
+    },
+  ] = useLazyFindAllEquipmentQuery();
+  const [selectEquipment, setSelectEquipment] = useState<IEquipmentResponse>();
   const {
     register: registerEquipment,
     formState: { errors: errorsEquipment },
@@ -43,13 +50,20 @@ export const OrderEquipments = () => {
 
   const handleAddDataEquip = (data: IOrderEquipment) => {
     if (!equipment.find((p) => p.serie == data.serie) || data.serie == "") {
-      dispatch(pushOrderEquipment({ ...data, _id: v4() }));
+      dispatch(
+        pushOrderEquipment({
+          ...data,
+          equipment: selectEquipment as IEquipmentResponse,
+          _id: v4(),
+        })
+      );
       setFocusEquipment("equipment");
       resetEquipment({
         brand: "",
-        equipment: "",
+        // equipment: undefined,
         model: "",
         serie: "",
+        capacity: "" as any,
       });
     } else
       enqueueSnackbar("Este numero de serie ya existe", { variant: "error" });
@@ -74,11 +88,12 @@ export const OrderEquipments = () => {
       description:
         "Seguro que desea eliminar todos los equipos?.\n Se eliminaran todos los equipos que no se usan en los servicios.",
     }).then(() => {
-      equipment.forEach((eqp, index) => {
+      equipment.forEach((eqp) => {
         const exist = service.find((svc) => eqp._id == svc.equipment._id);
         if (!exist) {
           dispatch(deleteOrderEquipment(eqp._id as string));
         }
+        null;
       });
     });
   };
@@ -93,29 +108,38 @@ export const OrderEquipments = () => {
 
       <Grid item container xs={12} columnSpacing={2} alignItems="flex-end">
         <Grid item xs={2}>
-          <TextField
-            variant="standard"
-            margin="dense"
-            label="Equipo"
-            fullWidth
+          <Autocomplete
+            onOpen={() => getEquipments()}
+            loading={isLoadingEquipment}
+            options={isSuccessEquipment && dataEquipment ? dataEquipment : []}
+            getOptionLabel={(option) => (option ? option.name : "")}
             size="small"
-            {...registerEquipment("equipment", {
-              required: {
-                value: true,
-                message: "El nombre del equipo es requerido",
-              },
-            })}
-            error={!!errorsEquipment.equipment}
-            helperText={
-              !!errorsEquipment.equipment && errorsEquipment.equipment.message
-            }
+            onChange={(e, n) => {
+              //  field.onChange(n);
+              if (n) setSelectEquipment(n);
+              //  setFilter(n.filter);
+            }}
+            renderInput={(params) => {
+              return (
+                <TextField
+                  {...params}
+                  {...registerEquipment("equipment", {
+                    required: {
+                      value: true,
+                      message: "Seleccione un equipo",
+                    },
+                  })}
+                  placeholder="Seleccione un equipo *"
+                />
+              );
+            }}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <TextField
             variant="standard"
             margin="dense"
-            label="Marca"
+            label="Marca *"
             fullWidth
             size="small"
             {...registerEquipment("brand", {
@@ -169,15 +193,34 @@ export const OrderEquipments = () => {
             }
           />
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={2}>
+          <TextField
+            variant="standard"
+            margin="dense"
+            label="Capacidad del equipo HP"
+            fullWidth
+            type="number"
+            size="small"
+            {...registerEquipment("capacity", {
+              required: {
+                value: false,
+                message: "La capacidad es requerida",
+              },
+              valueAsNumber: true,
+            })}
+            error={!!errorsEquipment.capacity}
+            helperText={
+              !!errorsEquipment.capacity && errorsEquipment.capacity.message
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
           <Button
             endIcon={<Add />}
             onClick={handleSubmitEquipment(handleAddDataEquip)}
           >
             Agregar
           </Button>
-        </Grid>
-        <Grid item xs={2}>
           <Button endIcon={<Delete />} onClick={deleteAll} color="secondary">
             Eliminar Todo
           </Button>
@@ -186,13 +229,14 @@ export const OrderEquipments = () => {
       <br />
       <Grid item xs={12}>
         <TableContainer component={Paper}>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Equipo</TableCell>
                 <TableCell>Marca</TableCell>
                 <TableCell>Modelo</TableCell>
                 <TableCell>Serie</TableCell>
+                <TableCell>Capacidad del equipo</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -204,10 +248,13 @@ export const OrderEquipments = () => {
             >
               {equipment?.map((equip, index) => (
                 <TableRow>
-                  <TableCell>{equip.equipment}</TableCell>
+                  <TableCell>{equip.equipment.name}</TableCell>
                   <TableCell>{equip.brand}</TableCell>
                   <TableCell>{equip.model}</TableCell>
                   <TableCell>{equip.serie}</TableCell>
+                  <TableCell>
+                    {equip.capacity ? `${equip.capacity} HP` : "------"}
+                  </TableCell>
                   <TableCell>
                     <IconButton
                       color="secondary"

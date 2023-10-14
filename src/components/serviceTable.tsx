@@ -83,30 +83,14 @@ export const ServiceTable = () => {
       disablePadding: false,
       label: "Nombre",
     },
-    {
-      id: "description",
-      numeric: false,
-      disablePadding: false,
-      label: "Descripción",
-    },
+
     {
       id: "suggestedPrice",
       numeric: false,
       disablePadding: false,
       label: "Precio sugerido",
     },
-    {
-      id: "equipmentCapacity",
-      numeric: false,
-      disablePadding: false,
-      label: "Capacidad del equipo",
-    },
-    {
-      id: "equipmentApplication",
-      numeric: false,
-      disablePadding: false,
-      label: "Aplicación del equipo",
-    },
+
     {
       id: "createdAt",
       numeric: false,
@@ -180,27 +164,17 @@ export const ServiceTable = () => {
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             ?.map((row: any) => (
               <TableRow
-                key={row.name}
+                key={row._id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell component="th" scope="row">
                   {row.description}
                 </TableCell>
-                <TableCell component="th" scope="row">
+
+                {/* <TableCell component="th" scope="row">
                   {currencyMx.format(row.suggestedPrice)}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.equipmentCapacity}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {
-                    ApplicationTypeTranslate.get(row.equipmentApplication)
-                      ?.translate
-                  }
-                </TableCell>
+                </TableCell> */}
+
                 <TableCell align="left">
                   {moment(row.createdAt).format("LLLL")}
                 </TableCell>

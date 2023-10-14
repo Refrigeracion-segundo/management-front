@@ -1,6 +1,11 @@
-import { IOrderEquipment, IServiceDescriptionResponse } from ".";
+import {
+  IOrderEquipment,
+  IServiceDescriptionResponse,
+  IServiceResponse,
+} from ".";
 
 export interface IOrderService {
-  service: IServiceDescriptionResponse;
+  service: IServiceResponse;
+  svcDescription: IServiceDescriptionResponse;
   equipment: IOrderEquipment;
 }

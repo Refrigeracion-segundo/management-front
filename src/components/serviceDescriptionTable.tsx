@@ -38,6 +38,7 @@ import {
 import { STATUS_DATA } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { RootState } from "@/redux/store";
+import { currencyMx } from "@/redux/constants/formatCurrency";
 
 export const ServiceDescriptionTable = () => {
   const confirm = useConfirm();
@@ -72,16 +73,16 @@ export const ServiceDescriptionTable = () => {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "description",
+      id: "name",
       numeric: false,
       disablePadding: false,
-      label: "Descripción",
+      label: "Nombre",
     },
     {
-      id: "service.name",
+      id: "suggestedPrice",
       numeric: false,
       disablePadding: false,
-      label: "Servicio",
+      label: "Precio sugerido",
     },
     {
       id: "createdAt",
@@ -116,7 +117,7 @@ export const ServiceDescriptionTable = () => {
   };
 
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
+    _: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
     setPage(newPage);
@@ -160,10 +161,10 @@ export const ServiceDescriptionTable = () => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.description}
+                  {row.name}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {(row.service as IServiceResponse).name}
+                  {currencyMx.format(row.suggestedPrice)}
                 </TableCell>
                 <TableCell align="left">
                   {moment(row.createdAt).format("LLLL")}

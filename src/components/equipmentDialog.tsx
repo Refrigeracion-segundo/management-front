@@ -16,9 +16,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-import {
-  useForm,
-} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { IEquipmentRegister, IEquipmentUpdate } from "@/common";
 import {
   clearEquipment,
@@ -84,7 +82,7 @@ export const DialogEquipment = () => {
       <Dialog open={openDialog}>
         <DialogTitle>
           <Typography variant="h6" align="center">
-            Formulario de Refacciones
+            Formulario de Equipos
           </Typography>
         </DialogTitle>
         <DialogContent>

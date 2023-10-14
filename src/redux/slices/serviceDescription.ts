@@ -17,18 +17,6 @@ const initialState: Service = {
   isUpdate: false,
   data: {
     description: "",
-    service: {
-      _id: "",
-      name: "",
-      description: "",
-      status: "",
-      suggestedPrice: 0,
-      equipmentCapacity: "",
-      equipmentApplication: "",
-      equipmentType: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
   },
   filters: {
     search: "",
