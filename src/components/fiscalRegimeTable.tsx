@@ -33,7 +33,7 @@ import {
   useFindAllFiscalRegimeQuery,
   useReactiveMutation,
 } from "@/redux/api/fiscalRegime";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 export const FiscalRegimeTable = () => {
@@ -137,8 +137,9 @@ export const FiscalRegimeTable = () => {
           onRequestSort={handleRequestSort}
         />
         <TableBody>
-          {stableSort(rows ? rows : [], getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
-            (row: any) => (
+          {stableSort(rows ? rows : [], getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((row: any) => (
               <TableRow
                 key={row.key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -161,12 +162,14 @@ export const FiscalRegimeTable = () => {
                   <IconButton
                     color="secondary"
                     onClick={() => handleDelete(row.description, row._id)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Delete />
                   </IconButton>
                   <IconButton
                     color="secondary"
                     onClick={() => handleEdit(row as unknown as IRegimeUpdate)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Edit />
                   </IconButton>
@@ -183,8 +186,7 @@ export const FiscalRegimeTable = () => {
                   </IconButton>
                 </TableCell>
               </TableRow>
-            )
-          )}
+            ))}
         </TableBody>
         <TableFooter>
           <TableRow>

@@ -28,6 +28,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
@@ -44,8 +45,9 @@ export const OrderTableRows = (props: {
   row: IOrderDataResponse;
   total: number;
   totalSpare: number;
+  totalService: number;
 }) => {
-  const { row, total, totalSpare } = props;
+  const { row, total, totalSpare, totalService } = props;
   const [open, setOpen] = useState(false);
   const confirm = useConfirm();
   const dispatch = useDispatch();
@@ -98,7 +100,10 @@ export const OrderTableRows = (props: {
       dispatch(
         pushOrderService({
           service: service.service,
-          svcDescription: service.serviceDescription,
+          svcDescription: {
+            ...service.serviceDescription,
+            suggestedPrice: service.price,
+          },
           equipment: {
             _id: uid,
             equipment: service.equipmentType,
@@ -246,7 +251,7 @@ export const OrderTableRows = (props: {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>Total</TableCell>
-                    <TableCell>{currencyMx.format(total)}</TableCell>
+                    <TableCell>{currencyMx.format(totalService)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -286,6 +291,11 @@ export const OrderTableRows = (props: {
                   </TableRow>
                 </TableBody>
               </Table>
+              <TableFooter style={{ float: "right" }}>
+                <TableRow>
+                  <TableCell>Total: {currencyMx.format(total)}</TableCell>
+                </TableRow>
+              </TableFooter>
             </Box>
           </Collapse>
         </TableCell>

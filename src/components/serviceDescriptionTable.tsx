@@ -35,7 +35,7 @@ import {
   openServiceDescription,
   saveServiceDescription,
 } from "@/redux/slices/serviceDescription";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { RootState } from "@/redux/store";
 import { currencyMx } from "@/redux/constants/formatCurrency";
@@ -178,7 +178,8 @@ export const ServiceDescriptionTable = () => {
                 <TableCell>
                   <IconButton
                     color="secondary"
-                    onClick={() => handleDelete(row.description, row._id)}
+                    onClick={() => handleDelete(row.name, row._id)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Delete />
                   </IconButton>
@@ -187,6 +188,7 @@ export const ServiceDescriptionTable = () => {
                     onClick={() =>
                       handleEdit(row as unknown as IServiceDescriptionUpdate)
                     }
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Edit />
                   </IconButton>

@@ -32,7 +32,7 @@ import {
   useLazyFindAllEquipmentQuery,
   useReactiveMutation,
 } from "@/redux/api/equipment.api";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import { RootState } from "@/redux/store";
@@ -175,6 +175,7 @@ export const EquipmentTable = () => {
                   <IconButton
                     color="secondary"
                     onClick={() => handleDelete(row.name, row._id)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Delete />
                   </IconButton>
@@ -183,6 +184,7 @@ export const EquipmentTable = () => {
                     onClick={() =>
                       handleEdit(row as unknown as IEquipmentUpdate)
                     }
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Edit />
                   </IconButton>

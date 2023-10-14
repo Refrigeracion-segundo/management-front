@@ -1,7 +1,7 @@
 "use client";
 import { IClientResponse, IClientUpdate, IRegimeResponse } from "@/common";
 import { useDeleteClientMutation, useReactiveMutation } from "@/redux/api";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import {
   isUpdatingClient,
   openClient,
@@ -94,12 +94,14 @@ export const CustomerTableRows = (props: { row: IClientResponse }) => {
           <IconButton
             color="secondary"
             onClick={() => handleDelete(row.name, row._id)}
+            disabled={row.status == STATUS_DB.ELIMINATED}
           >
             <Delete />
           </IconButton>
           <IconButton
             color="secondary"
             onClick={() => handleEdit(row as unknown as IClientUpdate)}
+            disabled={row.status == STATUS_DB.ELIMINATED}
           >
             <Edit />
           </IconButton>

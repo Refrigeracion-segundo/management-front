@@ -12,6 +12,8 @@ import { IOrderRegister } from "./orderRegister";
 export interface IOrderResponse {
   total: number;
   totalPages: number;
+  totalServices: number;
+  totalSpare: number;
   page: number;
   perPage: number;
   data: Array<IOrderDataResponse>;

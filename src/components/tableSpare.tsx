@@ -34,7 +34,7 @@ import {
 } from "@/redux/slices/dialogSpare";
 
 import { currencyMx } from "@/redux/constants/formatCurrency";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import { RootState } from "@/redux/store";
@@ -197,12 +197,14 @@ export const TableSpare = (props: {
                   <IconButton
                     color="secondary"
                     onClick={() => handleDelete(row.description, row._id)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Delete />
                   </IconButton>
                   <IconButton
                     color="secondary"
                     onClick={() => handleEdit(row as unknown as ISpareUpdate)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Edit />
                   </IconButton>

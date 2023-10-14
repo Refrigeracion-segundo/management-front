@@ -26,7 +26,7 @@ import {
 } from "@/common";
 
 import { isUpdatingUser, open, saveUser } from "@/redux/slices/dialogUser";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import moment from "moment";
@@ -192,12 +192,14 @@ export const TableUser = (props: {
                   <IconButton
                     color="secondary"
                     onClick={() => handleDelete(row.name, row._id)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Delete />
                   </IconButton>
                   <IconButton
                     color="secondary"
                     onClick={() => handleEdit(row as unknown as IUserUpdate)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Edit />
                   </IconButton>

@@ -187,7 +187,7 @@ export const ServiceTable = () => {
                 <TableCell>
                   <IconButton
                     color="secondary"
-                    onClick={() => handleDelete(row.name, row._id)}
+                    onClick={() => handleDelete(row.description, row._id)}
                   >
                     <Delete />
                   </IconButton>

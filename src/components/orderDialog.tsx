@@ -138,15 +138,16 @@ export const OrderDialog = () => {
                 type="number"
                 defaultValue={isUpdate ? numberOrder : ""}
                 onChange={async (e) => {
-                  !isUpdate &&
-                    verifyOrder(parseInt(e.target.value)).then((c) => {
-                      if (c.status == "rejected") {
-                        setErrorOrder(true);
-                      } else {
-                        setErrorOrder(false);
-                        dispatch(saveNumOrder(parseInt(e.target.value)));
-                      }
-                    });
+                  if (!isUpdate)
+                    if (e.target.value)
+                      verifyOrder(parseInt(e.target.value)).then((c) => {
+                        if (c.status == "rejected") {
+                          setErrorOrder(true);
+                        } else {
+                          setErrorOrder(false);
+                          dispatch(saveNumOrder(parseInt(e.target.value)));
+                        }
+                      });
                 }}
                 error={isErrorOrder}
                 helperText={isErrorOrder && "Este numero de orden ya existe"}
