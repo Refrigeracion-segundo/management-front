@@ -23,18 +23,18 @@ export const setupAxiosTokenInterceptor = (store: Store<RootState>): any => {
     },
     async function (error) {
       console.log(error.response);
-      // if (typeof error.response?.data?.message == "string")
-      //   dispatchGlobal(
-      //     viewNotification(
-      //       ErrorsTranslate.get(error.response?.data?.message) as string
-      //     )
-      //   );
-      // if (Array.isArray(error.response?.data?.message))
-      //   dispatchGlobal(
-      //     viewNotification(
-      //       "A ocurrido un error en el servicio, contacte con el desarrollador"
-      //     )
-      //   );
+      if (typeof error.response?.data?.message == "string")
+        dispatchGlobal(
+          viewNotification(
+            ErrorsTranslate.get(error.response?.data?.message) as string
+          )
+        );
+      if (Array.isArray(error.response?.data?.message))
+        dispatchGlobal(
+          viewNotification(
+            "A ocurrido un error en el servicio, contacte con el desarrollador"
+          )
+        );
       if (error.response.status === 401) {
         localStorage.removeItem("user");
         window.location.reload();
