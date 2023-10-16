@@ -34,7 +34,7 @@ import {
   openService,
   saveService,
 } from "@/redux/slices/service";
-import { STATUS_DATA } from "@/redux/constants";
+import { STATUS_DATA, STATUS_DB } from "@/redux/constants";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import { currencyMx } from "@/redux/constants/formatCurrency";
@@ -188,12 +188,14 @@ export const ServiceTable = () => {
                   <IconButton
                     color="secondary"
                     onClick={() => handleDelete(row.description, row._id)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Delete />
                   </IconButton>
                   <IconButton
                     color="secondary"
                     onClick={() => handleEdit(row as unknown as IServiceUpdate)}
+                    disabled={row.status == STATUS_DB.ELIMINATED}
                   >
                     <Edit />
                   </IconButton>
