@@ -377,7 +377,7 @@ export default function Home() {
                         },
                       }}
                       defaultValue={
-                        new Date(moment().startOf("month").format())
+                        new Date(moment().startOf("year").format())
                       }
                       render={({ field }) => {
                         return (
@@ -424,7 +424,7 @@ export default function Home() {
                           message: "Selecciona una fecha valida",
                         },
                       }}
-                      defaultValue={new Date(moment().endOf("month").format())}
+                      defaultValue={new Date(moment().endOf("year").format())}
                       render={({ field }) => {
                         return (
                           <DesktopDatePicker

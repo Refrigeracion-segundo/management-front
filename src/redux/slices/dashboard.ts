@@ -16,8 +16,8 @@ const initialState: Dashboard = {
     orderId: 0,
     filter: "",
     search: "",
-    fromDate: new Date(moment().startOf("month").format()),
-    toDate: new Date(moment().endOf("month").format()),
+    fromDate: new Date(moment().startOf("year").format()),
+    toDate: new Date(moment().endOf("year").format()),
     status: STATUS_ORIGINAL.PAID,
   },
 };

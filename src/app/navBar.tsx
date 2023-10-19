@@ -51,13 +51,13 @@ export const NavBar = () => {
       >
         <Grid item>
           <Avatar sx={{ bgcolor: blue["A400"] }}>
-            {user.name[0].toUpperCase()}
-            {user.lastName[0].toUpperCase()}
+            {user?.name[0]?.toUpperCase()}
+            {user?.lastName[0]?.toUpperCase()}
           </Avatar>
         </Grid>
         <Grid item>
           <Typography>
-            {user.name.toUpperCase()} {user.lastName.toUpperCase()}
+            {user?.name.toUpperCase()} {user?.lastName.toUpperCase()}
           </Typography>
         </Grid>
         <Grid item>
