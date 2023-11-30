@@ -8,4 +8,5 @@ export interface IOrderGeneral {
   endDate?: Date;
   client?: any;
   description: string;
+  comments?: string;
 }

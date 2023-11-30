@@ -7,7 +7,6 @@ import {
   ISpareResponse,
   IUserResponse,
 } from ".";
-import { IOrderRegister } from "./orderRegister";
 
 export interface IOrderResponse {
   total: number;
@@ -28,7 +27,7 @@ export interface IOrderDataResponse extends IOrderDirection {
   technicians: Array<IUserResponse>;
   customer: IClientResponse;
   description: string;
-  comments: string;
+  comments?: string;
   services: Array<{
     service: IServiceResponse;
     serviceDescription: IServiceDescriptionResponse;

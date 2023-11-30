@@ -30,18 +30,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   useLazyFindAllClientsQuery,
-  // useLazyFindUserTechniciansQuery,
   useLazyVerifyOrderKeyQuery,
   useRegisterOrderMutation,
   useUpdateOrderMutation,
 } from "@/redux/api";
-import { IClientResponse, IOrderGeneral, IServiceResponse } from "@/common";
+import { IClientResponse, IOrderGeneral } from "@/common";
 import { Controller, useForm } from "react-hook-form";
 import { OrderEquipments } from "./orderEquipments";
 import { OrderDirection } from "./orderDirection";
@@ -77,6 +74,7 @@ export const OrderDialog = () => {
     users,
     spares,
     numberOrder,
+    equipment,
   } = useSelector((store: RootState) => store.order);
   const {
     formState: { errors },
@@ -135,6 +133,7 @@ export const OrderDialog = () => {
                 size="small"
                 disabled={isUpdate}
                 placeholder="# Orden"
+                label="# Orden"
                 type="number"
                 defaultValue={isUpdate ? numberOrder : ""}
                 onChange={async (e) => {
@@ -409,6 +408,35 @@ export const OrderDialog = () => {
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <Controller
+                name="comments"
+                rules={{
+                  required: {
+                    value: false,
+                    message: "Ingrese una nota sobre la orden",
+                  },
+                }}
+                control={control}
+                defaultValue={general.comments}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      placeholder="Notas sobre la orden"
+                      label="Notas sobre la orden"
+                      multiline
+                      size="small"
+                      fullWidth
+                      value={field.value}
+                      onChange={(e) => field.onChange(e)}
+                      error={!!errors.comments}
+                      helperText={!!errors.comments && errors.comments.message}
+                    />
+                  );
+                }}
+              />
+            </Grid>
+
             <Grid
               item
               container
@@ -471,7 +499,10 @@ export const OrderDialog = () => {
             Cerrar
           </Button>
           <Button
-            disabled={service.length == 0 || client._id == ""}
+            disabled={
+              (equipment.length > 0 && (!service || service.length === 0)) ||
+              client._id == ""
+            }
             onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
@@ -483,6 +514,7 @@ export const OrderDialog = () => {
                   customer: client._id,
                   ...direction,
                   description: data.description,
+                  comments: data.comments,
                   spares: !!spares.length
                     ? spares.map((p) => {
                         return {
@@ -492,21 +524,24 @@ export const OrderDialog = () => {
                         };
                       })
                     : [],
-                  services: service.map((p) => {
-                    return {
-                      service: p.service._id,
-                      serviceDescription: p.svcDescription._id,
-                      equipmentType: p.equipment.equipment._id,
-                      brand: p.equipment.brand,
-                      model: p.equipment.model,
-                      equipmentCapacity: p.equipment.capacity
-                        ? p.equipment.capacity
-                        : undefined,
-                      serie: p.equipment.serie,
-                      price: p.svcDescription.suggestedPrice,
-                    };
-                  }),
+                  services: !!service.length
+                    ? service.map((p) => {
+                        return {
+                          service: p.service._id,
+                          serviceDescription: p.svcDescription._id,
+                          equipmentType: p.equipment.equipment._id,
+                          brand: p.equipment.brand,
+                          model: p.equipment.model,
+                          equipmentCapacity: p.equipment.capacity
+                            ? p.equipment.capacity
+                            : undefined,
+                          serie: p.equipment.serie,
+                          price: p.svcDescription.suggestedPrice,
+                        };
+                      })
+                    : [],
                 };
+
                 try {
                   !isUpdate
                     ? await registerOrder(aux).unwrap()
