@@ -498,7 +498,7 @@ export const OrderDialog = () => {
             Cerrar
           </Button>
           <Button
-            disabled={service.length == 0 || client._id == ""}
+            disabled={client._id == ""}
             onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
@@ -520,20 +520,22 @@ export const OrderDialog = () => {
                         };
                       })
                     : [],
-                  services: service.map((p) => {
-                    return {
-                      service: p.service._id,
-                      serviceDescription: p.svcDescription._id,
-                      equipmentType: p.equipment.equipment._id,
-                      brand: p.equipment.brand,
-                      model: p.equipment.model,
-                      equipmentCapacity: p.equipment.capacity
-                        ? p.equipment.capacity
-                        : undefined,
-                      serie: p.equipment.serie,
-                      price: p.svcDescription.suggestedPrice,
-                    };
-                  }),
+                  services: !!service.length
+                    ? service.map((p) => {
+                        return {
+                          service: p.service._id,
+                          serviceDescription: p.svcDescription._id,
+                          equipmentType: p.equipment.equipment._id,
+                          brand: p.equipment.brand,
+                          model: p.equipment.model,
+                          equipmentCapacity: p.equipment.capacity
+                            ? p.equipment.capacity
+                            : undefined,
+                          serie: p.equipment.serie,
+                          price: p.svcDescription.suggestedPrice,
+                        };
+                      })
+                    : [],
                 };
 
                 try {
