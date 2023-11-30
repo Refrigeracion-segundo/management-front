@@ -30,18 +30,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   useLazyFindAllClientsQuery,
-  // useLazyFindUserTechniciansQuery,
   useLazyVerifyOrderKeyQuery,
   useRegisterOrderMutation,
   useUpdateOrderMutation,
 } from "@/redux/api";
-import { IClientResponse, IOrderGeneral, IServiceResponse } from "@/common";
+import { IClientResponse, IOrderGeneral } from "@/common";
 import { Controller, useForm } from "react-hook-form";
 import { OrderEquipments } from "./orderEquipments";
 import { OrderDirection } from "./orderDirection";
@@ -135,6 +132,7 @@ export const OrderDialog = () => {
                 size="small"
                 disabled={isUpdate}
                 placeholder="# Orden"
+                label="# Orden"
                 type="number"
                 defaultValue={isUpdate ? numberOrder : ""}
                 onChange={async (e) => {
@@ -409,6 +407,35 @@ export const OrderDialog = () => {
               />
             </Grid>
 
+            <Grid item xs={12}>
+              <Controller
+                name="comments"
+                rules={{
+                  required: {
+                    value: false,
+                    message: "Ingrese una nota sobre la orden",
+                  },
+                }}
+                control={control}
+                defaultValue={general.comments}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      placeholder="Notas sobre la orden"
+                      label="Notas sobre la orden"
+                      multiline
+                      size="small"
+                      fullWidth
+                      value={field.value}
+                      onChange={(e) => field.onChange(e)}
+                      error={!!errors.comments}
+                      helperText={!!errors.comments && errors.comments.message}
+                    />
+                  );
+                }}
+              />
+            </Grid>
+
             <Grid
               item
               container
@@ -483,6 +510,7 @@ export const OrderDialog = () => {
                   customer: client._id,
                   ...direction,
                   description: data.description,
+                  comments: data.comments,
                   spares: !!spares.length
                     ? spares.map((p) => {
                         return {
@@ -507,6 +535,7 @@ export const OrderDialog = () => {
                     };
                   }),
                 };
+
                 try {
                   !isUpdate
                     ? await registerOrder(aux).unwrap()

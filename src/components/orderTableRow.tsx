@@ -90,6 +90,7 @@ export const OrderTableRows = (props: {
         startDate: data?.startDate,
         endDate: data?.endDate,
         description: data?.description,
+        comments: data?.comments,
       })
     );
 
@@ -137,6 +138,7 @@ export const OrderTableRows = (props: {
     dispatch(isUpdatingOrder(true));
     dispatch(openOrder());
   };
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openAnchor = Boolean(anchorEl);
 
@@ -202,6 +204,12 @@ export const OrderTableRows = (props: {
                 {row.description}
               </Typography>
               <Typography variant="h6" gutterBottom component="div">
+                Notas
+              </Typography>
+              <Typography variant="body1" gutterBottom component="div">
+                {row.comments}
+              </Typography>
+              <Typography variant="h6" gutterBottom component="div">
                 Datos de la orden
               </Typography>
               <Table size="small" aria-label="purchases">
@@ -222,8 +230,6 @@ export const OrderTableRows = (props: {
                       <TableRow key={service.service?._id}>
                         <TableCell>
                           {`${service.service.description} - ${service.serviceDescription.name}`}
-                          {/* {service?.serviceDescription.description} -{" "}
-                          {service?.service?.name} */}
                         </TableCell>
                         <TableCell>{service.equipmentType.name}</TableCell>
                         <TableCell>{service.brand}</TableCell>

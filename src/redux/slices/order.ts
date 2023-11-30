@@ -7,13 +7,13 @@ import {
   IOrderRegister,
   IOrderService,
   IOrderUpdate,
-  IServiceResponse,
   ISpareResponse,
   IUserResponse,
 } from "@/common";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import moment from "moment";
 import { v4 } from "uuid";
+
 export interface Order {
   openDialog: boolean;
   isUpdate: boolean;
@@ -78,6 +78,7 @@ const initialState: Order = {
     startDate: new Date(moment().startOf("month").format()),
     endDate: new Date(moment().endOf("month").format()),
     description: "",
+    comments: "",
   },
   total: 0,
   filters: {
@@ -102,7 +103,6 @@ export const orderSlice = createSlice({
       };
     },
     closeOrder: (state) => {
-      // console.log(state.isUpdate);
       if (state.isUpdate) {
         return {
           ...state,
