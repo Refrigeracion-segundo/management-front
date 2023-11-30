@@ -74,6 +74,7 @@ export const OrderDialog = () => {
     users,
     spares,
     numberOrder,
+    equipment,
   } = useSelector((store: RootState) => store.order);
   const {
     formState: { errors },
@@ -498,7 +499,10 @@ export const OrderDialog = () => {
             Cerrar
           </Button>
           <Button
-            disabled={client._id == ""}
+            disabled={
+              (equipment.length > 0 && (!service || service.length === 0)) ||
+              client._id == ""
+            }
             onClick={handleSubmit(async (data) => {
               {
                 const aux: any = {
