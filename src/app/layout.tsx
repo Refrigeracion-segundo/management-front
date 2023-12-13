@@ -4,24 +4,28 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import { Providers } from "./provider";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { esES } from '@mui/material/locale';
+import { esES } from "@mui/material/locale";
 import Home from "./home";
 import useUser from "./lib/hooks/useUser";
 import { SnackbarProvider } from "notistack";
 import Login from "./login";
 import { ConfirmProvider } from "material-ui-confirm";
 import "moment/locale/es";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
 //   title: "Refrigeración segundo",
 //   description: "Pagina administrativa",
 // };
-export const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
+export const darkTheme = createTheme(
+  {
+    palette: {
+      mode: "dark",
+    },
   },
-}, esES);
+  esES
+);
 export default function RootLayout({
   children,
 }: {
@@ -51,6 +55,7 @@ export default function RootLayout({
             </SnackbarProvider>
           </ThemeProvider>
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
